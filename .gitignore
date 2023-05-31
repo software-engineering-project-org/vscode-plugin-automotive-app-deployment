@@ -1,3 +1,7 @@
+# Local tmp files 
+
+tmp/*.json
+
 # Logs
 logs
 *.log
@@ -105,3 +109,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Tmp data
+./tmp/*
