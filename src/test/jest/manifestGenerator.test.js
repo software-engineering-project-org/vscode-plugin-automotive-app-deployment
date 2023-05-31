@@ -3,8 +3,8 @@ const path = require('path');
 const { ManifestGeneratorJson } = require('../../svc/ManifestGeneratorJson');
 
 describe('ManifestGeneratorJson', () => {
-  const templateFilePath = '/templates/kanto/kanto_container_config_template.json';
-  const outputFilePath = '/tmp/tmp_gen_kanto_container_manifest.json';
+  const templateFilePath = 'templates/kanto/kanto_container_conf_template.json';
+  const outputFilePath = 'tmp/tmp_gen_kanto_container_manifest.json';
 
   beforeEach(() => {
     // Clean up the output file before each test
