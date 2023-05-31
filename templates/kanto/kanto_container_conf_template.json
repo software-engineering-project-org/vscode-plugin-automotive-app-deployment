@@ -1,0 +1,70 @@
+{
+    "container_name": "",
+    "image": {
+        "name": "",
+        "decrypt_config": {
+            "keys": [],
+            "recipients": []
+        }
+    },
+    "domain_name": "",
+    "host_name": "",
+    "mount_points": [
+        {
+            "destination": "",
+            "source": "",
+            "propagation_mode": "rprivate"
+        }
+    ],
+    "config": {
+        "env": [],
+        "cmd": []
+    },
+    "io_config": {
+        "open_stdin": false,
+        "tty": false
+    },
+    "host_config": {
+        "devices": [
+            {
+                "path_on_host": "",
+                "path_in_container": "",
+                "cgroup_permissions": "rwm"
+            }
+        ],
+        "network_mode": "bridge",
+        "privileged": false,
+        "extra_hosts": [],
+        "port_mappings": [
+            {
+                "proto": "tcp",
+                "container_port": 0,
+                "host_ip": "0.0.0.0",
+                "host_port": 0,
+                "host_port_end": 0
+            }
+        ],
+        "resources": {
+            "memory": "",
+            "memory_reservation": "",
+            "memory_swap": ""
+        },
+        "restart_policy": {
+            "type": "unless-stopped",
+            "maximum_retry_count": 0,
+            "retry_timeout": 0
+        },
+        "log_config": {
+            "driver_config": {
+                "type": "json-file",
+                "max_files": 2,
+                "max_size": "100M",
+                "root_dir": ""
+            },
+            "mode_config": {
+                "mode": "blocking",
+                "max_buffer_size": "1M"
+            }
+        }
+    }
+}
