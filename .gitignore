@@ -107,4 +107,4 @@ dist
 .tern-port
 
 # Tmp data
-tmp/*
+./tmp/*

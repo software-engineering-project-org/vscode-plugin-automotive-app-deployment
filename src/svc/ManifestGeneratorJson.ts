@@ -1,18 +1,18 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export class ManifestGenerator {
+export class ManifestGeneratorJson {
   private templateFilePath: string;
-  private outputDir: string;
+  private outputFilePath: string;
 
   /**
    * Create a new instance of ManifestGenerator.
    * @param {string} templateFilePath - The path to the template JSON file.
-   * @param {string} outputDir - The path to the output directory where generated files will be saved.
+   * @param {string} outputFilePath - The path to the output file where the generated JSON will be saved.
    */
-  constructor(templateFilePath: string, outputDir: string) {
+  constructor(templateFilePath: string, outputFilePath: string) {
     this.templateFilePath = templateFilePath;
-    this.outputDir = outputDir;
+    this.outputFilePath = outputFilePath;
   }
 
   /**
@@ -67,19 +67,18 @@ export class ManifestGenerator {
   }
 
   /**
-   * Save the modified JSON object to a new file in the specified output directory.
+   * Save the modified JSON object to the specified output file.
    * @param {any} modifiedJson - The modified JSON object to save.
    */
   private saveModifiedJson(modifiedJson: any): void {
-    if (!fs.existsSync(this.outputDir)) {
-      fs.mkdirSync(this.outputDir, { recursive: true });
+    const outputDir = path.dirname(this.outputFilePath);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    const fileName = 'kanto_manifest.json';
-    const filePath = path.join(this.outputDir, fileName);
     const updatedJson = JSON.stringify(modifiedJson, null, 2);
-    fs.writeFileSync(filePath, updatedJson, 'utf8');
+    fs.writeFileSync(this.outputFilePath, updatedJson, 'utf8');
 
-    console.log(`Modified JSON saved to: ${filePath}`);
+    console.log(`Modified JSON saved to: ${this.outputFilePath}`);
   }
 }

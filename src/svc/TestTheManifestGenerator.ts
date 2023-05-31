@@ -1,4 +1,4 @@
-import { ManifestGenerator } from './TemplateGenerator';
+import { ManifestGeneratorJson } from './ManifestGeneratorJson';
 
 class TestTheManifestGenerator {
   constructor() {
@@ -10,7 +10,7 @@ class TestTheManifestGenerator {
     const templateFilePath = `${inputDir}/${inputFile}`;
     const outputFilePath = `${outputDir}/${outputFile}`;
 
-    const manifestGenerator = new ManifestGenerator(templateFilePath, outputFilePath);
+    const manifestGenerator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
 
     // Example usage: Generating a modified Kanto Container manifest
     manifestGenerator.generateKantoContainerManifest({
