@@ -14,9 +14,9 @@ describe('ManifestGeneratorJsonTemplate', () => {
 
   test('generates the modified Kanto Container manifest', () => {
     const keyValuePairs = {
-      'id': 'changed-container-id',
-      'name': 'changed-container-name',
-      'image.name': 'changed-the-name-for-image',
+      'id': 'app',
+      'name': 'app',
+      'image.name': 'ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5',
     };
 
     const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
@@ -32,8 +32,8 @@ describe('ManifestGeneratorJsonTemplate', () => {
     const parsedJson = JSON.parse(generatedJson);
 
     // Verify that the modified values are correctly set in the generated JSON
-    expect(parsedJson.id).toBe('changed-container-id');
-    expect(parsedJson.name).toBe('changed-container-name');
-    expect(parsedJson.image.name).toBe('changed-the-name-for-image');
+    expect(parsedJson.id).toBe('app');
+    expect(parsedJson.name).toBe('app');
+    expect(parsedJson.image.name).toBe('ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5');
   });
 });

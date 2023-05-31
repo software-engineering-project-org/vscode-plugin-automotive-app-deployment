@@ -1,6 +1,5 @@
 # Local tmp files 
-
-tmp/*.json
+.vscode/tmp/*.json
 
 # Logs
 logs
@@ -109,6 +108,3 @@ dist
 
 # TernJS port file
 .tern-port
-
-# Tmp data
-./tmp/*
