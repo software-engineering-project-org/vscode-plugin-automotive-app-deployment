@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-class ManifestGenerator {
+export class ManifestGenerator {
   private templateFilePath: string;
   private outputDir: string;
 
