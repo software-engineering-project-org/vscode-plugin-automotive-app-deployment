@@ -3,9 +3,9 @@ import { ManifestGeneratorJson } from './ManifestGeneratorJson';
 class TestTheManifestGenerator {
   constructor() {
     const inputDir = 'templates/kanto';
-    const inputFile = 'kanto_container_conf_template.json';
+    const inputFile = 'kanto_container_conf_template_v1.json';
     const outputDir = 'tmp';
-    const outputFile = 'tmp_gen_kanto_container_manifest.json';
+    const outputFile = 'tmp_gen_kanto_container_manifest_v1.json';
 
     const templateFilePath = `${inputDir}/${inputFile}`;
     const outputFilePath = `${outputDir}/${outputFile}`;
