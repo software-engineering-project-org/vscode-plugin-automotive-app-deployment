@@ -17,7 +17,6 @@ export class ServiceSsh {
     this.sshUsername = sshUsername;
     this.sshPort = sshPort;
     this.ssh = new NodeSSH();
-    this.initializeSsh();
   }
 
   private async initializeSsh() {
@@ -30,12 +29,15 @@ export class ServiceSsh {
 
   public async copyKantoManifestToLeda(localManifestFile: string) {
     try {
+        await this.initializeSsh()
         await this.ssh.putFiles([{ 
             local: localManifestFile, 
             remote: `${this.manifestDirecotory}/app.json` 
         }])
     } catch(e) {
         console.log(e)
+    } finally {
+      this.ssh.dispose()
     }
   }
 }
