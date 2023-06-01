@@ -1,3 +1,12 @@
+# Connect to leda environment 
+```shell
+# Set local port forward to remote host (local machine)
+ssh -f -N -L 2222:localhost:2222 bosch@52.166.39.71
+
+# Connect with local ssh cli (local machine)
+ssh root@localhost -p 2222
+```
+
 # vscode-plugin-automotive-app-deployment
 Code base for the VSCode plugin development to automate automotive app deployment
 
