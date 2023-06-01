@@ -16,6 +16,14 @@
       {
         "command": "automotive-app-deployment.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "automotive-app-deployment.openConfig",
+        "title": "AAP: Open Config File"
+      },
+      {
+        "command": "automotive-app-deployment.deployManifestToLeda",
+        "title": "AAP: Deploy to Leda"
       }
     ]
   },
