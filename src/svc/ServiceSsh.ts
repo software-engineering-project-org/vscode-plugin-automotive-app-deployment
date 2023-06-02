@@ -53,6 +53,3 @@ export class ServiceSsh {
     }
   }
 }
-
-let sshsvc = new ServiceSsh("localhost", "root", 2222);
-sshsvc.copyKantoManifestToLeda('.vscode/tmp/tmp_gen_kanto_container_manifest.json');
