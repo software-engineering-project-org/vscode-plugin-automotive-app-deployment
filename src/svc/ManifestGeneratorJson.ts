@@ -41,13 +41,15 @@ export class ManifestGeneratorJson {
    * @returns {any} The modified JSON object.
    */
   private alterJson(jsonObj: any, keyValuePairs: Record<string, any>): any {
-    const modifiedJson = { ...jsonObj };
+    const modifiedJson = { ...jsonObj }; // Spread operator to copy the original, preserving it from modification.
+
+    // Iterate through every key-value-pair it gets...
     for (const key in keyValuePairs) {
       if (Object.prototype.hasOwnProperty.call(keyValuePairs, key)) {
         const value = keyValuePairs[key];
-        const keys = key.split('.');
+        const keys = key.split('.'); // Handle nesting.
         let currentObj = modifiedJson;
-
+        // Iterate over keys and handle missing ones...
         for (let i = 0; i < keys.length - 1; i++) {
           const currentKey = keys[i];
           if (!currentObj.hasOwnProperty(currentKey)) {
@@ -60,7 +62,19 @@ export class ManifestGeneratorJson {
         if (!currentObj.hasOwnProperty(lastKey)) {
           throw new Error(`Key '${lastKey}' not found in JSON object.`);
         }
-        currentObj[lastKey] = value;
+        
+        // Check the type of the value and perform appropriate conversion
+        if (Array.isArray(currentObj[lastKey]) && Array.isArray(value)) {
+          currentObj[lastKey] = value;
+        } else if (typeof currentObj[lastKey] === 'string' && typeof value === 'string') {
+          currentObj[lastKey] = value;
+        } else if (typeof currentObj[lastKey] === 'number' && typeof value === 'number') {
+          currentObj[lastKey] = value;
+        } else if (typeof currentObj[lastKey] === 'boolean' && typeof value === 'boolean') {
+          currentObj[lastKey] = value;
+        } else {
+          throw new Error(`Invalid value type for key '${lastKey}'.`);
+        }
       }
     }
     return modifiedJson;

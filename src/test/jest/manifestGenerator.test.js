@@ -17,6 +17,7 @@ describe('ManifestGeneratorJsonTemplate', () => {
       'id': 'app',
       'name': 'app',
       'image.name': 'ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5',
+      'config.env': ['environment', 'var', 'set']
     };
 
     const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
@@ -35,5 +36,6 @@ describe('ManifestGeneratorJsonTemplate', () => {
     expect(parsedJson.id).toBe('app');
     expect(parsedJson.name).toBe('app');
     expect(parsedJson.image.name).toBe('ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5');
+    expect(parsedJson.config.env).toEqual(['environment', 'var', 'set']);
   });
 });
