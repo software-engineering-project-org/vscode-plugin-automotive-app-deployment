@@ -15,7 +15,7 @@
     "commands": [
       {
         "command": "automotive-app-deployment.helloWorld",
-        "title": "Hello World"
+        "title": "AAP: Hello World"
       },
       {
         "command": "automotive-app-deployment.openConfig",
