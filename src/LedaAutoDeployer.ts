@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { LedaDeviceTreeItem } from "./svc/DeviceDataProvider";
-import { DeviceDataProvider } from "./svc/DeviceDataProvider";
-import { addDevice, deleteDevice } from "./svc/DeviceCommands";
-import { deployManifestToLeda } from "./svc/DeploymentCommands";
+import { LedaDeviceTreeItem } from "./provider/DeviceDataProvider";
+import { DeviceDataProvider } from "./provider/DeviceDataProvider";
+import { addDevice, deleteDevice } from "./cmd/DeviceCommands"
+import { deployManifestToLeda } from "./cmd/DeploymentCommands";
 
 export default class LedaAutoDeployer {
     private context: vscode.ExtensionContext;

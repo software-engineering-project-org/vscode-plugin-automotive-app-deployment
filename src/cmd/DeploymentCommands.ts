@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ManifestGeneratorJson } from "./ManifestGeneratorJson";
+import { ManifestGeneratorJson } from "../svc/ManifestGeneratorJson";
 
 export async function deployManifestToLeda() {
     const templateFilePath = '.vscode/templates/kanto_container_conf_template.json';
