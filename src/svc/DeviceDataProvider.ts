@@ -1,53 +1,46 @@
 import * as vscode from "vscode";
+import { LedaDevice } from "../interfaces/LedaDevice";
+import { loadLedaDevices } from "../helpers/helpers";
 
-export class DeviceDataProvider implements vscode.TreeDataProvider<TreeItem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined
-  > = new vscode.EventEmitter<TreeItem | undefined>();
+export class DeviceDataProvider implements vscode.TreeDataProvider<LedaDeviceTreeItem> {
+   
+  private _onDidChangeTreeData: vscode.EventEmitter<
+  LedaDeviceTreeItem | undefined | void
+> = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>()
+readonly onDidChangeTreeData: vscode.Event<
+LedaDeviceTreeItem | undefined | null | void
+> = this._onDidChangeTreeData.event
 
-  readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined> = this
-    ._onDidChangeTreeData.event;
+update() {
+  this._onDidChangeTreeData.fire();
+}
 
-    refresh(): void {
-        this._onDidChangeTreeData.fire(undefined);
-    }
+getTreeItem(element: LedaDeviceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    return element;
+}
 
-    constructor() {}
-  
-    getTreeItem(element: TreeItem): vscode.TreeItem|Thenable<vscode.TreeItem> {
-      return element;
-    }
-  
-    getChildren(element?: TreeItem|undefined): vscode.ProviderResult<TreeItem[]> {
-      if (element === undefined) {
-        var config = vscode.workspace.getConfiguration('leda-app-deployer');
-        var devices: any[] | undefined = config.get("devices");
-
-        return devices!.map(device => new EditeDeviceInformationItem(device.title, [new TreeItem(device.title, "Title"), new TreeItem(device.ipAddress, "IP Address")]));
+async getChildren(
+  element?: LedaDeviceTreeItem
+  ): Promise<LedaDeviceTreeItem[] | undefined> {
+  try {
+      const devices = await loadLedaDevices()
+      if (devices) {
+        const deviceProfiles = devices.map((device) => {
+          return new LedaDeviceTreeItem(device.name, device)
+        })
+        return Promise.resolve(deviceProfiles)
       }
-      return element.children;
+    } catch (error) {
+      return Promise.reject([])
     }
-  }
-
-  class EditeDeviceInformationItem extends vscode.TreeItem {
-    children: TreeItem[] | undefined;
-
-    constructor(label: string, children?: TreeItem[]) {
-        super(label, vscode.TreeItemCollapsibleState.Collapsed);
-        this.children = children;
-        this.contextValue = "parent";
-
-    }
-  }
+}
+}
   
-  class TreeItem extends vscode.TreeItem {
-    children: TreeItem[]|undefined;
-  
-    constructor(prefix: string, label: string, children?: TreeItem[]) {
-      super(
-          label,
-          vscode.TreeItemCollapsibleState.None);
-      this.children = children;
-      this.tooltip = prefix;
-      this.description = prefix;
+  class LedaDeviceTreeItem extends vscode.TreeItem {
+    constructor(
+      public readonly label: string,
+      public readonly ledaDevice: LedaDevice
+    ) {
+      super(label)
     }
   }
