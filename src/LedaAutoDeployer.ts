@@ -57,7 +57,7 @@ export default class LedaAutoDeployer {
                         currentDevices!.push({title: title, ipAddress: ipAddress});
 
                         //Update config
-                        config.update("leda-app-deployer.devices", currentDevices);
+                        config.update("devices", currentDevices);
 
                         //Success message
                         vscode.window.showInformationMessage('New device has been added successfully.');
