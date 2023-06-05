@@ -36,7 +36,7 @@ async getChildren(
 }
 }
   
-  class LedaDeviceTreeItem extends vscode.TreeItem {
+export class LedaDeviceTreeItem extends vscode.TreeItem {
     constructor(
       public readonly label: string,
       public readonly ledaDevice: LedaDevice

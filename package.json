@@ -14,7 +14,7 @@
   "contributes": {
     "viewsWelcome": [
       {
-        "view": "leda-app-auto-deployer-devices",
+        "view": "devices",
         "contents": "No device has been added yet.\n By clicking the '+' button or the button below you can add new devices.\n[Add Device](command:automotive-app-deployment.addDevice)"
       }
     ],
@@ -30,7 +30,7 @@
     "views": {
       "leda-app-auto-deployer": [
         {
-          "id": "leda-app-auto-deployer-devices",
+          "id": "devices",
           "name": "Devices",
           "type": "tree"
         }
@@ -41,32 +41,36 @@
         {
           "command": "automotive-app-deployment.addDevice",
           "group": "navigation"
+        }, 
+        {
+          "command": "automotive-app-deployment.refreshDevices",
+          "group": "navigation"
         }
       ],
 
       "view/item/context": [
         {
           "command": "automotive-app-deployment.deleteDevice",
-          "when": "viewItem == parent",
-          "group": "inline@3"
+          "when": "view == devices",
+          "group": "inline"
         },
         {
             "command": "automotive-app-deployment.editDevice",
-            "when": "viewItem == parent",
-            "group": "inline@2"
+            "when": "view == devices",
+            "group": "inline"
         },
         {
           "command": "automotive-app-deployment.deployApplication",
-          "when": "viewItem == parent",
-          "group": "inline@1"
+          "when": "view == devices",
+          "group": "inline"
       }
     ]
     },
 
     "configuration": {
-      "title": "Leda App Deployer",
+      "title": "automotive-app-deployment",
       "properties": {
-        "leda-app-deployer.devices": {
+        "automotive-app-deployment.devices": {
           "type": "array",
           "items": {
             "type": "object", 
@@ -130,6 +134,11 @@
         "command": "automotive-app-deployment.editDevice",
         "title": "LAD: Edit Device",
         "icon": "$(edit)"
+      },
+      {
+        "command": "automotive-app-deployment.refreshDevices",
+        "title": "LAD: Refresh Devices",
+        "icon": "$(refresh)"
       },
       {
         "command": "automotive-app-deployment.deployApplication",

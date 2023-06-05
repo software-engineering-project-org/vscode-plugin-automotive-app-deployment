@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 export async function loadLedaDevices(): Promise<
 LedaDevice[] | undefined
 > {
-  const config = await vscode.workspace.getConfiguration("leda-app-deployer")
+  const config = await vscode.workspace.getConfiguration("automotive-app-deployment")
   const devices = await config.get<Array<LedaDevice>>(
     "devices"
   )
@@ -17,7 +17,7 @@ LedaDevice[] | undefined
  * @param newDevice 
  */
 export async function saveLedaDevice(newDevice: LedaDevice) {
-  const config = await vscode.workspace.getConfiguration("leda-app-deployer")
+  const config = await vscode.workspace.getConfiguration("automotive-app-deployment")
   const devices = await config.get<Array<LedaDevice>>(
     "devices"
   )
@@ -39,7 +39,7 @@ export async function saveLedaDevice(newDevice: LedaDevice) {
  * @param targetDevice 
  */
 export async function removeLedaDevice(targetDevice: LedaDevice) {
-  const config = await vscode.workspace.getConfiguration("leda-app-deployer")
+  const config = await vscode.workspace.getConfiguration("automotive-app-deployment")
   const devices = await config.get<Array<LedaDevice>>(
     "devices"
   )
