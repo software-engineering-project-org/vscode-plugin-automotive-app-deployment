@@ -12,18 +12,96 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "leda-app-auto-deployer-devices",
+        "contents": "No device has been added yet.\n By clicking the '+' button or the button below you can add new devices.\n[Add Device](command:automotive-app-deployment.addDevice)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "leda-app-auto-deployer",
+          "title": "Leda App Deployer",
+          "icon": "$(tools)"
+        }
+      ]
+    },
+    "views": {
+      "leda-app-auto-deployer": [
+        {
+          "id": "leda-app-auto-deployer-devices",
+          "name": "Devices",
+          "type": "tree"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "automotive-app-deployment.addDevice",
+          "group": "navigation"
+        }
+      ],
+
+      "view/item/context": [
+        {
+          "command": "automotive-app-deployment.deleteDevice",
+          "when": "viewItem == parent",
+          "group": "inline@3"
+        },
+        {
+            "command": "automotive-app-deployment.editDevice",
+            "when": "viewItem == parent",
+            "group": "inline@2"
+        },
+        {
+          "command": "automotive-app-deployment.deployApplication",
+          "when": "viewItem == parent",
+          "group": "inline@1"
+      }
+    ]
+    },
+
+    "configuration": {
+      "title": "Leda App Deployer",
+      "properties": {
+        "leda-app-deployer.devices": {
+          "type": "array",
+          "default": [],
+          "description": "Specifies the devices where applications can be deployed on."
+        }
+      }
+    },
+
     "commands": [
       {
-        "command": "automotive-app-deployment.helloWorld",
-        "title": "AAP: Hello World"
+        "command": "automotive-app-deployment.addDevice",
+        "title": "LAD: Add Device",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "automotive-app-deployment.deleteDevice",
+        "title": "LAD: Delete Device",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "automotive-app-deployment.editDevice",
+        "title": "LAD: Edit Device",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "automotive-app-deployment.deployApplication",
+        "title": "LAD: Deploy Apllication",
+        "icon": "$(play)"
       },
       {
         "command": "automotive-app-deployment.openConfig",
-        "title": "AAP: Open Config File"
+        "title": "LAD: Open Config File"
       },
       {
         "command": "automotive-app-deployment.deployManifestToLeda",
-        "title": "AAP: Deploy to Leda"
+        "title": "LAD: Deploy to Leda"
       }
     ]
   },
@@ -54,6 +132,7 @@
   "dependencies": {
     "@types/ssh2-streams": "^0.1.9",
     "fs": "^0.0.1-security",
+    "jsonc-parser": "^3.2.0",
     "node-ssh": "^13.1.0",
     "path": "^0.12.7"
   }
