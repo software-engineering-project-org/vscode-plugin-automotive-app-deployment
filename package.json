@@ -68,7 +68,48 @@
       "properties": {
         "leda-app-deployer.devices": {
           "type": "array",
+          "items": {
+            "type": "object", 
+            "title": "Device object",
+            "required": [
+              "name",
+              "ip", 
+              "sshPort",
+              "sshUsername"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Device name"
+              },
+              "ip": {
+                "type": "string",
+                "description": "Device IP"
+              },
+              "sshPort": {
+                "type": "number",
+                "description": "Device SSH port"
+              },
+              "sshUsername": {
+                "type": "string",
+                "description": "Device user login name"
+              },
+              "sshPassword": {
+                "type": "string",
+                "description": "Device user login password"
+              },
+              "sshPublicKeyPath": {
+                "type": "string",
+                "description": "path to public key"
+              },
+              "sshPrivateKeyPath": {
+                "type": "string",
+                "description": "path to private key"
+              }
+            }
+          },
           "default": [],
+          "scope": "window",
           "description": "Specifies the devices where applications can be deployed on."
         }
       }
