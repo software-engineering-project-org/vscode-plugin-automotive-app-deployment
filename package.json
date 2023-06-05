@@ -12,18 +12,146 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "devices",
+        "contents": "No device has been added yet.\n By clicking the '+' button or the button below you can add new devices.\n[Add Device](command:automotive-app-deployment.addDevice)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "leda-app-auto-deployer",
+          "title": "Leda App Deployer",
+          "icon": "$(tools)"
+        }
+      ]
+    },
+    "views": {
+      "leda-app-auto-deployer": [
+        {
+          "id": "devices",
+          "name": "Devices",
+          "type": "tree"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "automotive-app-deployment.addDevice",
+          "group": "navigation"
+        }, 
+        {
+          "command": "automotive-app-deployment.refreshDevices",
+          "group": "navigation"
+        }
+      ],
+
+      "view/item/context": [
+        {
+          "command": "automotive-app-deployment.deleteDevice",
+          "when": "view == devices",
+          "group": "inline"
+        },
+        {
+            "command": "automotive-app-deployment.editDevice",
+            "when": "view == devices",
+            "group": "inline"
+        },
+        {
+          "command": "automotive-app-deployment.deployApplication",
+          "when": "view == devices",
+          "group": "inline"
+      }
+    ]
+    },
+
+    "configuration": {
+      "title": "automotive-app-deployment",
+      "properties": {
+        "automotive-app-deployment.devices": {
+          "type": "array",
+          "items": {
+            "type": "object", 
+            "title": "Device object",
+            "required": [
+              "name",
+              "ip", 
+              "sshPort",
+              "sshUsername"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Device name"
+              },
+              "ip": {
+                "type": "string",
+                "description": "Device IP"
+              },
+              "sshPort": {
+                "type": "number",
+                "description": "Device SSH port"
+              },
+              "sshUsername": {
+                "type": "string",
+                "description": "Device user login name"
+              },
+              "sshPassword": {
+                "type": "string",
+                "description": "Device user login password"
+              },
+              "sshPublicKeyPath": {
+                "type": "string",
+                "description": "path to public key"
+              },
+              "sshPrivateKeyPath": {
+                "type": "string",
+                "description": "path to private key"
+              }
+            }
+          },
+          "default": [],
+          "scope": "window",
+          "description": "Specifies the devices where applications can be deployed on."
+        }
+      }
+    },
+
     "commands": [
       {
-        "command": "automotive-app-deployment.helloWorld",
-        "title": "AAP: Hello World"
+        "command": "automotive-app-deployment.addDevice",
+        "title": "LAD: Add Device",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "automotive-app-deployment.deleteDevice",
+        "title": "LAD: Delete Device",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "automotive-app-deployment.editDevice",
+        "title": "LAD: Edit Device",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "automotive-app-deployment.refreshDevices",
+        "title": "LAD: Refresh Devices",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "automotive-app-deployment.deployApplication",
+        "title": "LAD: Deploy Apllication",
+        "icon": "$(play)"
       },
       {
         "command": "automotive-app-deployment.openConfig",
-        "title": "AAP: Open Config File"
+        "title": "LAD: Open Config File"
       },
       {
         "command": "automotive-app-deployment.deployManifestToLeda",
-        "title": "AAP: Deploy to Leda"
+        "title": "LAD: Deploy to Leda"
       }
     ]
   },
@@ -54,6 +182,7 @@
   "dependencies": {
     "@types/ssh2-streams": "^0.1.9",
     "fs": "^0.0.1-security",
+    "jsonc-parser": "^3.2.0",
     "node-ssh": "^13.1.0",
     "path": "^0.12.7"
   }
