@@ -5,13 +5,13 @@ import { LedaDevice } from '../interfaces/LedaDevice';
 
 
 export async function deployApplication(item: LedaDeviceTreeItem) {
-  let device = item?.ledaDevice
+  let device = item?.ledaDevice;
   if (!device) {
-    const quickPickResult = await getTargetDeviceWithQuickPick()
+    const quickPickResult = await getTargetDeviceWithQuickPick();
     if (quickPickResult) {
-      device = quickPickResult as LedaDevice
+      device = quickPickResult as LedaDevice;
     }
   }
 
-  vscode.window.showInformationMessage(`Deploying to ${device.name}`)
+  vscode.window.showInformationMessage(`Deploying to ${device.name}`);
 }

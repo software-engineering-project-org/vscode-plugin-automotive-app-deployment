@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { LedaDeviceTreeItem } from "./provider/DeviceDataProvider";
 import { DeviceDataProvider } from "./provider/DeviceDataProvider";
-import { addDevice, deleteDevice } from "./cmd/DeviceCommands"
+import { addDevice, deleteDevice } from "./cmd/DeviceCommands";
 import { deployApplication } from "./cmd/DeploymentCommands";
 
 export default class LedaAutoDeployer {
@@ -17,11 +17,11 @@ export default class LedaAutoDeployer {
                 'devices', 
                 this.deviceDataProvider
             )
-        )
+        );
 
         vscode.workspace.onDidChangeConfiguration(() => {
             this.deviceDataProvider.update();
-        })
+        });
 
         this.initCommands();
     }
@@ -45,7 +45,7 @@ export default class LedaAutoDeployer {
             vscode.commands.registerCommand('automotive-app-deployment.refreshDevices', async () => {
                 await this.deviceDataProvider.update();
             })
-        )
+        );
 
         this.context.subscriptions.push(
             vscode.commands.registerCommand('automotive-app-deployment.editDevice', async () => {
@@ -63,7 +63,7 @@ export default class LedaAutoDeployer {
 
         this.context.subscriptions.push(
             vscode.commands.registerCommand('automotive-app-deployment.deployApplication', async (item: LedaDeviceTreeItem) => {
-                await deployApplication(item)
+                await deployApplication(item);
             })
         );
     }

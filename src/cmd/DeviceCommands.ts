@@ -12,7 +12,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     const name = await vscode.window.showInputBox({
         prompt: "Device name",
         placeHolder: "Waveshare Jetracer"
-      })
+      });
       if (!name) {
         return;
       }
@@ -27,7 +27,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
         validateInput: text => {
             return validateIPaddress(text) ? null : 'No valid IP Address';
         }
-    })
+    });
     if (!ip) {
         return;
     }
@@ -38,11 +38,11 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     let sshPortStr = await vscode.window.showInputBox({
         prompt: "SSH-Port: ",
         placeHolder: "22"
-    })
+    });
     if (!sshPortStr) {
-        sshPortStr = "22"
+        sshPortStr = "22";
     }
-    let sshPort = Number(sshPortStr)
+    let sshPort = Number(sshPortStr);
 
     /**
      * Set sshUsername
@@ -50,7 +50,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     let sshUsername = await vscode.window.showInputBox({
         prompt: "SSH-Username: ",
         placeHolder: "root"
-    })
+    });
     if (!sshUsername) {
         return;
     }
@@ -67,21 +67,21 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
         sshPassword: "pfannkuchen123",
         sshPrivateKeyPath: "/path/to/id_rsa",
         sshPublicKeyPath: "/path/to/id_rsa.pub"
-    })
+    });
 
-    deviceDataProvider.update()
+    deviceDataProvider.update();
 }
 
 export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item: LedaDeviceTreeItem) {
-    let device = item?.ledaDevice
+    let device = item?.ledaDevice;
     if (!device) {
-      const quickPickResult = await getTargetDeviceWithQuickPick()
+      const quickPickResult = await getTargetDeviceWithQuickPick();
       if (quickPickResult) {
-        device = quickPickResult as LedaDevice
+        device = quickPickResult as LedaDevice;
       }
     }
 
-    const deviceName = device?.name
+    const deviceName = device?.name;
     const result = await vscode.window.showWarningMessage(
       `Are you sure you want to delete profile: ${deviceName} ?`,
       {
@@ -89,14 +89,14 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
       },
       "Yes",
       "No"
-    )
+    );
 
     if (!result || result === "No") {
-      return
+      return;
     }
 
-    await removeLedaDevice(device)
-    deviceDataProvider.update()
+    await removeLedaDevice(device);
+    deviceDataProvider.update();
 }
 
 function validateIPaddress(ipAddress: string) {  
@@ -107,7 +107,7 @@ function validateIPaddress(ipAddress: string) {
 }  
 
 export async function getTargetDeviceWithQuickPick() {
-    const devices = await loadLedaDevices()
+    const devices = await loadLedaDevices();
       if (devices) {
         const deviceName = await vscode.window.showQuickPick(
           devices.map((device) => {
@@ -116,9 +116,9 @@ export async function getTargetDeviceWithQuickPick() {
               description: "",
               detail: `Host: ${device.ip} Port: ${device.sshPort}`,
               ...device,
-            } as LedaDeviceQuickPickItem
+            } as LedaDeviceQuickPickItem;
           })
-        )
-        return deviceName
+        );
+        return deviceName;
     }
 }

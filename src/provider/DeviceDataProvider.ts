@@ -6,10 +6,10 @@ export class DeviceDataProvider implements vscode.TreeDataProvider<LedaDeviceTre
    
   private _onDidChangeTreeData: vscode.EventEmitter<
   LedaDeviceTreeItem | undefined | void
-> = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>()
+> = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>();
 readonly onDidChangeTreeData: vscode.Event<
 LedaDeviceTreeItem | undefined | null | void
-> = this._onDidChangeTreeData.event
+> = this._onDidChangeTreeData.event;
 
 update() {
   this._onDidChangeTreeData.fire();
@@ -23,15 +23,15 @@ async getChildren(
   element?: LedaDeviceTreeItem
   ): Promise<LedaDeviceTreeItem[] | undefined> {
   try {
-      const devices = await loadLedaDevices()
+      const devices = await loadLedaDevices();
       if (devices) {
         const deviceProfiles = devices.map((device) => {
-          return new LedaDeviceTreeItem(device.name, device)
-        })
-        return Promise.resolve(deviceProfiles)
+          return new LedaDeviceTreeItem(device.name, device);
+        });
+        return Promise.resolve(deviceProfiles);
       }
     } catch (error) {
-      return Promise.reject([])
+      return Promise.reject([]);
     }
 }
 }
@@ -41,6 +41,6 @@ export class LedaDeviceTreeItem extends vscode.TreeItem {
       public readonly label: string,
       public readonly ledaDevice: LedaDevice
     ) {
-      super(label)
+      super(label);
     }
   }
