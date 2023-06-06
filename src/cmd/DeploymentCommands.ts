@@ -1,18 +1,17 @@
 import * as vscode from 'vscode';
-import { ManifestGeneratorJson } from "../svc/ManifestGeneratorJson";
+import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
+import { getTargetDeviceWithQuickPick } from './DeviceCommands';
+import { LedaDevice } from '../interfaces/LedaDevice';
 
-export async function deployManifestToLeda() {
-    const templateFilePath = '.vscode/templates/kanto_container_conf_template.json';
-        const outputFilePath = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
 
-        const keyValuePairs = {
-            'id': 'sampleapp',
-            'name': 'sampleapp',
-            'image.name': 'ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5',
-          };
-        
-        const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
-        generator.generateKantoContainerManifest(keyValuePairs);
-        
-        vscode.window.showInformationMessage('Deployed to Leda!');
+export async function deployApplication(item: LedaDeviceTreeItem) {
+  let device = item?.ledaDevice
+  if (!device) {
+    const quickPickResult = await getTargetDeviceWithQuickPick()
+    if (quickPickResult) {
+      device = quickPickResult as LedaDevice
+    }
+  }
+
+  vscode.window.showInformationMessage(`Deploying to ${device.name}`)
 }

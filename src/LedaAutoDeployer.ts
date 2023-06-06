@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { LedaDeviceTreeItem } from "./provider/DeviceDataProvider";
 import { DeviceDataProvider } from "./provider/DeviceDataProvider";
 import { addDevice, deleteDevice } from "./cmd/DeviceCommands"
-import { deployManifestToLeda } from "./cmd/DeploymentCommands";
+import { deployApplication } from "./cmd/DeploymentCommands";
 
 export default class LedaAutoDeployer {
     private context: vscode.ExtensionContext;
@@ -36,8 +36,8 @@ export default class LedaAutoDeployer {
         );
 
         this.context.subscriptions.push(
-            vscode.commands.registerCommand('automotive-app-deployment.deleteDevice', async (device: LedaDeviceTreeItem) => {
-                await deleteDevice(this.deviceDataProvider, device);
+            vscode.commands.registerCommand('automotive-app-deployment.deleteDevice', async (item: LedaDeviceTreeItem) => {
+                await deleteDevice(this.deviceDataProvider, item);
             })
         );
 
@@ -48,7 +48,7 @@ export default class LedaAutoDeployer {
         )
 
         this.context.subscriptions.push(
-            vscode.commands.registerCommand('automotive-app-deployment.editDevice', async (item) => {
+            vscode.commands.registerCommand('automotive-app-deployment.editDevice', async () => {
                 await vscode.commands.executeCommand("workbench.action.openWorkspaceSettingsFile");
             })
         );
@@ -62,16 +62,8 @@ export default class LedaAutoDeployer {
         );
 
         this.context.subscriptions.push(
-            vscode.commands.registerCommand('automotive-app-deployment.deployManifestToLeda', async () => {
-                await deployManifestToLeda();
-            })
-        );
-
-        this.context.subscriptions.push(
-            vscode.commands.registerCommand('automotive-app-deployment.deployApplication', async (item) => {
-                vscode.window.showInformationMessage('Deploy Application');
-                console.log(item);
-                // TODO
+            vscode.commands.registerCommand('automotive-app-deployment.deployApplication', async (item: LedaDeviceTreeItem) => {
+                await deployApplication(item)
             })
         );
     }

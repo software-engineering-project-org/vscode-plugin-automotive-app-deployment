@@ -106,7 +106,7 @@ function validateIPaddress(ipAddress: string) {
     return false;  
 }  
 
-async function getTargetDeviceWithQuickPick() {
+export async function getTargetDeviceWithQuickPick() {
     const devices = await loadLedaDevices()
       if (devices) {
         const deviceName = await vscode.window.showQuickPick(

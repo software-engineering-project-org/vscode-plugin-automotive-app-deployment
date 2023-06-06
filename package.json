@@ -148,10 +148,6 @@
       {
         "command": "automotive-app-deployment.openConfig",
         "title": "LAD: Open Config File"
-      },
-      {
-        "command": "automotive-app-deployment.deployManifestToLeda",
-        "title": "LAD: Deploy to Leda"
       }
     ]
   },
