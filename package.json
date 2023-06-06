@@ -142,7 +142,7 @@
       },
       {
         "command": "automotive-app-deployment.deployApplication",
-        "title": "LAD: Deploy Apllication",
+        "title": "LAD: Deploy Application",
         "icon": "$(play)"
       },
       {
