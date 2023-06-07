@@ -18,7 +18,7 @@ export async function deployApplication(item: LedaDeviceTreeItem) {
     "/mnt/c/Users/POET038/VSCode/vscode-plugin-automotive-app-deployment/tmp/out.json"
     )
 
-  await deployerStage1.generateKantoContainerManifest(
+  deployerStage1.generateKantoContainerManifest(
     {
       'image.name': 'ghcr.io/sampleapp/test:latest'
     }
