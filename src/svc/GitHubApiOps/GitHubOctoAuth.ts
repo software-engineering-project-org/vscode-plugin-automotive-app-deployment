@@ -9,8 +9,8 @@ export class GitHubOctoAuth {
 
   /**
    * Constructs a new GitHubOctoAuth instance.
-   * @param authMethod The strategy to authenticate. NOTE: As we only have Access-Token (classic), simply pass "accessTokenClassic" for now.
-   * @param classicToken The GitHub personal access token for authorization.
+   * @param authMethod - The strategy to authenticate. NOTE: As we only have Access-Token (classic), simply pass "accessTokenClassic" for now.
+   * @param classicToken - The GitHub personal access token for authorization.
    */
   constructor(authMethod: string, classicToken: string) {
     // Create an instance of Octokit with the provided token
