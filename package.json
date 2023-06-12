@@ -41,13 +41,12 @@
         {
           "command": "automotive-app-deployment.addDevice",
           "group": "navigation"
-        }, 
+        },
         {
           "command": "automotive-app-deployment.refreshDevices",
           "group": "navigation"
         }
       ],
-
       "view/item/context": [
         {
           "command": "automotive-app-deployment.deleteDevice",
@@ -55,29 +54,28 @@
           "group": "inline"
         },
         {
-            "command": "automotive-app-deployment.editDevice",
-            "when": "view == devices",
-            "group": "inline"
+          "command": "automotive-app-deployment.editDevice",
+          "when": "view == devices",
+          "group": "inline"
         },
         {
           "command": "automotive-app-deployment.deployApplication",
           "when": "view == devices",
           "group": "inline"
-      }
-    ]
+        }
+      ]
     },
-
     "configuration": {
       "title": "automotive-app-deployment",
       "properties": {
         "automotive-app-deployment.devices": {
           "type": "array",
           "items": {
-            "type": "object", 
+            "type": "object",
             "title": "Device object",
             "required": [
               "name",
-              "ip", 
+              "ip",
               "sshPort",
               "sshUsername"
             ],
@@ -118,7 +116,6 @@
         }
       }
     },
-
     "commands": [
       {
         "command": "automotive-app-deployment.addDevice",
@@ -176,6 +173,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@octokit/core": "^4.2.1",
     "@types/ssh2-streams": "^0.1.9",
     "fs": "^0.0.1-security",
     "jsonc-parser": "^3.2.0",
