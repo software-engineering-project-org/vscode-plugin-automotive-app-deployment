@@ -13,8 +13,8 @@ export class RegistryOpsOrg {
 
   /**
    * Constructs a new RegistryOpsOrg instance.
-   * @param authStrategy The authentication strategy to use (e.g. "accessTokenClassic").
-   * @param token The GitHub personal access token (classic) for authorization (mandatory for now).
+   * @param authStrategy - The authentication strategy to use (e.g. "accessTokenClassic").
+   * @param token - The GitHub personal access token (classic) for authorization (mandatory for now).
    */
   constructor(authStrategy: string, token: string) {
     // Create an instance of GitHubOctoOps with the provided token
@@ -26,10 +26,10 @@ export class RegistryOpsOrg {
 
   /**
    * Fetches images from the GitHub Package Registry of an organization.
-   * @param org The organization name.
-   * @param packageType The type of package to fetch (see enum/type).
-   * @returns A Promise that resolves to an array of the organization's package images.
-   * @throws {Error} If an error occurs while retrieving the packages list.
+   * @param org - The organization name.
+   * @param packageType - The type of package to fetch (see enum/type).
+   * @returns - A Promise that resolves to an array of the organization's package images.
+   * @throws {Error} - If an error occurs while retrieving the packages list.
    */
   async getOrganizationPackageImages(org: string, packageType: PackageType): Promise<any[]> {
     try {
@@ -47,11 +47,11 @@ export class RegistryOpsOrg {
    * Fetches information about a specific package.
    * @param {string} org - The name of the organization.
    * @param {PackageType} packageType - The type of package (see enum/type).
-   * @param {string} packageName - The name of the package. It's formatted like <org>/<package>
-   * @returns {Promise<any>} A Promise that resolves to the package information.
-   * @throws {Error} If an error occurs while retrieving the specific package information.
+   * @param {string} packageName - The name of the package. It's formatted like <org>/<package>.
+   * @returns {Promise<any>} - A Promise that resolves to the package information.
+   * @throws {Error} - If an error occurs while retrieving the specific package information.
    */
-  async getPackageInformation(org: string, packageType: PackageType, packageName: string): Promise<any> {
+  async getPackageMetadata(org: string, packageType: PackageType, packageName: string): Promise<any> {
     try {
       packageName = packageName.replace("/", "%2F"); // Adjust formatting as API needs <org>%2F<package> as ref
       const response = await this.gitHubOctokit.request(`GET /orgs/${org}/packages/${packageType}/${packageName}`);
@@ -66,9 +66,9 @@ export class RegistryOpsOrg {
    * Fetches the versions of a specific package.
    * @param {string} org - The name of the organization.
    * @param {PackageType} packageType - The type of package (see enum/type).
-   * @param {string} packageName - The name of the package. It's formatted like <org>/<package>
-   * @returns {Promise<any>} A Promise that resolves to the package versions.
-   * @throws {Error} If an error occurs while retrieving the versions.
+   * @param {string} packageName - The name of the package. It's formatted like <org>/<package>.
+   * @returns {Promise<any>} - A Promise that resolves to the package versions.
+   * @throws {Error} - If an error occurs while retrieving the versions.
    */
   async getPackageVersions(org: string, packageType: PackageType, packageName: string): Promise<any> {
     try {
@@ -83,7 +83,7 @@ export class RegistryOpsOrg {
 }
 
 // Usage example
-const token = "insert-classic-token-here";
+const token = "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";
 const authStrategy = "accessTokenClassic";
 const registryOpsOrg = new RegistryOpsOrg(authStrategy, token);
 
