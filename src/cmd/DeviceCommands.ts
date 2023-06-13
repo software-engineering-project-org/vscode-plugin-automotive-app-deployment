@@ -3,7 +3,7 @@ import { DeviceDataProvider } from "../provider/DeviceDataProvider";
 import { saveLedaDevice, removeLedaDevice, loadLedaDevices } from "../helpers/helpers";
 import { LedaDeviceTreeItem } from "../provider/DeviceDataProvider";
 import { LedaDevice } from "../interfaces/LedaDevice";
-import { LedaDeviceQuickPickItem } from "../interfaces/LedaDeviceQuickPickItem";
+import { LedaDeviceQuickPickItem } from "../interfaces/QuickPickItem";
 
 export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     /**

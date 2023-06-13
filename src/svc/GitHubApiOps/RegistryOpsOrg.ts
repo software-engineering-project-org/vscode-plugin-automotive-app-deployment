@@ -83,7 +83,7 @@ export class RegistryOpsOrg {
 }
 
 // Usage example
-const token = "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";
+const token = "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";
 const authStrategy = "accessTokenClassic";
 const registryOpsOrg = new RegistryOpsOrg(authStrategy, token);
 
@@ -91,13 +91,13 @@ const registryOpsOrg = new RegistryOpsOrg(authStrategy, token);
 // Fetch container images from an organization's GitHub Package Registry
 const org = "software-engineering-project-org";
 const packageType: PackageType = "container";
-registryOpsOrg.getOrganizationPackageImages(org, packageType)
-  .then((images) => {
-    console.log("Organization's package images:", images);
-  })
-  .catch((error) => {
-    console.error("Failed to retrieve package images:", error);
-  });
+// registryOpsOrg.getOrganizationPackageImages(org, packageType)
+//   .then((images) => {
+//     console.log("Organization's package images:", images);
+//   })
+//   .catch((error) => {
+//     console.error("Failed to retrieve package images:", error);
+//   });
   
 
 // Fetch package information
