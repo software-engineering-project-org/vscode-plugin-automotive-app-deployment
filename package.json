@@ -159,6 +159,7 @@
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
+    "@types/jsonpath": "^0.2.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/ssh2": "^1.11.11",
@@ -177,6 +178,8 @@
     "@types/ssh2-streams": "^0.1.9",
     "fs": "^0.0.1-security",
     "jsonc-parser": "^3.2.0",
+    "jsonpath": "^1.1.1",
+    "jsonpath-plus": "^7.2.0",
     "node-ssh": "^13.1.0",
     "path": "^0.12.7"
   }
