@@ -1,6 +1,16 @@
-export interface PackageVersion{
-    image_name_sha: string, // Metadata.container.tags[0]
-    tags: string
+// Versions of a GitHub Registry Package in the Build Image assigned to a Repo of an Org. 
+// (n PakageVersions : 1 Repository)
+export interface PackageVersion {
+    image_name_sha: string, // Unique identifies of a Version
+    tags: string // Metadata.container.tags[], empty if no tags given
     created_at: Date,
     updated_at: Date,
+}
+
+// Helper interface for RegistryOpsOrg Class methods.
+export interface PackageImage {
+    name: string;
+    repository: {
+      full_name: string;
+    };
 }
