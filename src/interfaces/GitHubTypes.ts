@@ -1,6 +1,6 @@
 export interface PackageVersion{
-    image: string, // Metadata.container.tags[0]
+    image_name_sha: string, // Metadata.container.tags[0]
+    tags: string
     created_at: Date,
     updated_at: Date,
-    name_sha: string
 }
