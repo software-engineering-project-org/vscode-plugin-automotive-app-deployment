@@ -61,7 +61,16 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   }
 
 /**
- * 
+ * 1. Pfad zum Dockerfile angeben (vorhanden?)
+ * 2. Image lokal bauen 
+ * 3. Kanto Config -> local-registries gesetzt? 
+ *    - /etc/container-management/config.json
+ *    - Objekt insecure-registries prüfen
+ * 4. Exportieren als Tarball 
+ * 5. Tarball via SCP nach Leda Device
+ * 6. Ausführen des containerd imports
+ * 7. Einfügen des Strings (index.json) ins Manifest
+ * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */
 
   vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
