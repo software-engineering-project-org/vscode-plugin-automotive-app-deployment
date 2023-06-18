@@ -59,7 +59,17 @@
           "group": "inline"
         },
         {
-          "command": "automotive-app-deployment.deployApplication",
+          "command": "automotive-app-deployment.deployStageOne",
+          "when": "view == devices",
+          "group": "inline"
+        },
+        {
+          "command": "automotive-app-deployment.deployStageTwo",
+          "when": "view == devices",
+          "group": "inline"
+        },
+        {
+          "command": "automotive-app-deployment.deployStageThree",
           "when": "view == devices",
           "group": "inline"
         }
@@ -138,8 +148,18 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "automotive-app-deployment.deployApplication",
-        "title": "LAD: Deploy Application",
+        "command": "automotive-app-deployment.deployStageOne",
+        "title": "LAD: Deploy Stage 01",
+        "icon": "$(play)"
+      },
+      {
+        "command": "automotive-app-deployment.deployStageTwo",
+        "title": "LAD: Deploy Stage 02",
+        "icon": "$(play)"
+      },
+      {
+        "command": "automotive-app-deployment.deployStageThree",
+        "title": "LAD: Deploy Stage 03",
         "icon": "$(play)"
       },
       {

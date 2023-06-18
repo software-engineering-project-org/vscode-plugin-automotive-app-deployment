@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { LedaDeviceTreeItem } from "./provider/DeviceDataProvider";
 import { DeviceDataProvider } from "./provider/DeviceDataProvider";
 import { addDevice, deleteDevice } from "./cmd/DeviceCommands";
-import { deployApplication } from "./cmd/DeploymentCommands";
+import { deployStageOne, deployStageTwo, deployStageThree } from "./cmd/DeploymentCommands";
 
 export default class LedaAutoDeployer {
     private context: vscode.ExtensionContext;
@@ -62,8 +62,20 @@ export default class LedaAutoDeployer {
         );
 
         this.context.subscriptions.push(
-            vscode.commands.registerCommand('automotive-app-deployment.deployApplication', async (item: LedaDeviceTreeItem) => {
-                await deployApplication(item);
+            vscode.commands.registerCommand('automotive-app-deployment.deployStageOne', async (item: LedaDeviceTreeItem) => {
+                await deployStageOne(item);
+            })
+        );
+
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
+                await deployStageTwo(item);
+            })
+        );
+
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('automotive-app-deployment.deployStageThree', async (item: LedaDeviceTreeItem) => {
+                await deployStageThree(item);
             })
         );
     }
