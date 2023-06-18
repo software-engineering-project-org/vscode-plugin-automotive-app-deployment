@@ -10,8 +10,8 @@ export class ConfigStringExtractor {
    * @returns {Promise<string>} The organization and repository name.
    * @throws {Error} If the .git/config file is not found, remote origin URL is missing, or the URL is invalid.
    */
-  public static extractGitOrgAndRepoNameFromConfig = async (): Promise<string> => {
-    const gitConfigPath = path.resolve(__dirname, '../../../.git/config');
+  public static extractGitOrgAndRepoNameFromConfig = async (gitConfig: string): Promise<string> => {
+    const gitConfigPath = path.resolve(__dirname, `../../../${gitConfig}`);
 
     try {
       const gitConfigContent = await fs.promises.readFile(gitConfigPath, 'utf8');
