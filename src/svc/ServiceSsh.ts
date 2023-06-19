@@ -1,3 +1,4 @@
+import { kStringMaxLength } from 'buffer';
 import {NodeSSH} from 'node-ssh';
 import * as path from 'path';
 
@@ -7,6 +8,7 @@ export class ServiceSsh {
     private sshPort: number;
     private ssh: NodeSSH;
     private manifestDirecotory: string = "/data/var/containers/manifests";
+    private kantoConfigFile: string = "/etc/container-management/config.json"
 /**
  * Create a new instance of ServiceSsh.
  * @param sshHost - Remote sshd server
@@ -23,7 +25,7 @@ export class ServiceSsh {
   /**
    * Setup the connection to the SSH server defined.
    */
-  private async initializeSsh() {
+  public async initializeSsh() {
     try {
       await this.ssh.connect({
         port: this.sshPort,
@@ -40,7 +42,6 @@ export class ServiceSsh {
    * @param localManifestFile - location of manifest file to copy to remote
    */
   public async copyKantoManifestToLeda(localManifestFile: string) {
-    await this.initializeSsh();
     try {
         await this.ssh.putFiles([{ 
             local: path.resolve(__dirname, '../../', localManifestFile), 
@@ -51,7 +52,24 @@ export class ServiceSsh {
         console.log(e);
         throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)
     } finally {
+      // Since the copy is the last step of each stage this function closes the ssh connection
       this.ssh.dispose();
+    }
+  }
+
+
+  public async getConfigFromLedaDevice(tmpConfig: string) {
+    try {
+      await this.ssh.getFile(
+        path.resolve(__dirname, '../../', tmpConfig), 
+        this.kantoConfigFile
+      );
+
+      console.log(`Found file at - ${this.kantoConfigFile} - Checking config...`);
+    }
+    catch(e) {
+      console.log(e);
+      throw new Error(`Error reading kanto conf -> ${(e as Error).message}`)
     }
   }
 }

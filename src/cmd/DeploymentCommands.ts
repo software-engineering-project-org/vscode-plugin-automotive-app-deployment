@@ -39,7 +39,9 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 3
    */
 
-  //TO BE DONE
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  await serviceSsh.initializeSsh();
+  await serviceSsh.getConfigFromLedaDevice('.vscode/tmp/config.json');
 
   /**
    * STEP 4
@@ -64,8 +66,6 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-
-  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
   await serviceSsh.copyKantoManifestToLeda(outputFilePath);
 
 
