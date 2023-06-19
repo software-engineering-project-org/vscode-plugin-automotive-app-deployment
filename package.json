@@ -150,17 +150,17 @@
       {
         "command": "automotive-app-deployment.deployStageOne",
         "title": "LAD: Deploy Stage 01",
-        "icon": "$(play)"
+        "icon": "$(cloud)"
       },
       {
         "command": "automotive-app-deployment.deployStageTwo",
         "title": "LAD: Deploy Stage 02",
-        "icon": "$(play)"
+        "icon": "$(cloud-download)"
       },
       {
         "command": "automotive-app-deployment.deployStageThree",
         "title": "LAD: Deploy Stage 03",
-        "icon": "$(play)"
+        "icon": "$(file-symlink-file)"
       },
       {
         "command": "automotive-app-deployment.openConfig",
