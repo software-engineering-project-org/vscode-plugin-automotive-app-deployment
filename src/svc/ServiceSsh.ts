@@ -1,4 +1,5 @@
 import {NodeSSH} from 'node-ssh';
+import * as path from 'path';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -42,12 +43,13 @@ export class ServiceSsh {
     await this.initializeSsh();
     try {
         await this.ssh.putFiles([{ 
-            local: localManifestFile, 
+            local: path.resolve(__dirname, '../../', localManifestFile), 
             remote: `${this.manifestDirecotory}/app.json` 
         }]);
         console.log(`Manifest copied to - ${this.manifestDirecotory} - on Remote!`);
     } catch(e) {
         console.log(e);
+        throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)
     } finally {
       this.ssh.dispose();
     }

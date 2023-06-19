@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { getTargetDeviceWithQuickPick } from './DeviceCommands';
 import { LedaDevice } from '../interfaces/LedaDevice';
+import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
+import { ServiceSsh } from '../svc/ServiceSsh';
 
 export async function deployStageOne(item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
@@ -21,6 +23,34 @@ export async function deployStageOne(item: LedaDeviceTreeItem) {
  * 4. String generieren und in Manifest eintragen 
  * 5. Gesichertes Manifest via SCP auf Leda Device kopieren 
  */
+
+  /**
+   * STEP 4
+   */
+  const templateFilePath = '.vscode/templates/kanto_container_conf_template.json';
+  const outputFilePath = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
+
+  const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
+
+  const keyValuePairs = {
+    'id': 'test',
+    'name': 'neuerTest',
+    'image.name': 'ghcr.io/test/test/sampleapp:1.0.5',
+    'config.env': ['environment', 'var', 'hello'],
+  };
+
+  await new Promise(resolve => {
+    generator.generateKantoContainerManifest(keyValuePairs);
+    setTimeout(resolve, 100); // Adjust the delay if needed
+  });
+
+  /**
+   * STEP 5
+   */
+
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  await serviceSsh.copyKantoManifestToLeda(outputFilePath);
+
 
   vscode.window.showInformationMessage(`Deploying to ${device.name} 01`);
 }
