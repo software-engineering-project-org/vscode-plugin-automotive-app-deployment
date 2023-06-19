@@ -11,8 +11,8 @@ export class ManifestGeneratorJson {
    * @param {string} outputFilePath - The path to the output file where the generated JSON will be saved.
    */
   constructor(templateFilePath: string, outputFilePath: string) {
-    this.templateFilePath = templateFilePath;
-    this.outputFilePath = outputFilePath;
+    this.templateFilePath = path.resolve(__dirname, '../../', templateFilePath);
+    this.outputFilePath = path.resolve(__dirname, '../../', outputFilePath);
   }
 
   /**
@@ -20,18 +20,29 @@ export class ManifestGeneratorJson {
    * @param {Record<string, any>} keyValuePairs - The key-value pairs to modify in the template JSON.
    */
   public generateKantoContainerManifest(keyValuePairs: Record<string, any>): void {
-    const templateJson = this.loadTemplateJson();
-    const modifiedJson = this.alterJson(templateJson, keyValuePairs);
-    this.saveModifiedJson(modifiedJson);
+    this.loadTemplateJson((templateJson: any) => {
+      const modifiedJson = this.alterJson(templateJson, keyValuePairs);
+      this.saveModifiedJson(modifiedJson);
+    });
   }
 
   /**
    * Load the template JSON file.
-   * @returns {any} The parsed JSON data from the template file.
+   * @param {Function} callback - The callback function to handle the parsed JSON data from the template file.
    */
-  private loadTemplateJson(): any {
-    const fileContents = fs.readFileSync(this.templateFilePath, 'utf8');
-    return JSON.parse(fileContents);
+  private loadTemplateJson(callback: (templateJson: any) => void): void {
+    fs.readFile(this.templateFilePath, 'utf8', (err, fileContents) => {
+      if (err) {
+        throw new Error(`Error reading template JSON file: ${err}`);
+      }
+
+      try {
+        const templateJson = JSON.parse(fileContents);
+        callback(templateJson);
+      } catch (error) {
+        throw new Error(`Error parsing template JSON: ${error}`);
+      }
+    });
   }
 
   /**
@@ -77,8 +88,11 @@ export class ManifestGeneratorJson {
     }
 
     const updatedJson = JSON.stringify(modifiedJson, null, 2);
-    fs.writeFileSync(this.outputFilePath, updatedJson, 'utf8');
-
-    console.log(`Modified JSON saved to: ${this.outputFilePath}`);
+    fs.writeFile(this.outputFilePath, updatedJson, 'utf8', (err) => {
+      if (err) {
+        throw new Error(`Error writing modified JSON file: ${err}`);
+      }
+      console.log(`Modified JSON saved to: ${this.outputFilePath}`);
+    });
   }
 }
