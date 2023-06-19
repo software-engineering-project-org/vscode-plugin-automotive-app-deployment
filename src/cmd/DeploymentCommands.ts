@@ -4,8 +4,12 @@ import { getTargetDeviceWithQuickPick } from './DeviceCommands';
 import { LedaDevice } from '../interfaces/LedaDevice';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 import { ServiceSsh } from '../svc/ServiceSsh';
+import { RegistryOpsOrg } from '../svc/GitHubOps/RegistryOpsOrg';
+import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
+import { PackageVersion } from '../interfaces/GitHubTypes';
+import { Octokit } from '@octokit/rest';
 
-export async function deployStageOne(item: LedaDeviceTreeItem) {
+export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -24,6 +28,19 @@ export async function deployStageOne(item: LedaDeviceTreeItem) {
  * 5. Gesichertes Manifest via SCP auf Leda Device kopieren 
  */
 
+
+  /**
+   * STEP 1 & 2
+   */
+
+  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
+
+  /**
+   * STEP 3
+   */
+
+  //TO BE DONE
+
   /**
    * STEP 4
    */
@@ -33,9 +50,9 @@ export async function deployStageOne(item: LedaDeviceTreeItem) {
   const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
 
   const keyValuePairs = {
-    'id': 'test',
-    'name': 'neuerTest',
-    'image.name': 'ghcr.io/test/test/sampleapp:1.0.5',
+    'id': 'app',
+    'name': 'app',
+    'image.name': `ghcr.io/test/test/sampleapp@${packageVersion.image_name_sha}`,
     'config.env': ['environment', 'var', 'hello'],
   };
 
@@ -55,7 +72,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem) {
   vscode.window.showInformationMessage(`Deploying to ${device.name} 01`);
 }
 
-export async function deployStageTwo(item: LedaDeviceTreeItem) {
+export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -104,4 +121,24 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
  */
 
   vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
+}
+
+export async function getVersionsWithQuickPick(octokit: Octokit) {
+  const regOpsOrg = new RegistryOpsOrg();
+
+  const packageVersions = await regOpsOrg.getPackageVersionsObj('container', octokit);
+    if (packageVersions) {
+      const packageVersion = await vscode.window.showQuickPick(
+        packageVersions.map((packageV) => {
+          let tag = packageV.tags.length == 0 ? "No tag avalaible": packageV.tags[0];
+          return {
+            label: tag,
+            description: packageV.updated_at,
+            detail: packageV.image_name_sha,
+            ...packageV,
+          } as PackageQuickPickItem;
+        })
+      );
+      return packageVersion;
+  }
 }
