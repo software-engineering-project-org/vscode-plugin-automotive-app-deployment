@@ -2,6 +2,7 @@ import {NodeSSH} from 'node-ssh';
 import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
+import { GitConfig } from '../provider/GitConfig';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -42,13 +43,13 @@ export class ServiceSsh {
    * The generated manifest file will be copied via ssh to remote host (leda)
    * @param localManifestFile - location of manifest file to copy to remote
    */
-  public async copyKantoManifestToLeda(localManifestFile: string, appName: string) {
+  public async copyKantoManifestToLeda(localManifestFile: string) {
     try {
         await this.ssh.putFiles([{ 
             local: path.resolve(__dirname, '../../', localManifestFile), 
-            remote: `${this.manifestDirecotory}/${appName}.json` 
+            remote: `${this.manifestDirecotory}/${GitConfig.PACKAGE}.json` 
         }]);
-        console.log(`Copy Kanto Manifest:\t Dest - ${this.manifestDirecotory}/${appName}.json - on Remote!`);
+        console.log(`Copy Kanto Manifest:\t Dest - ${this.manifestDirecotory}/${GitConfig.PACKAGE}.json - on Remote!`);
     } catch(e) {
         console.log(e);
         throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)

@@ -8,8 +8,13 @@ import { RegistryOpsOrg } from '../svc/GitHubOps/RegistryOpsOrg';
 import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
+import { GitConfig } from '../provider/GitConfig';
 
 const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
+const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
+const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
+const TEMPLATE_FILE_PATH = '.vscode/templates/kanto_container_conf_template.json';
+const OUTPUT_FILE_PATH = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
 
 /**
  * ###############################################################################
@@ -40,31 +45,27 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 1 & 2
    */
-  const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
-  const packageVersion = await getVersionsWithQuickPick(manifestData.Name, octokit) as PackageVersion;
+  await GitConfig.init();
+  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
 
   /**
    * STEP 3
    */
 
-  const configPath = TMP_KANTO_CONFIG_PATH;
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
   await serviceSsh.initializeSsh();
-  await serviceSsh.getConfigFromLedaDevice(configPath);
-  await serviceSsh.loadAndCheckConfigJson(configPath, 'containers.registry_configurations["ghcr.io"]');
+  await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH);
 
   /**
    * STEP 4
    */
-  const templateFilePath = '.vscode/templates/kanto_container_conf_template.json';
-  const outputFilePath = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
-
-  const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    'id': manifestData.Name,
-    'name': manifestData.Name,
-    'image.name': `ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp@${packageVersion.image_name_sha}`
+    'id': GitConfig.PACKAGE,
+    'name': GitConfig.PACKAGE,
+    'image.name': `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`
   };
 
   await new Promise(resolve => {
@@ -75,10 +76,10 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-  await serviceSsh.copyKantoManifestToLeda(outputFilePath, manifestData.Name);
+  await serviceSsh.copyKantoManifestToLeda(OUTPUT_FILE_PATH);
 
   console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
-  vscode.window.showInformationMessage(`Deployed ${manifestData.Name} to ${device.name}`);
+  vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
 }
 
 /**
@@ -113,21 +114,24 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 1 & 2
    */
-  const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
-  const packageVersion = await getVersionsWithQuickPick(manifestData.Name, octokit) as PackageVersion;
+  await GitConfig.init();
+  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
 
   /**
   * STEP 3
   */
 
-  const configPath = TMP_KANTO_CONFIG_PATH;
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
   await serviceSsh.initializeSsh();
-  await serviceSsh.getConfigFromLedaDevice(configPath);
-  await serviceSsh.loadAndCheckConfigJson(configPath, 'containers.insecure-registries');
+  await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH);
+
+  /**
+   * STEP 4
+   */
 
   console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
-  vscode.window.showInformationMessage(`Deployed ${manifestData.Name} to ${device.name}`);
+  vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
 }
 
 /**
@@ -161,10 +165,10 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
 }
 
-export async function getVersionsWithQuickPick(appName: string, octokit: Octokit) {
+export async function getVersionsWithQuickPick(octokit: Octokit) {
   const regOpsOrg = new RegistryOpsOrg();
 
-  const packageVersions = await regOpsOrg.getPackageVersionsObj(appName, 'container', octokit);
+  const packageVersions = await regOpsOrg.getPackageVersionsObj(octokit);
     if (packageVersions) {
       const packageVersion = await vscode.window.showQuickPick(
         packageVersions.map((packageV) => {
