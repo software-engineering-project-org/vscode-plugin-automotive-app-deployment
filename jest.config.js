@@ -12,4 +12,7 @@ module.exports = {
       isolatedModules: true,
     },
   },
+  moduleNameMapper: {
+    'vscode': '<rootDir>/src/test/jest/__mock__/vscode.ts',
+  },
 };
