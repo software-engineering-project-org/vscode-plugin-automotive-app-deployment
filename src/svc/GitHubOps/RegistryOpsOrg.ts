@@ -11,7 +11,7 @@ type PackageType = "container" | "docker"; // enum
  */
 export class RegistryOpsOrg {
 
-  public async getPackageVersionsObj(packageType: PackageType, octokit: Octokit): Promise<PackageVersion[]> {
+  public async getPackageVersionsObj(appName: string, packageType: PackageType, octokit: Octokit): Promise<PackageVersion[]> {
     try {
       // Fetch Organization and Repository the user operates in from .git/config. This is named "context" in this module.
       // const orgRepoContext = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig();
@@ -20,8 +20,7 @@ export class RegistryOpsOrg {
       const remoteOrigin = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig("sample-config-git");
       const orgName = remoteOrigin.split("/")[0];
       const repoName = remoteOrigin.split("/")[1];
-      const kantoAppName = "sampleapp"
-      const packageNameOfRepo = `${repoName}/${kantoAppName}`;
+      const packageNameOfRepo = `${repoName}/${appName}`;
   
       // Get all versions of the package assigned to the Repository in context.
       const packageVersions = await this.getPackageVersions(orgName, packageType, packageNameOfRepo, octokit);
@@ -34,8 +33,6 @@ export class RegistryOpsOrg {
         updated_at: item.updated_at
       }));
 
-      // TODO: Implement proper Logger
-      console.log(packageVersionsObj)
       return packageVersionsObj;
     } catch (error) {
       console.error("An error occurred:", error);

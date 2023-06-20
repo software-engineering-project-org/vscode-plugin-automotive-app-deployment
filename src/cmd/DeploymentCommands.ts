@@ -32,8 +32,8 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 1 & 2
    */
-
-  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
+  const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
+  const packageVersion = await getVersionsWithQuickPick(manifestData.Name, octokit) as PackageVersion;
 
   /**
    * STEP 3
@@ -54,10 +54,9 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
 
   const keyValuePairs = {
-    'id': 'app',
-    'name': 'app',
-    'image.name': `ghcr.io/test/test/sampleapp@${packageVersion.image_name_sha}`,
-    'config.env': ['environment', 'var', 'hello'],
+    'id': manifestData.Name,
+    'name': manifestData.Name,
+    'image.name': `ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp@${packageVersion.image_name_sha}`
   };
 
   await new Promise(resolve => {
@@ -68,10 +67,10 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-  await serviceSsh.copyKantoManifestToLeda(outputFilePath);
+  await serviceSsh.copyKantoManifestToLeda(outputFilePath, manifestData.Name);
 
-
-  vscode.window.showInformationMessage(`Deployed to ${device.name} 01`);
+  console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  vscode.window.showInformationMessage(`Deployed ${manifestData.Name} to ${device.name}`);
 }
 
 export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
@@ -125,10 +124,10 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
 }
 
-export async function getVersionsWithQuickPick(octokit: Octokit) {
+export async function getVersionsWithQuickPick(appName: string, octokit: Octokit) {
   const regOpsOrg = new RegistryOpsOrg();
 
-  const packageVersions = await regOpsOrg.getPackageVersionsObj('container', octokit);
+  const packageVersions = await regOpsOrg.getPackageVersionsObj(appName, 'container', octokit);
     if (packageVersions) {
       const packageVersion = await vscode.window.showQuickPick(
         packageVersions.map((packageV) => {

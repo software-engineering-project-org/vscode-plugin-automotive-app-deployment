@@ -1,8 +1,7 @@
 import {NodeSSH} from 'node-ssh';
 import * as path from 'path';
-import * as fs from 'fs';
 import { JSONPath } from 'jsonpath-plus';
-import * as vscode from 'vscode';
+import { readFileAsync } from '../helpers/helpers';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -43,13 +42,13 @@ export class ServiceSsh {
    * The generated manifest file will be copied via ssh to remote host (leda)
    * @param localManifestFile - location of manifest file to copy to remote
    */
-  public async copyKantoManifestToLeda(localManifestFile: string) {
+  public async copyKantoManifestToLeda(localManifestFile: string, appName: string) {
     try {
         await this.ssh.putFiles([{ 
             local: path.resolve(__dirname, '../../', localManifestFile), 
-            remote: `${this.manifestDirecotory}/app.json` 
+            remote: `${this.manifestDirecotory}/${appName}.json` 
         }]);
-        console.log(`Manifest copied to - ${this.manifestDirecotory} - on Remote!`);
+        console.log(`Copy Kanto Manifest:\t Dest - ${this.manifestDirecotory}/${appName}.json - on Remote!`);
     } catch(e) {
         console.log(e);
         throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)
@@ -67,7 +66,7 @@ export class ServiceSsh {
         this.kantoConfigFile
       );
 
-      console.log(`Found file at - ${this.kantoConfigFile} - Checking config...`);
+      console.log(`Fetch Config:\t\t Found file at - ${this.kantoConfigFile} - Checking config...`);
     }
     catch(e) {
       console.log(e);
@@ -77,31 +76,18 @@ export class ServiceSsh {
 
   public async loadAndCheckConfigJson(configPath: string, key: string) {
     try {
-      const fileContents = await this.readFileAsync(path.resolve(__dirname, '../../', configPath));
+      const fileContents = await readFileAsync(path.resolve(__dirname, '../../', configPath));
       const configJson = JSON.parse(fileContents);
       const keys = JSONPath({ path: key, json: configJson });
   
       if (keys.length === 0) {
         throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
       } else {
-        console.log(`Config check successful -> ${key} exists.`);
+        console.log(`Check Config:\t\t Successful -> ${key} exists.`);
       }
     } catch (error) {
       throw new Error(`Error reading config JSON file: ${error}`);
     }
   }
-
-  private readFileAsync(filePath: string): any {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    });
-  }
-  
 
 }

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { readFileAsync } from '../helpers/helpers';
 
 export class ManifestGeneratorJson {
   private templateFilePath: string;
@@ -13,6 +14,15 @@ export class ManifestGeneratorJson {
   constructor(templateFilePath: string, outputFilePath: string) {
     this.templateFilePath = path.resolve(__dirname, '../../', templateFilePath);
     this.outputFilePath = path.resolve(__dirname, '../../', outputFilePath);
+  }
+
+  public static async readAppManifest(manifestPath: string): Promise<any> {
+    const fileContents = await readFileAsync(path.resolve(__dirname, '../../', manifestPath));
+    const manifestJson = JSON.parse(fileContents);
+    return {
+      Name: manifestJson[0].Name, 
+      Dockerfile: manifestJson[0].Dockerfile,
+    }
   }
 
   /**
@@ -92,7 +102,7 @@ export class ManifestGeneratorJson {
       if (err) {
         throw new Error(`Error writing modified JSON file: ${err}`);
       }
-      console.log(`Modified JSON saved to: ${this.outputFilePath}`);
+      console.log(`Adjust Kanto Manifest:\t Modified JSON saved!`);
     });
   }
 }
