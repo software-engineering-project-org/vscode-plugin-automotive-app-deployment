@@ -1,7 +1,7 @@
 import {NodeSSH} from 'node-ssh';
 import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
-import { readFileAsync } from '../helpers/helpers';
+import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -86,7 +86,9 @@ export class ServiceSsh {
         console.log(`Check Config:\t\t Successful -> ${key} exists.`);
       }
     } catch (error) {
-      throw new Error(`Error reading config JSON file: ${error}`);
+        throw new Error(`Error reading config JSON file: ${error}`);
+    } finally {
+        await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
     }
   }
 

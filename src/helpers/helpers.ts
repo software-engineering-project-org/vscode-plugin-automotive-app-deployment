@@ -66,3 +66,11 @@ export function readFileAsync(filePath: string): any {
     });
   });
 }
+
+export async function deleteTmpFile(filePath: string): Promise<void> {
+  fs.unlink(filePath, (err => {
+    if (err) {
+      throw new Error(`Could not delete tmp file: ${err}`);
+    }
+  }));
+}

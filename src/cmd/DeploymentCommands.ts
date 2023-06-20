@@ -9,6 +9,14 @@ import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
 
+const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
+
+/**
+ * ###############################################################################
+ *                                  STAGE 01
+ * ###############################################################################
+ */
+
 export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
   if (!device) {
@@ -39,7 +47,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 3
    */
 
-  const configPath = '.vscode/tmp/config.json';
+  const configPath = TMP_KANTO_CONFIG_PATH;
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
   await serviceSsh.initializeSsh();
   await serviceSsh.getConfigFromLedaDevice(configPath);
@@ -73,6 +81,12 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   vscode.window.showInformationMessage(`Deployed ${manifestData.Name} to ${device.name}`);
 }
 
+/**
+ * ###############################################################################
+ *                                  STAGE 02
+ * ###############################################################################
+ */
+
 export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
   if (!device) {
@@ -96,8 +110,31 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
  * 9. Gesichertes Manifest via SCP auf Leda Device kopieren 
  */
 
-  vscode.window.showInformationMessage(`Deploying to ${device.name} 02`);
+  /**
+   * STEP 1 & 2
+   */
+  const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
+  const packageVersion = await getVersionsWithQuickPick(manifestData.Name, octokit) as PackageVersion;
+
+  /**
+  * STEP 3
+  */
+
+  const configPath = TMP_KANTO_CONFIG_PATH;
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  await serviceSsh.initializeSsh();
+  await serviceSsh.getConfigFromLedaDevice(configPath);
+  await serviceSsh.loadAndCheckConfigJson(configPath, 'containers.insecure-registries');
+
+  console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  vscode.window.showInformationMessage(`Deployed ${manifestData.Name} to ${device.name}`);
 }
+
+/**
+ * ###############################################################################
+ *                                  STAGE 03
+ * ###############################################################################
+ */
 
 export async function deployStageThree(item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
