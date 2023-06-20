@@ -2,15 +2,18 @@ import * as vscode from "vscode";
 import { LedaDeviceTreeItem } from "./provider/DeviceDataProvider";
 import { DeviceDataProvider } from "./provider/DeviceDataProvider";
 import { addDevice, deleteDevice } from "./cmd/DeviceCommands";
-import { deployApplication } from "./cmd/DeploymentCommands";
+import { deployStageOne, deployStageTwo, deployStageThree } from "./cmd/DeploymentCommands";
+import { Credentials } from "./svc/Credentials";
 
 export default class LedaAutoDeployer {
     private context: vscode.ExtensionContext;
     private deviceDataProvider: DeviceDataProvider;
+    private credentials: Credentials;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
         this.deviceDataProvider = new DeviceDataProvider();
+        this.credentials = new Credentials();
 
         context.subscriptions.push(
             vscode.window.registerTreeDataProvider(
@@ -62,8 +65,22 @@ export default class LedaAutoDeployer {
         );
 
         this.context.subscriptions.push(
-            vscode.commands.registerCommand('automotive-app-deployment.deployApplication', async (item: LedaDeviceTreeItem) => {
-                await deployApplication(item);
+            vscode.commands.registerCommand('automotive-app-deployment.deployStageOne', async (item: LedaDeviceTreeItem) => {
+                const octokit = await this.credentials.getOctokit();
+                await deployStageOne(item, octokit);
+            })
+        );
+
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
+                const octokit = await this.credentials.getOctokit();
+                await deployStageTwo(item, octokit);
+            })
+        );
+
+        this.context.subscriptions.push(
+            vscode.commands.registerCommand('automotive-app-deployment.deployStageThree', async (item: LedaDeviceTreeItem) => {
+                await deployStageThree(item);
             })
         );
     }

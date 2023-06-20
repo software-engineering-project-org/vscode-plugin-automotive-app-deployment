@@ -59,7 +59,17 @@
           "group": "inline"
         },
         {
-          "command": "automotive-app-deployment.deployApplication",
+          "command": "automotive-app-deployment.deployStageOne",
+          "when": "view == devices",
+          "group": "inline"
+        },
+        {
+          "command": "automotive-app-deployment.deployStageTwo",
+          "when": "view == devices",
+          "group": "inline"
+        },
+        {
+          "command": "automotive-app-deployment.deployStageThree",
           "when": "view == devices",
           "group": "inline"
         }
@@ -138,9 +148,19 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "automotive-app-deployment.deployApplication",
-        "title": "LAD: Deploy Application",
-        "icon": "$(play)"
+        "command": "automotive-app-deployment.deployStageOne",
+        "title": "LAD: Deploy Stage 01",
+        "icon": "$(cloud)"
+      },
+      {
+        "command": "automotive-app-deployment.deployStageTwo",
+        "title": "LAD: Deploy Stage 02",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "automotive-app-deployment.deployStageThree",
+        "title": "LAD: Deploy Stage 03",
+        "icon": "$(file-symlink-file)"
       },
       {
         "command": "automotive-app-deployment.openConfig",
@@ -174,7 +194,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@octokit/core": "^4.2.1",
+    "@octokit/rest": "^19.0.13",
     "@types/ssh2-streams": "^0.1.9",
     "fs": "^0.0.1-security",
     "jsonc-parser": "^3.2.0",

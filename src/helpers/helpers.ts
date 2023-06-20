@@ -1,5 +1,6 @@
 import { LedaDevice } from "../interfaces/LedaDevice";
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 
 
 export async function loadLedaDevices(): Promise<
@@ -52,4 +53,16 @@ export async function removeLedaDevice(targetDevice: LedaDevice) {
       await config.update("devices", devices);
     }
   }
+}
+
+export function readFileAsync(filePath: string): any {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
 }

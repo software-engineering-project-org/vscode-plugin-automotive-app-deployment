@@ -1,41 +1,33 @@
-const fs = require('fs');
-const { ManifestGeneratorJson } = require('../../svc/ManifestGeneratorJson');
 
-describe('ManifestGeneratorJsonTemplate', () => {
+
+
+const { ManifestGeneratorJson } = require('../../svc/ManifestGeneratorJson');
+const fs = require('fs');
+const path = require('path');
+
+describe('ManifestGeneratorJson', () => {
   const templateFilePath = '.vscode/templates/kanto_container_conf_template.json';
   const outputFilePath = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
+  const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
 
-  beforeEach(() => {
-    // Clean up the output file before each test
-    if (fs.existsSync(outputFilePath)) {
-      fs.unlinkSync(outputFilePath);
-    }
-  });
-
-  test('generates the modified Kanto Container manifest', () => {
+  it('should generate Kanto Container manifest with modified key-value pairs', async () => {
     const keyValuePairs = {
       'id': 'app',
       'name': 'app',
       'image.name': 'ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5',
-      'config.env': ['environment', 'var', 'set']
+      'config.env': ['environment', 'var', 'set'],
     };
 
-    const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
+    await new Promise(resolve => {
+      generator.generateKantoContainerManifest(keyValuePairs);
+      setTimeout(resolve, 100); // Adjust the delay if needed
+    });
 
-    // Generate the modified Kanto Container manifest
-    generator.generateKantoContainerManifest(keyValuePairs);
+    const modifiedJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../', outputFilePath), 'utf8'));
 
-    // Verify that the output file exists
-    expect(fs.existsSync(outputFilePath)).toBe(true);
-
-    // Read the generated JSON file
-    const generatedJson = fs.readFileSync(outputFilePath, 'utf8');
-    const parsedJson = JSON.parse(generatedJson);
-
-    // Verify that the modified values are correctly set in the generated JSON
-    expect(parsedJson.id).toBe('app');
-    expect(parsedJson.name).toBe('app');
-    expect(parsedJson.image.name).toBe('ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5');
-    expect(parsedJson.config.env).toEqual(['environment', 'var', 'set']);
+    expect(modifiedJson.id).toEqual('app');
+    expect(modifiedJson.name).toEqual('app');
+    expect(modifiedJson.image.name).toEqual('ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp:1.0.5');
+    expect(modifiedJson.config.env).toEqual(['environment', 'var', 'set']);
   });
 });
