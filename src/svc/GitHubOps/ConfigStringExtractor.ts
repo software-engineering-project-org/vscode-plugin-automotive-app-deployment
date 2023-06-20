@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as vscode from 'vscode';
 
 /**
  * Helper to get the organization and repository name out of the current Git working context.
@@ -35,7 +34,6 @@ export class ConfigStringExtractor {
 
       return orgRepo;
     } catch (error: any) {
-      vscode.window.showErrorMessage("No remote origin configured");
       throw new Error('Error reading .git/config: ' + (error as Error).message);
     }
   }
