@@ -1,6 +1,8 @@
-import { kStringMaxLength } from 'buffer';
 import {NodeSSH} from 'node-ssh';
 import * as path from 'path';
+import * as fs from 'fs';
+import { JSONPath } from 'jsonpath-plus';
+import * as vscode from 'vscode';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -72,4 +74,34 @@ export class ServiceSsh {
       throw new Error(`Error reading kanto conf -> ${(e as Error).message}`)
     }
   }
+
+  public async loadAndCheckConfigJson(configPath: string, key: string) {
+    try {
+      const fileContents = await this.readFileAsync(path.resolve(__dirname, '../../', configPath));
+      const configJson = JSON.parse(fileContents);
+      const keys = JSONPath({ path: key, json: configJson });
+  
+      if (keys.length === 0) {
+        throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
+      } else {
+        console.log(`Config check successful -> ${key} exists.`);
+      }
+    } catch (error) {
+      throw new Error(`Error reading config JSON file: ${error}`);
+    }
+  }
+
+  private readFileAsync(filePath: string): any {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+  
+
 }

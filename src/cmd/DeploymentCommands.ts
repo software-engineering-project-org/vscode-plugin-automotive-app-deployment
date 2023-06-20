@@ -39,9 +39,11 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 3
    */
 
+  const configPath = '.vscode/tmp/config.json';
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
   await serviceSsh.initializeSsh();
-  await serviceSsh.getConfigFromLedaDevice('.vscode/tmp/config.json');
+  await serviceSsh.getConfigFromLedaDevice(configPath);
+  await serviceSsh.loadAndCheckConfigJson(configPath, 'containers.registry_configurations["ghcr.io"]');
 
   /**
    * STEP 4
@@ -69,7 +71,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   await serviceSsh.copyKantoManifestToLeda(outputFilePath);
 
 
-  vscode.window.showInformationMessage(`Deploying to ${device.name} 01`);
+  vscode.window.showInformationMessage(`Deployed to ${device.name} 01`);
 }
 
 export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {

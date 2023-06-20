@@ -1,6 +1,6 @@
 import { JSONPath } from 'jsonpath-plus';
 
-import { PackageVersion, PackageImage } from "../../interfaces/GitHubTypes";
+import { PackageVersion } from "../../interfaces/GitHubTypes";
 import { ConfigStringExtractor } from "./ConfigStringExtractor";
 import { Octokit } from '@octokit/rest';
 
@@ -17,8 +17,11 @@ export class RegistryOpsOrg {
       // const orgRepoContext = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig();
       
       // NOTE --- TODO: Hardcode the context for development as the code and registry testing context are separated. Remove this in production!  
-      const orgName = "software-engineering-project-org";
-      const packageNameOfRepo = "vehicle-app-python-template/sampleapp";
+      const remoteOrigin = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig("sample-config-git");
+      const orgName = remoteOrigin.split("/")[0];
+      const repoName = remoteOrigin.split("/")[1];
+      const kantoAppName = "sampleapp"
+      const packageNameOfRepo = `${repoName}/${kantoAppName}`;
   
       // Get all versions of the package assigned to the Repository in context.
       const packageVersions = await this.getPackageVersions(orgName, packageType, packageNameOfRepo, octokit);
@@ -57,6 +60,23 @@ export class RegistryOpsOrg {
     }
     return null;
   }
+
+    /**
+   * Fetches images from the GitHub Package Registry of an organization.
+   * @param org - The organization name.
+   * @param packageType - The type of package to fetch (see enum/type).
+   * @returns - A Promise that resolves to an array of the organization's package images.
+   * @throws {Error} - If an error occurs while retrieving the packages list.
+   */
+    private async getOrganizationPackageImages(org: string, packageType: PackageType, octokit: Octokit): Promise<any[]> {
+      try {
+        const response = await octokit.request(`GET /orgs/${org}/packages?package_type=${packageType}`);
+        return response.data;
+      } catch (error) {
+        console.error("Error retrieving package images:", error);
+        throw error;
+      }
+    }
 
   /**
    * Fetches the versions of a specific package.
