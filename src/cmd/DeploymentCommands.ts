@@ -16,6 +16,7 @@ const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["g
 const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
 const TEMPLATE_FILE_PATH = '.vscode/templates/kanto_container_conf_template.json';
 const OUTPUT_FILE_PATH = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
+const MANIFEST_DIR = "/data/var/containers/manifests";
 
 /**
  * ###############################################################################
@@ -49,6 +50,11 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   await GitConfig.init();
   const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
 
+    //Create output channel for user
+    let stage01 = vscode.window.createOutputChannel("LAD");
+    stage01.show()
+    stage01.appendLine("Starting remote build and deployment...")
+
   /**
    * STEP 3
    */
@@ -77,7 +83,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-  await serviceSsh.copyKantoManifestToLeda(OUTPUT_FILE_PATH);
+  await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
 
   console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
   vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
@@ -169,7 +175,21 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 3
    */
-  await dockerOps.exportImageAsTarball(stage03);
+  const tar = await dockerOps.exportImageAsTarball(tag, stage03);
+
+  /**
+   * STEP 4
+   */
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  await serviceSsh.initializeSsh();
+  await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH);
+
+  /**
+   * STEP 5
+   */
+
+  await serviceSsh.copyResourceToLeda(tar, `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
 
 
 /**
