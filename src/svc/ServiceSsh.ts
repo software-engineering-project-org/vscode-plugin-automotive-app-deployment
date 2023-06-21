@@ -96,7 +96,7 @@ export class ServiceSsh {
     }
   }
 
-  public async containerdOps(tag: string, chan: vscode.OutputChannel) {
+  public async containerdOps(tag: string, chan: vscode.OutputChannel): Promise<string> {
     try {
       // Import image
       let res = await this.ssh.execCommand(`ctr image import ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp'});
@@ -113,20 +113,16 @@ export class ServiceSsh {
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
 
-      // Check if kanto container exists
-
     } catch(error) {
       chan.appendLine(`${error}`);
+    } finally {
+        return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
     }
-    // kanto-cm remove <name>
-    // Eintragen in manifest 
-    // Check läuft der Container schon? 
-    // Setup local registry arm64/v8
-    //    - Deploy via Kanto 
+
   }
 
   private checkStdErr(stderr: string) {
-    if(stderr){
+    if(stderr != ""){
       throw Error(stderr);
     }
   }

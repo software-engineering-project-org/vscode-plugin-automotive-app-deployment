@@ -119,6 +119,12 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
  * 9. Gesichertes Manifest via SCP auf Leda Device kopieren 
  */
 
+
+  // Init 
+  let stage02 = vscode.window.createOutputChannel("LAD Hybrid");
+  stage02.show()
+  stage02.appendLine("Starting hybrid build and deployment...")
+
   /**
    * STEP 1 & 2
    */
@@ -195,7 +201,32 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
    * STEP 6
    */
 
-  await serviceSsh.containerdOps(`${tag}`, stage03)
+  const localRegTag = await serviceSsh.containerdOps(`${tag}`, stage03)
+
+
+  /**
+   * STEP 7
+   */
+
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
+
+  const keyValuePairs = {
+    'id': GitConfig.PACKAGE,
+    'name': GitConfig.PACKAGE,
+    'image.name': localRegTag
+  };
+
+  await new Promise(resolve => {
+    generator.generateKantoContainerManifest(keyValuePairs);
+    setTimeout(resolve, 100); // Adjust the delay if needed
+  });
+
+  /**
+   * STEP 8
+   */
+
+    await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
+    await serviceSsh.closeConn();
 
 
 /**
@@ -211,9 +242,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
  * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */
 
-
-
-  vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
+  vscode.window.showInformationMessage(`Deployed to ${device.name} 03`);
 }
 
 export async function getVersionsWithQuickPick(octokit: Octokit) {
