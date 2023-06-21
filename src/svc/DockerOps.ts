@@ -35,7 +35,7 @@ export class DockerOps {
         const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
         const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
         try {
-          const result = await executeDockerCmd(`docker save --output ${outputTar} ${tag}`);
+          const result = await executeDockerCmd(`docker save ${tag} > ${outputTar} `);
           chan.appendLine(result);
           chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
           return relTarPath;
@@ -46,6 +46,6 @@ export class DockerOps {
     }
 
     public async importTarToContainerD() {
-
+        //ctr image tag example.com/iximiuz/test:latest localhost:5000/iximiuz/test:latest
     }
 }
