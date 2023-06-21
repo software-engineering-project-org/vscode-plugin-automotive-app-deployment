@@ -2,8 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { GitConfig } from '../provider/GitConfig';
-import { exec } from 'child_process';
-import { Docker } from 'node-docker-api';
+import { executeDockerCmd } from '../helpers/helpers';
 
 const TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
@@ -19,13 +18,11 @@ export class DockerOps {
       }
       chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
       chan.appendLine('Building image...');
-
-      const docker = new Docker({ socketPath: '/var/run/docker.sock' });
       
       const version = 'extension-build-local'
       const tag = `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
       try {
-          const result = await this.executeDockerCmd(`docker build -t ${tag} -f ${dockerfilePathAbs} .`);
+          const result = await executeDockerCmd(`docker build -t ${tag} -f ${dockerfilePathAbs} .`);
           chan.appendLine(result);
           return tag
       } catch (error) {
@@ -38,7 +35,7 @@ export class DockerOps {
         const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
         const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
         try {
-          const result = await this.executeDockerCmd(`docker save --output ${outputTar} ${tag}`);
+          const result = await executeDockerCmd(`docker save --output ${outputTar} ${tag}`);
           chan.appendLine(result);
           chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
           return relTarPath;
@@ -48,25 +45,7 @@ export class DockerOps {
         }
     }
 
-    public async importTarToContainerD(): Promise<string> {
+    public async importTarToContainerD() {
 
-    }
-
-    public async getUniqueImageName(chan: vscode.OutputChannel) {
-        //Tar entpacken und index.json einlesen
-    }
-
-    private async executeDockerCmd(command: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-          exec(command, (error, stdout, stderr) => {
-            if (error) {
-              reject(error);
-            } else if(stderr){
-              resolve(stderr);
-            } else {
-              resolve(stdout);
-            }
-          });
-        });
     }
 }

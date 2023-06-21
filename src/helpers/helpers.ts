@@ -1,6 +1,7 @@
 import { LedaDevice } from "../interfaces/LedaDevice";
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { exec } from 'child_process';
 
 
 export async function loadLedaDevices(): Promise<
@@ -74,3 +75,18 @@ export async function deleteTmpFile(filePath: string): Promise<void> {
     }
   }));
 }
+
+export async function executeDockerCmd(command: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else if(stderr){
+        resolve(stderr);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
+}
+
