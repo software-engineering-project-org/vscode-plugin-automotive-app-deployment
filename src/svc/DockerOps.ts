@@ -52,6 +52,9 @@ export class DockerOps {
       // ctr image push 
       // Eintragen in manifest 
       // Check läuft der Container schon? 
-      // Setup local registry
+      // Setup local registry arm64/v8
+      //    - Deploy via Kanto or ..
+      //    - ctr image pull docker.io/library/registry@sha256:c30ede0bee1037a3b325363e907e96e56240850448ae5bc16905b104cbed5043
+      //    - ctr run --detach docker.io/library/registry@sha256:c30ede0bee1037a3b325363e907e96e56240850448ae5bc16905b104cbed5043 registry
     }
 }
