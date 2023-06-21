@@ -164,7 +164,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
    */
 
   const dockerOps = new DockerOps();
-  await dockerOps.buildDockerImage(stage03);
+  const tag = await dockerOps.buildDockerImage(stage03);
 
   /**
    * STEP 3
