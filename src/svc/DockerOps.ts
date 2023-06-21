@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { GitConfig } from '../provider/GitConfig';
 import { exec } from 'child_process';
+import { Docker } from 'node-docker-api';
 
 const TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
@@ -19,6 +20,8 @@ export class DockerOps {
       chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
       chan.appendLine('Building image...');
 
+      const docker = new Docker({ socketPath: '/var/run/docker.sock' });
+      
       const version = 'extension-build-local'
       const tag = `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
       try {
@@ -43,6 +46,10 @@ export class DockerOps {
           chan.appendLine('Error while exporting image to tar...');
           throw new Error(`Error while exporting image: ${error}`);
         }
+    }
+
+    public async importTarToContainerD(): Promise<string> {
+
     }
 
     public async getUniqueImageName(chan: vscode.OutputChannel) {
