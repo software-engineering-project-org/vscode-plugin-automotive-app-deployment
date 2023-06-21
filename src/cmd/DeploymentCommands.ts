@@ -15,6 +15,7 @@ const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["g
 const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
 const TEMPLATE_FILE_PATH = '.vscode/templates/kanto_container_conf_template.json';
 const OUTPUT_FILE_PATH = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
+const TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
 /**
  * ###############################################################################
@@ -151,11 +152,11 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
 
 /**
  * 1. Pfad zum Dockerfile angeben (vorhanden?)
- * 2. Image lokal bauen 
- * 3. Kanto Config -> local-registries gesetzt? 
+ * 2. Image lokal bauen (Check Dockerfiel da)
+ * 3. Exportieren als Tarball (nach .vscode/tmp/*.tar)
+ * 4. Kanto Config -> local-registries gesetzt? 
  *    - /etc/container-management/config.json
  *    - Objekt insecure-registries prüfen
- * 4. Exportieren als Tarball 
  * 5. Tarball via SCP nach Leda Device
  * 6. Ausführen des containerd imports
  * 7. Einfügen des Strings (index.json) ins Manifest
