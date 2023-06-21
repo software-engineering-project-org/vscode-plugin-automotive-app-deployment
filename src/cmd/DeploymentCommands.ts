@@ -188,8 +188,11 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 5
    */
-
   await serviceSsh.copyResourceToLeda(tar, `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
+
+  /**
+   * STEP 6
+   */
 
 
 /**
