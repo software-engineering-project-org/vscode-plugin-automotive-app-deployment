@@ -3,9 +3,7 @@ import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
-import { executeShellCmd } from '../helpers/helpers';
 import { GitConfig } from '../provider/GitConfig';
-import { error } from 'console';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -116,6 +114,7 @@ export class ServiceSsh {
     } catch(error) {
       chan.appendLine(`${error}`);
     } finally {
+        await deleteTmpFile(path.resolve(__dirname, '../../', `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
         return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
     }
 

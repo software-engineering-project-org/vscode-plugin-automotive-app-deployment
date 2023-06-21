@@ -4,8 +4,6 @@ import * as fs from 'fs';
 import { GitConfig } from '../provider/GitConfig';
 import { executeShellCmd } from '../helpers/helpers';
 
-const TARBALL_OUTPUT_PATH = '.vscode/tmp';
-
 export class DockerOps {
 
     public async buildDockerImage(chan: vscode.OutputChannel): Promise<string> {
@@ -35,12 +33,12 @@ export class DockerOps {
     }
 
     public async exportImageAsTarball(tag: string, chan: vscode.OutputChannel): Promise<string> {
-        const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
+        const relTarPath = `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
         const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
         try {
           const result = await executeShellCmd(`docker save ${tag} > ${outputTar}`);
           chan.appendLine(result);
-          chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
+          chan.appendLine(`Exported image as tarball to ${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
           return relTarPath;
         } catch(error) {
           chan.appendLine('Error while exporting image to tar...');

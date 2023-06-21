@@ -200,14 +200,11 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 6
    */
-
   const localRegTag = await serviceSsh.containerdOps(`${tag}`, stage03)
-
 
   /**
    * STEP 7
    */
-
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
@@ -224,9 +221,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 8
    */
-
-    await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
-    await serviceSsh.closeConn();
+  await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
+  await serviceSsh.closeConn();
 
 
 /**
