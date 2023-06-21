@@ -9,13 +9,13 @@ import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
 import { GitConfig } from '../provider/GitConfig';
+import { DockerOps } from '../svc/DockerOps';
 
 const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
 const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
 const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
 const TEMPLATE_FILE_PATH = '.vscode/templates/kanto_container_conf_template.json';
 const OUTPUT_FILE_PATH = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
-const TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
 /**
  * ###############################################################################
@@ -143,11 +143,6 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
 
 export async function deployStageThree(item: LedaDeviceTreeItem) {
 
-  //Create output channel for user
-  let stage03 = vscode.window.createOutputChannel("LAD");
-  stage03.show()
-  stage03.appendLine("Starting local build and deployment...")
-
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -155,6 +150,26 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
       device = quickPickResult as LedaDevice;
     }
   }
+
+  //Init
+  await GitConfig.init();
+
+  //Create output channel for user
+  let stage03 = vscode.window.createOutputChannel("LAD");
+  stage03.show()
+  stage03.appendLine("Starting local build and deployment...")
+
+  /**
+   * STEP 1 & 2
+   */
+
+  const dockerOps = new DockerOps();
+  await dockerOps.buildDockerImage(stage03);
+
+  /**
+   * STEP 3
+   */
+  await dockerOps.exportImageAsTarball(stage03);
 
 
 /**
@@ -169,6 +184,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
  * 7. Einfügen des Strings (index.json) ins Manifest
  * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */
+
+
 
   vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
 }
