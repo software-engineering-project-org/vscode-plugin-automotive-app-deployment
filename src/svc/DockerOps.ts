@@ -21,11 +21,11 @@ export class DockerOps {
       
       const version = 'extension-build-local';
       const platform = 'linux/arm64';
-      const tag = `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
+      const tagLocal = `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
       try {
-          const result = await executeDockerCmd(`docker build --platform ${platform} -t ${tag} -f ${dockerfilePathAbs} .`);
+          const result = await executeDockerCmd(`docker build --platform ${platform} -t ${tagLocal} -f ${dockerfilePathAbs} .`);
           chan.appendLine(result);
-          return tag
+          return tagLocal
       } catch (error) {
           chan.appendLine('Error while building image...');
           throw new Error(`Error while building image: ${error}`);
@@ -47,6 +47,11 @@ export class DockerOps {
     }
 
     public async importTarToContainerD() {
-        //ctr image tag example.com/iximiuz/test:latest localhost:5000/iximiuz/test:latest
+      // Image importieren (ctr image import)
+      // ctr image tag (check if tag vorhanden)
+      // ctr image push 
+      // Eintragen in manifest 
+      // Check läuft der Container schon? 
+      // Setup local registry
     }
 }

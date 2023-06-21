@@ -8,6 +8,7 @@ export class GitConfig {
     public static DOCKERFILE: string;
     public static PACKAGE_TYPE: 'container'; 
     public static CONTAINER_REGISTRY: 'ghcr.io' | 'docker.io';
+    public static LOCAL_KANTO_REGISTRY: 'localhost:5000';
 
     public static async init() {
         const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
@@ -18,5 +19,6 @@ export class GitConfig {
         this.DOCKERFILE = manifestData.Dockerfile;
         this.PACKAGE_TYPE = 'container';
         this.CONTAINER_REGISTRY = 'ghcr.io';
+        this.LOCAL_KANTO_REGISTRY = 'localhost:5000';
     }
 } 

@@ -51,7 +51,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
 
     //Create output channel for user
-    let stage01 = vscode.window.createOutputChannel("LAD");
+    let stage01 = vscode.window.createOutputChannel("LAD Remote");
     stage01.show()
     stage01.appendLine("Starting remote build and deployment...")
 
@@ -161,7 +161,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   await GitConfig.init();
 
   //Create output channel for user
-  let stage03 = vscode.window.createOutputChannel("LAD");
+  let stage03 = vscode.window.createOutputChannel("LAD Local");
   stage03.show()
   stage03.appendLine("Starting local build and deployment...")
 
