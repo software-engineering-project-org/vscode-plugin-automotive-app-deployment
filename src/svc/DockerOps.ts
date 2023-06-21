@@ -19,10 +19,11 @@ export class DockerOps {
       chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
       chan.appendLine('Building image...');
       
-      const version = 'extension-build-local'
+      const version = 'extension-build-local';
+      const platform = 'linux/arm64';
       const tag = `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
       try {
-          const result = await executeDockerCmd(`docker build -t ${tag} -f ${dockerfilePathAbs} .`);
+          const result = await executeDockerCmd(`docker build --platform ${platform} -t ${tag} -f ${dockerfilePathAbs} .`);
           chan.appendLine(result);
           return tag
       } catch (error) {
@@ -35,7 +36,7 @@ export class DockerOps {
         const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
         const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
         try {
-          const result = await executeDockerCmd(`docker save ${tag} > ${outputTar} `);
+          const result = await executeDockerCmd(`docker save ${tag} > ${outputTar}`);
           chan.appendLine(result);
           chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
           return relTarPath;
