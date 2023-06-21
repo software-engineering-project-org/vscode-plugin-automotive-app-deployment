@@ -46,15 +46,14 @@ export class DockerOps {
         }
     }
 
-    public async importTarToContainerD() {
-      // Image importieren (ctr image import)
-      // ctr image tag (check if tag vorhanden)
+    public async containerdOps() {
+      // Image importieren (ctr image import .tar)
+      // ctr image tag timestamp (check if tag vorhanden) 
       // ctr image push 
+      // kanto-cm remove <name>
       // Eintragen in manifest 
       // Check läuft der Container schon? 
       // Setup local registry arm64/v8
-      //    - Deploy via Kanto or ..
-      //    - ctr image pull docker.io/library/registry@sha256:c30ede0bee1037a3b325363e907e96e56240850448ae5bc16905b104cbed5043
-      //    - ctr run --detach docker.io/library/registry@sha256:c30ede0bee1037a3b325363e907e96e56240850448ae5bc16905b104cbed5043 registry
+      //    - Deploy via Kanto 
     }
 }
