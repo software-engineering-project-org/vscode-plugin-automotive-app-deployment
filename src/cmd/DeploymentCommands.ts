@@ -84,6 +84,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 5
    */
   await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
+  await serviceSsh.closeConn();
 
   console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
   vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
@@ -175,7 +176,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 3
    */
-  const tar = await dockerOps.exportImageAsTarball(tag, stage03);
+  const tar = await dockerOps.exportImageAsTarball(`${GitConfig.CONTAINER_REGISTRY}/${tag}`, stage03);
 
   /**
    * STEP 4
@@ -194,6 +195,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
    * STEP 6
    */
 
+  await serviceSsh.containerdOps(`${tag}`, stage03)
+
 
 /**
  * 1. Pfad zum Dockerfile angeben (vorhanden?)
@@ -203,7 +206,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
  *    - /etc/container-management/config.json
  *    - Objekt insecure-registries prüfen
  * 5. Tarball via SCP nach Leda Device
- * 6. Ausführen des containerd imports
+ * 6. Ausführen des containerd commands
  * 7. Einfügen des Strings (index.json) ins Manifest
  * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */

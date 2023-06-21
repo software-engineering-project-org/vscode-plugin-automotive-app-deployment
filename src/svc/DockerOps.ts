@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { GitConfig } from '../provider/GitConfig';
-import { executeDockerCmd } from '../helpers/helpers';
+import { executeShellCmd } from '../helpers/helpers';
 
 const TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
@@ -19,13 +19,15 @@ export class DockerOps {
       chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
       chan.appendLine('Building image...');
       
-      const version = 'extension-build-local';
+      const d = new Date();
+
+      const version = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}_${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}`;
       const platform = 'linux/arm64';
-      const tagLocal = `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
+      const tag = `${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
       try {
-          const result = await executeDockerCmd(`docker build --platform ${platform} -t ${tagLocal} -f ${dockerfilePathAbs} .`);
+          const result = await executeShellCmd(`docker build --platform ${platform} -t ${GitConfig.CONTAINER_REGISTRY}/${tag} -f ${dockerfilePathAbs} .`);
           chan.appendLine(result);
-          return tagLocal
+          return tag
       } catch (error) {
           chan.appendLine('Error while building image...');
           throw new Error(`Error while building image: ${error}`);
@@ -36,7 +38,7 @@ export class DockerOps {
         const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
         const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
         try {
-          const result = await executeDockerCmd(`docker save ${tag} > ${outputTar}`);
+          const result = await executeShellCmd(`docker save ${tag} > ${outputTar}`);
           chan.appendLine(result);
           chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
           return relTarPath;
@@ -44,16 +46,5 @@ export class DockerOps {
           chan.appendLine('Error while exporting image to tar...');
           throw new Error(`Error while exporting image: ${error}`);
         }
-    }
-
-    public async containerdOps() {
-      // Image importieren (ctr image import .tar)
-      // ctr image tag timestamp (check if tag vorhanden) 
-      // ctr image push 
-      // kanto-cm remove <name>
-      // Eintragen in manifest 
-      // Check läuft der Container schon? 
-      // Setup local registry arm64/v8
-      //    - Deploy via Kanto 
     }
 }

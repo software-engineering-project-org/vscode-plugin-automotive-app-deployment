@@ -3,6 +3,9 @@ import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
+import { executeShellCmd } from '../helpers/helpers';
+import { GitConfig } from '../provider/GitConfig';
+import { error } from 'console';
 
 export class ServiceSsh {
     private sshHost: string;
@@ -38,6 +41,10 @@ export class ServiceSsh {
     }
   }
 
+  public async closeConn() {
+    this.ssh.dispose();
+  }
+
   /**
    * The generated resource will be copied via ssh to remote host (leda)
    * @param localManifestFile - location of manifest file to copy to remote
@@ -52,9 +59,6 @@ export class ServiceSsh {
     } catch(e) {
         chan.appendLine(`${e}`);
         throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)
-    } finally {
-      // Since the copy is the last step of each stage this function closes the ssh connection
-      this.ssh.dispose();
     }
   }
 
@@ -92,4 +96,41 @@ export class ServiceSsh {
     }
   }
 
+  public async containerdOps(tag: string, chan: vscode.OutputChannel) {
+    try {
+      // Import image
+      let res = await this.ssh.execCommand(`ctr image import ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp'});
+      this.checkStdErr(res.stderr);
+      chan.appendLine(res.stdout);
+
+      // Tag image with local registry prefix 
+      res = await this.ssh.execCommand(`ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      this.checkStdErr(res.stderr);
+      chan.appendLine(res.stdout);
+
+      // Push image to local registry 
+      res = await this.ssh.execCommand(`ctr image push ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      this.checkStdErr(res.stderr);
+      chan.appendLine(res.stdout);
+
+      // Check if kanto container exists
+
+    } catch(error) {
+      chan.appendLine(`${error}`);
+    }
+    // kanto-cm remove <name>
+    // Eintragen in manifest 
+    // Check läuft der Container schon? 
+    // Setup local registry arm64/v8
+    //    - Deploy via Kanto 
+  }
+
+  private checkStdErr(stderr: string) {
+    if(stderr){
+      throw Error(stderr);
+    }
+  }
+
 }
+
+
