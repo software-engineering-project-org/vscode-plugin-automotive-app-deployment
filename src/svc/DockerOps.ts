@@ -23,12 +23,12 @@ export class DockerOps {
       const platform = 'linux/arm64';
       const tag = `${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
       try {
-          const result = await executeShellCmd(`docker build --platform ${platform} -t ${GitConfig.CONTAINER_REGISTRY}/${tag} -f ${dockerfilePathAbs} .`);
+          const result = await executeShellCmd(`cd ${path.resolve(__dirname, '../../', './app')} && docker build --platform ${platform} -t ${GitConfig.CONTAINER_REGISTRY}/${tag} .`);
           chan.appendLine(result);
           return tag
       } catch (error) {
-          chan.appendLine('Error while building image...');
-          throw new Error(`Error while building image: ${error}`);
+          chan.appendLine(`${error}`);
+          throw new Error(`Error while building image - view Log`);
       }
     }
 
