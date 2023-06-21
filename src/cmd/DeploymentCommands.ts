@@ -142,6 +142,12 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
  */
 
 export async function deployStageThree(item: LedaDeviceTreeItem) {
+
+  //Create output channel for user
+  let stage03 = vscode.window.createOutputChannel("LAD");
+  stage03.show()
+  stage03.appendLine("Starting local build and deployment...")
+
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -149,6 +155,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
       device = quickPickResult as LedaDevice;
     }
   }
+
 
 /**
  * 1. Pfad zum Dockerfile angeben (vorhanden?)
