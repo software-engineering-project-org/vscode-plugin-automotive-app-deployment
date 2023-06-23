@@ -1,6 +1,7 @@
 import { LedaDevice } from "../interfaces/LedaDevice";
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { exec } from 'child_process';
 
 
 export async function loadLedaDevices(): Promise<
@@ -66,3 +67,26 @@ export function readFileAsync(filePath: string): any {
     });
   });
 }
+
+export async function deleteTmpFile(filePath: string): Promise<void> {
+  fs.unlink(filePath, (err => {
+    if (err) {
+      throw new Error(`Could not delete tmp file: ${err}`);
+    }
+  }));
+}
+
+export async function executeShellCmd(command: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else if(stderr){
+        resolve(stderr);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
+}
+

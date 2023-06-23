@@ -1,8 +1,8 @@
 {
-    "id": "",
-    "name": "",
+    "id": "reg",
+    "name": "reg",
     "image": {
-        "name": "",
+        "name": "docker.io/library/registry@sha256:c30ede0bee1037a3b325363e907e96e56240850448ae5bc16905b104cbed5043",
         "decrypt_config": null
     },
     "host_name": "",
@@ -26,10 +26,10 @@
         "port_mappings": [
             {
               "protocol": "tcp",
-              "container_port": 80,
+              "container_port": 5000,
               "host_ip": "localhost",
-              "host_port": 80,
-              "host_port_end": 80
+              "host_port": 5000,
+              "host_port_end": 5000
             }
         ],
         "log_config": {

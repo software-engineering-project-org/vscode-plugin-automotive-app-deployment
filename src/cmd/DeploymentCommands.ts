@@ -8,6 +8,21 @@ import { RegistryOpsOrg } from '../svc/GitHubOps/RegistryOpsOrg';
 import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
+import { GitConfig } from '../provider/GitConfig';
+import { DockerOps } from '../svc/DockerOps';
+
+const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
+const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
+const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
+const TEMPLATE_FILE_PATH = '.vscode/templates/kanto_container_conf_template.json';
+const OUTPUT_FILE_PATH = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
+const MANIFEST_DIR = "/data/var/containers/manifests";
+
+/**
+ * ###############################################################################
+ *                                  STAGE 01
+ * ###############################################################################
+ */
 
 export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
@@ -32,31 +47,32 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 1 & 2
    */
-  const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
-  const packageVersion = await getVersionsWithQuickPick(manifestData.Name, octokit) as PackageVersion;
+  await GitConfig.init();
+  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
+
+    //Create output channel for user
+    let stage01 = vscode.window.createOutputChannel("LAD Remote");
+    stage01.show()
+    stage01.appendLine("Starting remote build and deployment...")
 
   /**
    * STEP 3
    */
 
-  const configPath = '.vscode/tmp/config.json';
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
   await serviceSsh.initializeSsh();
-  await serviceSsh.getConfigFromLedaDevice(configPath);
-  await serviceSsh.loadAndCheckConfigJson(configPath, 'containers.registry_configurations["ghcr.io"]');
+  await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH);
 
   /**
    * STEP 4
    */
-  const templateFilePath = '.vscode/templates/kanto_container_conf_template.json';
-  const outputFilePath = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
-
-  const generator = new ManifestGeneratorJson(templateFilePath, outputFilePath);
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    'id': manifestData.Name,
-    'name': manifestData.Name,
-    'image.name': `ghcr.io/software-engineering-project-org/vehicle-app-python-template/sampleapp@${packageVersion.image_name_sha}`
+    'id': GitConfig.PACKAGE,
+    'name': GitConfig.PACKAGE,
+    'image.name': `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`
   };
 
   await new Promise(resolve => {
@@ -67,11 +83,18 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-  await serviceSsh.copyKantoManifestToLeda(outputFilePath, manifestData.Name);
+  await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
+  await serviceSsh.closeConn();
 
   console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
-  vscode.window.showInformationMessage(`Deployed ${manifestData.Name} to ${device.name}`);
+  vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
 }
+
+/**
+ * ###############################################################################
+ *                                  STAGE 02
+ * ###############################################################################
+ */
 
 export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
@@ -96,10 +119,43 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
  * 9. Gesichertes Manifest via SCP auf Leda Device kopieren 
  */
 
-  vscode.window.showInformationMessage(`Deploying to ${device.name} 02`);
+
+  // Init 
+  let stage02 = vscode.window.createOutputChannel("LAD Hybrid");
+  stage02.show()
+  stage02.appendLine("Starting hybrid build and deployment...")
+
+  /**
+   * STEP 1 & 2
+   */
+  await GitConfig.init();
+  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
+
+  /**
+  * STEP 3
+  */
+
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  await serviceSsh.initializeSsh();
+  await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH);
+
+  /**
+   * STEP 4
+   */
+
+  console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
 }
 
+/**
+ * ###############################################################################
+ *                                  STAGE 03
+ * ###############################################################################
+ */
+
 export async function deployStageThree(item: LedaDeviceTreeItem) {
+
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -108,26 +164,87 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
     }
   }
 
+  //Init
+  await GitConfig.init();
+
+  //Create output channel for user
+  let stage03 = vscode.window.createOutputChannel("LAD Local");
+  stage03.show()
+  stage03.appendLine("Starting local build and deployment...")
+
+  /**
+   * STEP 1 & 2
+   */
+
+  const dockerOps = new DockerOps();
+  const tag = await dockerOps.buildDockerImage(stage03);
+
+  /**
+   * STEP 3
+   */
+  const tar = await dockerOps.exportImageAsTarball(`${GitConfig.CONTAINER_REGISTRY}/${tag}`, stage03);
+
+  /**
+   * STEP 4
+   */
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  await serviceSsh.initializeSsh();
+  await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH);
+
+  /**
+   * STEP 5
+   */
+  await serviceSsh.copyResourceToLeda(tar, `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
+
+  /**
+   * STEP 6
+   */
+  const localRegTag = await serviceSsh.containerdOps(`${tag}`, stage03)
+
+  /**
+   * STEP 7
+   */
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
+
+  const keyValuePairs = {
+    'id': GitConfig.PACKAGE,
+    'name': GitConfig.PACKAGE,
+    'image.name': localRegTag
+  };
+
+  await new Promise(resolve => {
+    generator.generateKantoContainerManifest(keyValuePairs);
+    setTimeout(resolve, 100); // Adjust the delay if needed
+  });
+
+  /**
+   * STEP 8
+   */
+  await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
+  await serviceSsh.closeConn();
+
+
 /**
  * 1. Pfad zum Dockerfile angeben (vorhanden?)
- * 2. Image lokal bauen 
- * 3. Kanto Config -> local-registries gesetzt? 
+ * 2. Image lokal bauen (Check Dockerfiel da)
+ * 3. Exportieren als Tarball (nach .vscode/tmp/*.tar)
+ * 4. Kanto Config -> local-registries gesetzt? 
  *    - /etc/container-management/config.json
  *    - Objekt insecure-registries prüfen
- * 4. Exportieren als Tarball 
  * 5. Tarball via SCP nach Leda Device
- * 6. Ausführen des containerd imports
+ * 6. Ausführen des containerd commands
  * 7. Einfügen des Strings (index.json) ins Manifest
  * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */
 
-  vscode.window.showInformationMessage(`Deploying to ${device.name} 03`);
+  vscode.window.showInformationMessage(`Deployed to ${device.name} 03`);
 }
 
-export async function getVersionsWithQuickPick(appName: string, octokit: Octokit) {
+export async function getVersionsWithQuickPick(octokit: Octokit) {
   const regOpsOrg = new RegistryOpsOrg();
 
-  const packageVersions = await regOpsOrg.getPackageVersionsObj(appName, 'container', octokit);
+  const packageVersions = await regOpsOrg.getPackageVersionsObj(octokit);
     if (packageVersions) {
       const packageVersion = await vscode.window.showQuickPick(
         packageVersions.map((packageV) => {

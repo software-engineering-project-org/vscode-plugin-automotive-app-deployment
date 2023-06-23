@@ -1,14 +1,15 @@
 import {NodeSSH} from 'node-ssh';
 import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
-import { readFileAsync } from '../helpers/helpers';
+import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
+import * as vscode from 'vscode';
+import { GitConfig } from '../provider/GitConfig';
 
 export class ServiceSsh {
     private sshHost: string;
     private sshUsername: string; 
     private sshPort: number;
     private ssh: NodeSSH;
-    private manifestDirecotory: string = "/data/var/containers/manifests";
     private kantoConfigFile: string = "/etc/container-management/config.json"
 /**
  * Create a new instance of ServiceSsh.
@@ -38,23 +39,24 @@ export class ServiceSsh {
     }
   }
 
+  public async closeConn() {
+    this.ssh.dispose();
+  }
+
   /**
-   * The generated manifest file will be copied via ssh to remote host (leda)
+   * The generated resource will be copied via ssh to remote host (leda)
    * @param localManifestFile - location of manifest file to copy to remote
    */
-  public async copyKantoManifestToLeda(localManifestFile: string, appName: string) {
+  public async copyResourceToLeda(local: string, remote: string, chan: vscode.OutputChannel) {
     try {
         await this.ssh.putFiles([{ 
-            local: path.resolve(__dirname, '../../', localManifestFile), 
-            remote: `${this.manifestDirecotory}/${appName}.json` 
+            local: path.resolve(__dirname, '../../', local), 
+            remote: `${remote}` 
         }]);
-        console.log(`Copy Kanto Manifest:\t Dest - ${this.manifestDirecotory}/${appName}.json - on Remote!`);
+        chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
     } catch(e) {
-        console.log(e);
+        chan.appendLine(`${e}`);
         throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)
-    } finally {
-      // Since the copy is the last step of each stage this function closes the ssh connection
-      this.ssh.dispose();
     }
   }
 
@@ -86,8 +88,44 @@ export class ServiceSsh {
         console.log(`Check Config:\t\t Successful -> ${key} exists.`);
       }
     } catch (error) {
-      throw new Error(`Error reading config JSON file: ${error}`);
+        throw new Error(`Error reading config JSON file: ${error}`);
+    } finally {
+        await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
+    }
+  }
+
+  public async containerdOps(tag: string, chan: vscode.OutputChannel): Promise<string> {
+    try {
+      // Import image
+      let res = await this.ssh.execCommand(`ctr image import ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp'});
+      this.checkStdErr(res.stderr);
+      chan.appendLine(res.stdout);
+
+      // Tag image with local registry prefix 
+      res = await this.ssh.execCommand(`ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      this.checkStdErr(res.stderr);
+      chan.appendLine(res.stdout);
+
+      // Push image to local registry 
+      res = await this.ssh.execCommand(`ctr image push ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      this.checkStdErr(res.stderr);
+      chan.appendLine(res.stdout);
+
+    } catch(error) {
+      chan.appendLine(`${error}`);
+    } finally {
+        await deleteTmpFile(path.resolve(__dirname, '../../', `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
+        return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
+    }
+
+  }
+
+  private checkStdErr(stderr: string) {
+    if(stderr != ""){
+      throw Error(stderr);
     }
   }
 
 }
+
+
