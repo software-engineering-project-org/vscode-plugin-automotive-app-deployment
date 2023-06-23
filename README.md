@@ -1,4 +1,11 @@
-# Connect to leda environment 
+# Setup environment 
+You need:
+- Running leda instance connected to a local network or the internet 
+- Working private container registry that is running on leda 
+- Preconfigured configuration of the container-management service
+
+## Connect your Leda instance
+
 ```shell
 # Set local port forward to remote host (local machine)
 ssh -f -N -L 2222:localhost:2222 bosch@52.166.39.71
@@ -7,10 +14,33 @@ ssh -f -N -L 2222:localhost:2222 bosch@52.166.39.71
 ssh root@localhost -p 2222
 ```
 
+## Install a private container registry 
+To safe locally stored images we need a local container registry. 
+We installed the container registry via kanto-cm the manifest file can be found under `resources/registry.json` in this repository. 
+
+## Container management configuration file
+The container management config file is stored under `/etc/container-management/config.json` on your Leda device. Add following lines: 
+
+```json
+"containers":{
+    "insecure-registries":[
+            "localhost:5000"
+    ], 
+    "registry_configurations": {
+        "ghcr.io": {
+            "credentials": {
+                "user_id": "github",
+                "password": "ghp_mygithubtoken"
+            }
+        }
+    }
+}   
+```
+
 # vscode-plugin-automotive-app-deployment
 Code base for the VSCode plugin development to automate automotive app deployment
 
-# automotive-app-deployment README
+# automotive-app-deployment 
 
 This is the README for your extension "automotive-app-deployment". After writing up a brief description, we recommend including the following sections.
 
@@ -50,14 +80,6 @@ Users appreciate release notes as you update your extension.
 ### 1.0.0
 
 Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
 
 ---
 
