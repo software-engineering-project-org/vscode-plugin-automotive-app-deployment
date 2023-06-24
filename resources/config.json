@@ -1,0 +1,27 @@
+{
+    "manager": {
+        "default_ctrs_stop_timeout": 5
+    },
+    "log": {
+        "log_file": "/var/log/container-management/container-management.log"
+    },
+    "things": {
+        "enable": true
+    },
+    "deployment": {
+        "init_dir": "${KANTO_MANIFESTS_DIR}"
+    },
+    "containers":{
+        "insecure-registries":[
+                "localhost:5000"
+        ],
+        "registry_configurations": {
+            "ghcr.io": {
+                "credentials": {
+                    "user_id": "github",
+                    "password": ""
+                }
+            }
+        }
+    }
+}
