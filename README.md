@@ -3,6 +3,7 @@ You need:
 - Running leda instance connected to a local network or the internet 
 - Working private container registry that is running on leda 
 - Preconfigured configuration of the container-management service
+- Further resources in `resources` folder
 
 ## Connect your Leda instance
 
@@ -36,6 +37,14 @@ The container management config file is stored under `/etc/container-management/
     }
 }   
 ```
+
+## Further resources 
+If we install kanto-cm on top of another OS (eg. Raspbian arm64) we have following dependencies: 
+- containerd.io
+- eclipse mosquitto 
+- https://github.com/eclipse-leda/leda-utils/releases
+
+These dependencies include the container runtime, the MQTT Broker and further utils from the kanto environment like kanto UI or the kanto auto deployer. This one should be installed as a system service -> `resources/kanto-auto-deployer.service`.
 
 # vscode-plugin-automotive-app-deployment
 Code base for the VSCode plugin development to automate automotive app deployment
