@@ -59,7 +59,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 3
    */
 
-  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh();
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
   await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH);
@@ -135,7 +135,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   * STEP 3
   */
 
-  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh();
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
   await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH);
@@ -187,7 +187,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 4
    */
-  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort);
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh();
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH);
   await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH);

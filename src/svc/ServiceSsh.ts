@@ -9,6 +9,7 @@ export class ServiceSsh {
     private sshHost: string;
     private sshUsername: string; 
     private sshPort: number;
+    private sshPassword: string;
     private ssh: NodeSSH;
     private kantoConfigFile: string = "/etc/container-management/config.json"
 /**
@@ -17,10 +18,11 @@ export class ServiceSsh {
  * @param sshUsername - User to connect
  * @param sshPort - the port your ssh server is listening on
  */
-  constructor(sshHost: string, sshUsername: string, sshPort: number) {
+  constructor(sshHost: string, sshUsername: string, sshPort: number, sshPassword: string) {
     this.sshHost = sshHost;
     this.sshUsername = sshUsername;
     this.sshPort = sshPort;
+    this.sshPassword = sshPassword;
     this.ssh = new NodeSSH();
   }
 
@@ -32,7 +34,8 @@ export class ServiceSsh {
       await this.ssh.connect({
         port: this.sshPort,
         host: this.sshHost,
-        username: this.sshUsername
+        username: this.sshUsername,
+        password: this.sshPassword
     });
     } catch(e) {
         console.log(e);
