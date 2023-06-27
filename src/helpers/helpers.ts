@@ -1,7 +1,9 @@
 import { LedaDevice } from "../interfaces/LedaDevice";
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as path from 'path';
 import { exec } from 'child_process';
+import { GitConfig } from "../provider/GitConfig";
 
 
 export async function loadLedaDevices(): Promise<
@@ -88,5 +90,40 @@ export async function executeShellCmd(command: string): Promise<string> {
       }
     });
   });
+}
+
+export async function checkAndHandleTarSource(src: string, chan: vscode.OutputChannel): Promise<string> {
+  const outputPath = ".vscode/tmp";
+  let filePath = src;
+  try {
+    if(src.startsWith("https://")) {
+      filePath = await downloadTarFileFromWeb(src, path.resolve(__dirname, '../../', `.vscode/tmp/${GitConfig.PACKAGE}`), chan);
+    } else if(src.startsWith("http://")) {
+        throw new Error(`Insecure format - HTTP -`);
+    } else {
+        if(!fs.existsSync(src)) {
+            throw new Error(`File ${src} does not exist on local device!`);
+        }
+        if(!src.endsWith(".tar")) {
+          throw new Error(`File ${src} has wrong type - no TAR!`);
+        }
+    }
+    return filePath;
+  } catch(err) {
+      chan.appendLine(`${err}`);
+      throw new Error(`Error identifying *.tar source`);
+  }
+}
+
+async function downloadTarFileFromWeb(url: string, path: string, chan: vscode.OutputChannel): Promise<string> {
+  try {
+    
+  } catch(err) {
+      chan.appendLine(`${err}`);
+      throw new Error(`Failed to read from URL`);
+  }
+
+
+  return "";
 }
 

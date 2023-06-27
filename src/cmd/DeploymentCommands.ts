@@ -10,6 +10,7 @@ import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
 import { GitConfig } from '../provider/GitConfig';
 import { DockerOps } from '../svc/DockerOps';
+import { checkAndHandleTarSource } from '../helpers/helpers';
 
 const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
 const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
@@ -129,7 +130,6 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 1 & 2
    */
   await GitConfig.init();
-  const packageVersion = await getVersionsWithQuickPick(octokit) as PackageVersion;
 
   /**
   * STEP 3
@@ -143,8 +143,23 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 4
    */
+  const tarSource = await vscode.window.showInputBox({
+    prompt: "Image source",
+    placeHolder: "URL or File path"
+  });
+  if (!tarSource) {
+    return;
+  }
 
-  stage02.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  const path = await checkAndHandleTarSource(tarSource, stage02);
+
+  /**
+   * STEP 5
+   */
+  
+
+
+  stage02.appendLine(`Deploying to Leda:\t `)
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
