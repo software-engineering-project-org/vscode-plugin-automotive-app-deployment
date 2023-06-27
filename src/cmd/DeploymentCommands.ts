@@ -76,7 +76,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   };
 
   await new Promise(resolve => {
-    generator.generateKantoContainerManifest(keyValuePairs);
+    generator.generateKantoContainerManifest(keyValuePairs, stage01);
     setTimeout(resolve, 100); // Adjust the delay if needed
   });
 
@@ -86,8 +86,8 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
   await serviceSsh.closeConn();
 
-  console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
-  vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
+  stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
 /**
@@ -144,8 +144,8 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 4
    */
 
-  console.log(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
-  vscode.window.showInformationMessage(`Deployed ${GitConfig.PACKAGE} to ${device.name}`);
+  stage02.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
 /**
@@ -214,7 +214,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   };
 
   await new Promise(resolve => {
-    generator.generateKantoContainerManifest(keyValuePairs);
+    generator.generateKantoContainerManifest(keyValuePairs, stage03);
     setTimeout(resolve, 100); // Adjust the delay if needed
   });
 
@@ -238,7 +238,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
  * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */
 
-  vscode.window.showInformationMessage(`Deployed to ${device.name} 03`);
+  stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`)
+  vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
 export async function getVersionsWithQuickPick(octokit: Octokit) {

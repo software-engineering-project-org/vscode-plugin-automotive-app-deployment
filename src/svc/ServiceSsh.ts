@@ -31,7 +31,7 @@ export class ServiceSsh {
    */
   public async initializeSsh(chan: vscode.OutputChannel) {
     try {
-      chan.appendLine(`Establishing SSH connectionin: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`)
+      chan.appendLine(`Establishing SSH connection: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`)
 
       await this.ssh.connect({
         port: this.sshPort,
