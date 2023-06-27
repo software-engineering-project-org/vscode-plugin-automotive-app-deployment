@@ -29,8 +29,10 @@ export class ServiceSsh {
   /**
    * Setup the connection to the SSH server defined.
    */
-  public async initializeSsh() {
+  public async initializeSsh(chan: vscode.OutputChannel) {
     try {
+      chan.appendLine(`Establishing SSH connectionin: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`)
+
       await this.ssh.connect({
         port: this.sshPort,
         host: this.sshHost,
@@ -38,7 +40,7 @@ export class ServiceSsh {
         password: this.sshPassword
     });
     } catch(e) {
-        console.log(e);
+        chan.appendLine(`${e}`);
     }
   }
 
@@ -64,22 +66,22 @@ export class ServiceSsh {
   }
 
 
-  public async getConfigFromLedaDevice(tmpConfig: string) {
+  public async getConfigFromLedaDevice(tmpConfig: string, chan: vscode.OutputChannel) {
     try {
       await this.ssh.getFile(
         path.resolve(__dirname, '../../', tmpConfig), 
         this.kantoConfigFile
       );
 
-      console.log(`Fetch Config:\t\t Found file at - ${this.kantoConfigFile} - Checking config...`);
+      chan.appendLine(`Fetch Config:\t\t Found file at - ${this.kantoConfigFile} - Checking config...`);
     }
     catch(e) {
-      console.log(e);
+      chan.appendLine(`${e}`);
       throw new Error(`Error reading kanto conf -> ${(e as Error).message}`)
     }
   }
 
-  public async loadAndCheckConfigJson(configPath: string, key: string) {
+  public async loadAndCheckConfigJson(configPath: string, key: string, chan: vscode.OutputChannel) {
     try {
       const fileContents = await readFileAsync(path.resolve(__dirname, '../../', configPath));
       const configJson = JSON.parse(fileContents);
@@ -88,9 +90,10 @@ export class ServiceSsh {
       if (keys.length === 0) {
         throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
       } else {
-        console.log(`Check Config:\t\t Successful -> ${key} exists.`);
+        chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
       }
     } catch (error) {
+        chan.appendLine(`${error}`);
         throw new Error(`Error reading config JSON file: ${error}`);
     } finally {
         await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
