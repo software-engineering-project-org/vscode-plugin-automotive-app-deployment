@@ -1,6 +1,3 @@
-
-
-
 const { ManifestGeneratorJson } = require('../../svc/ManifestGeneratorJson');
 const fs = require('fs');
 const path = require('path');
