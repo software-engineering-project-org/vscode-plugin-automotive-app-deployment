@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { getTargetDeviceWithQuickPick } from './DeviceCommands';
 import { LedaDevice } from '../interfaces/LedaDevice';
@@ -84,7 +85,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
   await serviceSsh.closeConn();
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
@@ -151,13 +152,39 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
     return;
   }
 
-  const path = await checkAndHandleTarSource(tarSource, stage02);
+  const outputTarPath = await checkAndHandleTarSource(tarSource, stage02);
 
   /**
    * STEP 5
    */
+  await serviceSsh.copyResourceToLeda(outputTarPath, `/tmp/${GitConfig.PACKAGE}.tar`, stage02);
   
+    /**
+   * STEP 6
+   */
+  const localRegTag = await serviceSsh.containerdOps("", stage02);
 
+  /**
+ * STEP 7
+ */
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
+
+  const keyValuePairs = {
+    'id': GitConfig.PACKAGE,
+    'name': GitConfig.PACKAGE,
+    'image.name': localRegTag
+  };
+
+  await new Promise(resolve => {
+    generator.generateKantoContainerManifest(keyValuePairs, stage02);
+    setTimeout(resolve, 100); // Adjust the delay if needed
+  });
+
+  /**
+   * STEP 8
+   */
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage02);
+  await serviceSsh.closeConn();
 
   stage02.appendLine(`Deploying to Leda:\t `)
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
@@ -210,7 +237,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(tar, `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', tar), `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
 
   /**
    * STEP 6
@@ -236,7 +263,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 8
    */
-  await serviceSsh.copyResourceToLeda(OUTPUT_FILE_PATH, `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
   await serviceSsh.closeConn();
 
 

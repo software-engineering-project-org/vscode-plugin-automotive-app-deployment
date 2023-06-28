@@ -55,8 +55,8 @@ export class ServiceSsh {
   public async copyResourceToLeda(local: string, remote: string, chan: vscode.OutputChannel) {
     try {
         await this.ssh.putFiles([{ 
-            local: path.resolve(__dirname, '../../', local), 
-            remote: `${remote}` 
+            local,
+            remote
         }]);
         chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
     } catch(e) {
@@ -108,6 +108,14 @@ export class ServiceSsh {
       chan.appendLine(res.stdout);
 
       // Tag image with local registry prefix 
+      if (tag == "") {
+        let fullTag = res.stdout.split(" ")[1];
+        tag = fullTag.substring(fullTag.indexOf("/") + 1);
+        GitConfig.CONTAINER_REGISTRY = 'docker.io';
+      }
+
+      chan.appendLine(`Tagging -> ${GitConfig.CONTAINER_REGISTRY}/${tag} TO ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`)
+
       res = await this.ssh.execCommand(`ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
