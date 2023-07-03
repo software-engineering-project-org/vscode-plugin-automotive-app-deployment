@@ -30,8 +30,9 @@ export class ManifestGeneratorJson {
   public static async readAppManifest(manifestPath: string): Promise<any> {
     const fileContents = await readFileAsync(path.resolve(__dirname, '../../', manifestPath));
     const manifestJson = JSON.parse(fileContents);
+    const packageName = (manifestJson[0].name as string).toLowerCase();
     return {
-      Name: manifestJson[0].Name
+      Name: packageName
     }
   }
 
