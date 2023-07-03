@@ -17,12 +17,21 @@ export class ManifestGeneratorJson {
     this.outputFilePath = path.resolve(__dirname, '../../', outputFilePath);
   }
 
+  public static async readVelocitasJson(velocitasSettings: string): Promise<any> {
+    const fileContents = await readFileAsync(path.resolve(__dirname, '../../', velocitasSettings));
+    const velocitasJson = JSON.parse(fileContents);
+    return {
+      AppManifestPath: velocitasJson.variables.appManifestPath,
+      GithubRepoId: velocitasJson.variables.githubRepoId,
+      DockerfilePath: velocitasJson.variables.dockerfilePath
+    }
+  }
+
   public static async readAppManifest(manifestPath: string): Promise<any> {
     const fileContents = await readFileAsync(path.resolve(__dirname, '../../', manifestPath));
     const manifestJson = JSON.parse(fileContents);
     return {
-      Name: manifestJson[0].Name, 
-      Dockerfile: manifestJson[0].Dockerfile,
+      Name: manifestJson[0].Name
     }
   }
 
