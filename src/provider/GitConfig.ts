@@ -1,4 +1,3 @@
-import { ConfigStringExtractor } from "../svc/GitHubOps/ConfigStringExtractor";
 import { ManifestGeneratorJson } from "../svc/ManifestGeneratorJson";
 
 export class GitConfig {
@@ -12,13 +11,14 @@ export class GitConfig {
     public static TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
     public static async init() {
-        const manifestData = await ManifestGeneratorJson.readAppManifest("app/AppManifest.json");
-        const remoteOrigin = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig("sample-config-git");
+        const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson(".velocitas.json");
+        const manifestData = await ManifestGeneratorJson.readAppManifest(velocitasSettings.AppManifestPath);
+        const remoteOrigin = velocitasSettings.GithubRepoId;
+        this.DOCKERFILE = velocitasSettings.DockerfilePath;
         this.ORG = remoteOrigin.split("/")[0];
         this.REPO = remoteOrigin.split("/")[1];
         this.PACKAGE = manifestData.Name;
         this.PACKAGE_TYPE = 'container';
-        this.DOCKERFILE = manifestData.Dockerfile;
         this.CONTAINER_REGISTRY = 'ghcr.io';
     }
 } 
