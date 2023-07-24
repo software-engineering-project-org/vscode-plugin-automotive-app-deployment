@@ -9,8 +9,8 @@ import * as https from 'https';
 export async function loadLedaDevices(): Promise<
 LedaDevice[] | undefined
 > {
-  const config = await vscode.workspace.getConfiguration("automotive-app-deployment");
-  const devices = await config.get<Array<LedaDevice>>(
+  const config = vscode.workspace.getConfiguration("automotive-app-deployment");
+  const devices = config.get<Array<LedaDevice>>(
     "devices"
   );
   return devices;
@@ -21,8 +21,8 @@ LedaDevice[] | undefined
  * @param newDevice 
  */
 export async function saveLedaDevice(newDevice: LedaDevice) {
-  const config = await vscode.workspace.getConfiguration("automotive-app-deployment");
-  const devices = await config.get<Array<LedaDevice>>(
+  const config = vscode.workspace.getConfiguration("automotive-app-deployment");
+  const devices = config.get<Array<LedaDevice>>(
     "devices"
   );
   if (devices) {
@@ -43,8 +43,8 @@ export async function saveLedaDevice(newDevice: LedaDevice) {
  * @param targetDevice 
  */
 export async function removeLedaDevice(targetDevice: LedaDevice) {
-  const config = await vscode.workspace.getConfiguration("automotive-app-deployment");
-  const devices = await config.get<Array<LedaDevice>>(
+  const config = vscode.workspace.getConfiguration("automotive-app-deployment");
+  const devices = config.get<Array<LedaDevice>>(
     "devices"
   );
   if (devices) {
@@ -73,7 +73,7 @@ export function readFileAsync(filePath: string): any {
 export async function deleteTmpFile(filePath: string): Promise<void> {
   fs.unlink(filePath, (err => {
     if (err) {
-      throw new Error(`Could not delete tmp file: ${err}`);
+      throw new Error("Could not delete tmp file");
     }
   }));
 }
@@ -93,7 +93,6 @@ export async function executeShellCmd(command: string): Promise<string> {
 }
 
 export async function checkAndHandleTarSource(src: string, chan: vscode.OutputChannel): Promise<string> {
-  const outputPath = ".vscode/tmp";
   let filePath = src;
   try {
     if(src.startsWith("https://")) {

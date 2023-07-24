@@ -14,16 +14,8 @@ export class GitHubOctoAuth {
    */
   constructor(authMethod: string, classicToken: string) {
     // Create an instance of Octokit with the provided token
-    if (authMethod === "accessTokenClassic") {
-      this.octokit = new Octokit({ auth: classicToken });
-    } else {
-      /* 
-      ...
-      Implement further Auth-Strategies if needed, tbd. internally.
-      ...
-      */
-      this.octokit = new Octokit({ auth: classicToken });
-    }
+    // For now classicToken as default
+    this.octokit = new Octokit({ auth: classicToken });
   }
 
   /**

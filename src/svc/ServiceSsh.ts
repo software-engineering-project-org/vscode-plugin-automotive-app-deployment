@@ -129,9 +129,8 @@ export class ServiceSsh {
       chan.appendLine(`${error}`);
     } finally {
         await deleteTmpFile(path.resolve(__dirname, '../../', `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
-        return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
     }
-
+    return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
   }
 
   private checkStdErr(stderr: string) {

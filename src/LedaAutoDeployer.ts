@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
-import { LedaDeviceTreeItem } from "./provider/DeviceDataProvider";
-import { DeviceDataProvider } from "./provider/DeviceDataProvider";
+import { LedaDeviceTreeItem, DeviceDataProvider } from "./provider/DeviceDataProvider";
 import { addDevice, deleteDevice } from "./cmd/DeviceCommands";
 import { deployStageOne, deployStageTwo, deployStageThree } from "./cmd/DeploymentCommands";
 import { Credentials } from "./svc/Credentials";
@@ -46,7 +45,7 @@ export default class LedaAutoDeployer {
 
         this.context.subscriptions.push(
             vscode.commands.registerCommand('automotive-app-deployment.refreshDevices', async () => {
-                await this.deviceDataProvider.update();
+                this.deviceDataProvider.update();
             })
         );
 

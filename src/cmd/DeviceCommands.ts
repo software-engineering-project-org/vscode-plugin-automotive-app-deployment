@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
-import { DeviceDataProvider } from "../provider/DeviceDataProvider";
+import { DeviceDataProvider, LedaDeviceTreeItem } from "../provider/DeviceDataProvider";
 import { saveLedaDevice, removeLedaDevice, loadLedaDevices } from "../helpers/helpers";
-import { LedaDeviceTreeItem } from "../provider/DeviceDataProvider";
 import { LedaDevice } from "../interfaces/LedaDevice";
 import { LedaDeviceQuickPickItem } from "../interfaces/QuickPickItem";
 
@@ -100,7 +99,7 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
 }
 
 function validateIPaddress(ipAddress: string) {  
-    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipAddress)) {  
+    if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress)) {  
       return true;  
     }  
     return false;  
