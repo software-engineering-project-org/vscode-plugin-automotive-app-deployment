@@ -1,13 +1,6 @@
 import * as vscode from 'vscode';
-import {
-  DeviceDataProvider,
-  LedaDeviceTreeItem,
-} from '../provider/DeviceDataProvider';
-import {
-  saveLedaDevice,
-  removeLedaDevice,
-  loadLedaDevices,
-} from '../helpers/helpers';
+import { DeviceDataProvider, LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
+import { saveLedaDevice, removeLedaDevice, loadLedaDevices } from '../helpers/helpers';
 import { LedaDevice } from '../interfaces/LedaDevice';
 import { LedaDeviceQuickPickItem } from '../interfaces/QuickPickItem';
 
@@ -75,10 +68,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
  * @param deviceDataProvider The DeviceDataProvider instance used to update the tree view.
  * @param item The LedaDeviceTreeItem representing the device to be deleted (optional, can be null).
  */
-export async function deleteDevice(
-  deviceDataProvider: DeviceDataProvider,
-  item: LedaDeviceTreeItem,
-) {
+export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();

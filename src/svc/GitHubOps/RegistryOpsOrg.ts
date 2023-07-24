@@ -8,9 +8,7 @@ import { GitConfig } from '../../provider/GitConfig';
  * Class for interacting with GitHub using an authenticated Octokit SDK object, fetching GitHub organization-specific registry information.
  */
 export class RegistryOpsOrg {
-  public async getPackageVersionsObj(
-    octokit: Octokit,
-  ): Promise<PackageVersion[]> {
+  public async getPackageVersionsObj(octokit: Octokit): Promise<PackageVersion[]> {
     try {
       // Fetch Organization and Repository the user operates in from .git/config. This is named "context" in this module.
       // const orgRepoContext = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig();
@@ -19,14 +17,12 @@ export class RegistryOpsOrg {
       const packageVersions = await this.getPackageVersions(octokit);
 
       // Map type.
-      const packageVersionsObj: PackageVersion[] = packageVersions.map(
-        (item: any) => ({
-          image_name_sha: item.name,
-          tags: item.metadata.container.tags,
-          created_at: item.created_at,
-          updated_at: item.updated_at,
-        }),
-      );
+      const packageVersionsObj: PackageVersion[] = packageVersions.map((item: any) => ({
+        image_name_sha: item.name,
+        tags: item.metadata.container.tags,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      }));
 
       return packageVersionsObj;
     } catch (error) {
@@ -41,10 +37,7 @@ export class RegistryOpsOrg {
    * @param orgRepoContext - Organization and Repository we the user acts in.
    * @returns - The name of the package or null if not found.
    */
-  private extractPackageName(
-    orgPackagesList: any,
-    orgRepoContext: string,
-  ): string | null {
+  private extractPackageName(orgPackagesList: any, orgRepoContext: string): string | null {
     // Parse the data containing 1...n packages assigned to 1...n Repositories in an Organization.
     const json = JSON.parse(JSON.stringify(orgPackagesList));
     // Only get the name of the package assigned to the Repository matching the context.
@@ -66,9 +59,7 @@ export class RegistryOpsOrg {
    */
   private async getOrganizationPackageImages(octokit: Octokit): Promise<any[]> {
     try {
-      const response = await octokit.request(
-        `GET /orgs/${GitConfig.ORG}/packages?package_type=${GitConfig.PACKAGE_TYPE}`,
-      );
+      const response = await octokit.request(`GET /orgs/${GitConfig.ORG}/packages?package_type=${GitConfig.PACKAGE_TYPE}`);
       return response.data;
     } catch (error) {
       console.error('Error retrieving package images:', error);
@@ -83,12 +74,11 @@ export class RegistryOpsOrg {
    */
   private async getPackageVersions(octokit: Octokit): Promise<any> {
     try {
-      const response =
-        await octokit.packages.getAllPackageVersionsForPackageOwnedByOrg({
-          org: GitConfig.ORG,
-          package_type: GitConfig.PACKAGE_TYPE,
-          package_name: `${GitConfig.REPO}/${GitConfig.PACKAGE}`,
-        });
+      const response = await octokit.packages.getAllPackageVersionsForPackageOwnedByOrg({
+        org: GitConfig.ORG,
+        package_type: GitConfig.PACKAGE_TYPE,
+        package_name: `${GitConfig.REPO}/${GitConfig.PACKAGE}`,
+      });
       return response.data;
     } catch (error) {
       console.error('Error retrieving package information:', error);

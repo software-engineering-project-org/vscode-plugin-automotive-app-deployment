@@ -24,9 +24,7 @@ export async function saveLedaDevice(newDevice: LedaDevice) {
   const config = vscode.workspace.getConfiguration('automotive-app-deployment');
   const devices = config.get<Array<LedaDevice>>('devices');
   if (devices) {
-    const index = devices?.findIndex(
-      (device) => device.name === newDevice.name,
-    );
+    const index = devices?.findIndex((device) => device.name === newDevice.name);
     if (index !== undefined && index !== -1) {
       devices[index] = newDevice;
     } else {
@@ -44,9 +42,7 @@ export async function removeLedaDevice(targetDevice: LedaDevice) {
   const config = vscode.workspace.getConfiguration('automotive-app-deployment');
   const devices = config.get<Array<LedaDevice>>('devices');
   if (devices) {
-    const index = devices?.findIndex(
-      (device) => device.name === targetDevice.name,
-    );
+    const index = devices?.findIndex((device) => device.name === targetDevice.name);
     if (index !== undefined && index !== -1) {
       devices.splice(index, 1);
       await config.update('devices', devices);
@@ -110,18 +106,11 @@ export async function executeShellCmd(command: string): Promise<string> {
  * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
  * @throws Throws an error if the source is not valid or encounters any issues.
  */
-export async function checkAndHandleTarSource(
-  src: string,
-  chan: vscode.OutputChannel,
-): Promise<string> {
+export async function checkAndHandleTarSource(src: string, chan: vscode.OutputChannel): Promise<string> {
   let filePath = src;
   try {
     if (src.startsWith('https://')) {
-      filePath = await downloadTarFileFromWeb(
-        src,
-        `.vscode/tmp/${GitConfig.PACKAGE}.tar`,
-        chan,
-      );
+      filePath = await downloadTarFileFromWeb(src, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
     } else if (src.startsWith('http://')) {
       throw new Error(`Insecure format - HTTP -`);
     } else {
@@ -147,11 +136,7 @@ export async function checkAndHandleTarSource(
  * @returns A Promise that resolves to the file path of the downloaded TAR file.
  * @throws Throws an error if the download fails or encounters any issues.
  */
-async function downloadTarFileFromWeb(
-  url: string,
-  localPath: string,
-  chan: vscode.OutputChannel,
-): Promise<string> {
+async function downloadTarFileFromWeb(url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> {
   try {
     const filename = path.resolve(__dirname, '../../', localPath);
     https.get(url, (res) => {

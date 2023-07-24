@@ -12,12 +12,8 @@ export class GitConfig {
   public static TARBALL_OUTPUT_PATH = '.vscode/tmp';
 
   public static async init() {
-    const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson(
-      '.velocitas.json',
-    );
-    const manifestData = await ManifestGeneratorJson.readAppManifest(
-      velocitasSettings.AppManifestPath,
-    );
+    const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson('.velocitas.json');
+    const manifestData = await ManifestGeneratorJson.readAppManifest(velocitasSettings.AppManifestPath);
     const remoteOrigin = velocitasSettings.GithubRepoId;
     this.DOCKERFILE = velocitasSettings.DockerfilePath;
     this.ORG = remoteOrigin.split('/')[0];

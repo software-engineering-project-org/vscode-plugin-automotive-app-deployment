@@ -14,14 +14,7 @@ import { DockerOps } from '../svc/DockerOps';
 import { checkAndHandleTarSource } from '../helpers/helpers';
 
 // Import setup constants from properties file.
-import {
-  TMP_KANTO_CONFIG_PATH,
-  KANTO_CONFIG_REMOTE_REG_JSON_PATH,
-  KANTO_CONFIG_LOCAL_REG_JSON_PATH,
-  TEMPLATE_FILE_PATH,
-  OUTPUT_FILE_PATH,
-  MANIFEST_DIR,
-} from '../setup/cmdProperties';
+import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR } from '../setup/cmdProperties';
 
 /**
  * ###############################################################################
@@ -29,10 +22,7 @@ import {
  * ###############################################################################
  */
 
-export async function deployStageOne(
-  item: LedaDeviceTreeItem,
-  octokit: Octokit,
-) {
+export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -55,9 +45,7 @@ export async function deployStageOne(
    * STEP 1 & 2
    */
   await GitConfig.init();
-  const packageVersion = (await getVersionsWithQuickPick(
-    octokit,
-  )) as PackageVersion;
+  const packageVersion = (await getVersionsWithQuickPick(octokit)) as PackageVersion;
 
   //Create output channel for user
   let stage01 = vscode.window.createOutputChannel('LAD Remote');
@@ -67,27 +55,15 @@ export async function deployStageOne(
   /**
    * STEP 3
    */
-  const serviceSsh = new ServiceSsh(
-    device.ip,
-    device.sshUsername,
-    device.sshPort,
-    device.sshPassword!,
-  );
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh(stage01);
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage01);
-  await serviceSsh.loadAndCheckConfigJson(
-    TMP_KANTO_CONFIG_PATH,
-    KANTO_CONFIG_REMOTE_REG_JSON_PATH,
-    stage01,
-  );
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
 
   /**
    * STEP 4
    */
-  const generator = new ManifestGeneratorJson(
-    TEMPLATE_FILE_PATH,
-    OUTPUT_FILE_PATH,
-  );
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
     id: GitConfig.PACKAGE,
@@ -103,11 +79,7 @@ export async function deployStageOne(
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(
-    path.resolve(__dirname, '../../', OUTPUT_FILE_PATH),
-    `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`,
-    stage01,
-  );
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
   await serviceSsh.closeConn();
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
@@ -120,10 +92,7 @@ export async function deployStageOne(
  * ###############################################################################
  */
 
-export async function deployStageTwo(
-  item: LedaDeviceTreeItem,
-  octokit: Octokit,
-) {
+export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
@@ -159,19 +128,10 @@ export async function deployStageTwo(
   /**
    * STEP 3
    */
-  const serviceSsh = new ServiceSsh(
-    device.ip,
-    device.sshUsername,
-    device.sshPort,
-    device.sshPassword!,
-  );
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh(stage02);
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage02);
-  await serviceSsh.loadAndCheckConfigJson(
-    TMP_KANTO_CONFIG_PATH,
-    KANTO_CONFIG_LOCAL_REG_JSON_PATH,
-    stage02,
-  );
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
 
   /**
    * STEP 4
@@ -189,11 +149,7 @@ export async function deployStageTwo(
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(
-    outputTarPath,
-    `/tmp/${GitConfig.PACKAGE}.tar`,
-    stage02,
-  );
+  await serviceSsh.copyResourceToLeda(outputTarPath, `/tmp/${GitConfig.PACKAGE}.tar`, stage02);
 
   /**
    * STEP 6
@@ -203,10 +159,7 @@ export async function deployStageTwo(
   /**
    * STEP 7
    */
-  const generator = new ManifestGeneratorJson(
-    TEMPLATE_FILE_PATH,
-    OUTPUT_FILE_PATH,
-  );
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
     id: GitConfig.PACKAGE,
@@ -222,11 +175,7 @@ export async function deployStageTwo(
   /**
    * STEP 8
    */
-  await serviceSsh.copyResourceToLeda(
-    path.resolve(__dirname, '../../', OUTPUT_FILE_PATH),
-    `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`,
-    stage02,
-  );
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage02);
   await serviceSsh.closeConn();
 
   stage02.appendLine(`Deploying to Leda:\t `);
@@ -266,36 +215,20 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 3
    */
-  const tar = await dockerOps.exportImageAsTarball(
-    `${GitConfig.CONTAINER_REGISTRY}/${tag}`,
-    stage03,
-  );
+  const tar = await dockerOps.exportImageAsTarball(`${GitConfig.CONTAINER_REGISTRY}/${tag}`, stage03);
 
   /**
    * STEP 4
    */
-  const serviceSsh = new ServiceSsh(
-    device.ip,
-    device.sshUsername,
-    device.sshPort,
-    device.sshPassword!,
-  );
+  const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh(stage03);
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage03);
-  await serviceSsh.loadAndCheckConfigJson(
-    TMP_KANTO_CONFIG_PATH,
-    KANTO_CONFIG_LOCAL_REG_JSON_PATH,
-    stage03,
-  );
+  await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage03);
 
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(
-    path.resolve(__dirname, '../../', tar),
-    `/tmp/${GitConfig.PACKAGE}.tar`,
-    stage03,
-  );
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', tar), `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
 
   /**
    * STEP 6
@@ -305,10 +238,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 7
    */
-  const generator = new ManifestGeneratorJson(
-    TEMPLATE_FILE_PATH,
-    OUTPUT_FILE_PATH,
-  );
+  const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
     id: GitConfig.PACKAGE,
@@ -324,11 +254,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 8
    */
-  await serviceSsh.copyResourceToLeda(
-    path.resolve(__dirname, '../../', OUTPUT_FILE_PATH),
-    `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`,
-    stage03,
-  );
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
   await serviceSsh.closeConn();
 
   /**
@@ -355,8 +281,7 @@ export async function getVersionsWithQuickPick(octokit: Octokit) {
   if (packageVersions) {
     const packageVersion = await vscode.window.showQuickPick(
       packageVersions.map((packageV) => {
-        let tag =
-          packageV.tags.length === 0 ? 'No tag avalaible' : packageV.tags[0];
+        let tag = packageV.tags.length === 0 ? 'No tag avalaible' : packageV.tags[0];
         return {
           label: tag,
           description: packageV.updated_at,

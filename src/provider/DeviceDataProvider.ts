@@ -5,18 +5,12 @@ import { loadLedaDevices } from '../helpers/helpers';
 /**
  * Data provider for the device tree view.
  */
-export class DeviceDataProvider
-  implements vscode.TreeDataProvider<LedaDeviceTreeItem>
-{
-  private _onDidChangeTreeData: vscode.EventEmitter<
-    LedaDeviceTreeItem | undefined | void
-  > = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>();
+export class DeviceDataProvider implements vscode.TreeDataProvider<LedaDeviceTreeItem> {
+  private _onDidChangeTreeData: vscode.EventEmitter<LedaDeviceTreeItem | undefined | void> = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>();
   /**
    * Event that fires when the tree data changes.
    */
-  readonly onDidChangeTreeData: vscode.Event<
-    LedaDeviceTreeItem | undefined | null | void
-  > = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: vscode.Event<LedaDeviceTreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
   /**
    * Trigger an update for the tree view.
@@ -30,9 +24,7 @@ export class DeviceDataProvider
    * @param element The tree item element.
    * @returns The tree item or a Thenable that resolves to a tree item.
    */
-  getTreeItem(
-    element: LedaDeviceTreeItem,
-  ): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: LedaDeviceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
@@ -41,9 +33,7 @@ export class DeviceDataProvider
    * @param element The parent element (optional).
    * @returns An array of child tree items or undefined.
    */
-  async getChildren(
-    element?: LedaDeviceTreeItem,
-  ): Promise<LedaDeviceTreeItem[] | undefined> {
+  async getChildren(element?: LedaDeviceTreeItem): Promise<LedaDeviceTreeItem[] | undefined> {
     try {
       const devices = await loadLedaDevices();
       if (devices) {

@@ -17,12 +17,8 @@ export class ManifestGeneratorJson {
     this.outputFilePath = path.resolve(__dirname, '../../', outputFilePath);
   }
 
-  public static async readVelocitasJson(
-    velocitasSettings: string,
-  ): Promise<any> {
-    const fileContents = await readFileAsync(
-      path.resolve(__dirname, '../../', velocitasSettings),
-    );
+  public static async readVelocitasJson(velocitasSettings: string): Promise<any> {
+    const fileContents = await readFileAsync(path.resolve(__dirname, '../../', velocitasSettings));
     const velocitasJson = JSON.parse(fileContents);
     return {
       AppManifestPath: velocitasJson.variables.appManifestPath,
@@ -32,9 +28,7 @@ export class ManifestGeneratorJson {
   }
 
   public static async readAppManifest(manifestPath: string): Promise<any> {
-    const fileContents = await readFileAsync(
-      path.resolve(__dirname, '../../', manifestPath),
-    );
+    const fileContents = await readFileAsync(path.resolve(__dirname, '../../', manifestPath));
     const manifestJson = JSON.parse(fileContents);
     const packageName = (manifestJson[0].name as string).toLowerCase();
     return {
@@ -46,10 +40,7 @@ export class ManifestGeneratorJson {
    * Generate the Kanto Container manifest by altering values from the template JSON.
    * @param {Record<string, any>} keyValuePairs - The key-value pairs to modify in the template JSON.
    */
-  public generateKantoContainerManifest(
-    keyValuePairs: Record<string, any>,
-    chan: vscode.OutputChannel,
-  ): void {
+  public generateKantoContainerManifest(keyValuePairs: Record<string, any>, chan: vscode.OutputChannel): void {
     this.loadTemplateJson(chan, (templateJson: any) => {
       const modifiedJson = this.alterJson(templateJson, keyValuePairs);
       this.saveModifiedJson(modifiedJson, chan);
@@ -60,10 +51,7 @@ export class ManifestGeneratorJson {
    * Load the template JSON file.
    * @param {Function} callback - The callback function to handle the parsed JSON data from the template file.
    */
-  private loadTemplateJson(
-    chan: vscode.OutputChannel,
-    callback: (templateJson: any) => void,
-  ): void {
+  private loadTemplateJson(chan: vscode.OutputChannel, callback: (templateJson: any) => void): void {
     fs.readFile(this.templateFilePath, 'utf8', (err, fileContents) => {
       try {
         if (err) {
@@ -115,10 +103,7 @@ export class ManifestGeneratorJson {
    * Save the modified JSON object to the specified output file.
    * @param {any} modifiedJson - The modified JSON object to save.
    */
-  private saveModifiedJson(
-    modifiedJson: any,
-    chan: vscode.OutputChannel,
-  ): void {
+  private saveModifiedJson(modifiedJson: any, chan: vscode.OutputChannel): void {
     const outputDir = path.dirname(this.outputFilePath);
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
