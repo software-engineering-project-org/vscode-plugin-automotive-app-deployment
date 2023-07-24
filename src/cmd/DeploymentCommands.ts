@@ -13,12 +13,16 @@ import { GitConfig } from '../provider/GitConfig';
 import { DockerOps } from '../svc/DockerOps';
 import { checkAndHandleTarSource } from '../helpers/helpers';
 
-const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
-const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
-const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
-const TEMPLATE_FILE_PATH = '.vscode/templates/kanto_container_conf_template.json';
-const OUTPUT_FILE_PATH = '.vscode/tmp/tmp_gen_kanto_container_manifest.json';
-const MANIFEST_DIR = "/data/var/containers/manifests";
+
+// Import setup constants from properties file.
+import {
+  TMP_KANTO_CONFIG_PATH,
+  KANTO_CONFIG_REMOTE_REG_JSON_PATH,
+  KANTO_CONFIG_LOCAL_REG_JSON_PATH,
+  TEMPLATE_FILE_PATH,
+  OUTPUT_FILE_PATH,
+  MANIFEST_DIR,
+} from '../setup/cmdProperties';
 
 /**
  * ###############################################################################
