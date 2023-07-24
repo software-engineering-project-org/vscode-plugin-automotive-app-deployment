@@ -176,7 +176,8 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "test-jest": "npx jest",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
@@ -195,7 +196,7 @@
     "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.36.0",
     "glob": "^8.1.0",
-    "husky": "^8.0.3",
+    "husky": "^8.0.0",
     "mocha": "^10.2.0",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
