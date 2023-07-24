@@ -12,11 +12,13 @@ export class ServiceSsh {
   private sshPassword: string;
   private ssh: NodeSSH;
   private kantoConfigFile: string = '/etc/container-management/config.json';
+
   /**
    * Create a new instance of ServiceSsh.
-   * @param sshHost - Remote sshd server
-   * @param sshUsername - User to connect
-   * @param sshPort - the port your ssh server is listening on
+   * @param {string} sshHost - Remote sshd server
+   * @param {string} sshUsername - User to connect
+   * @param {number} sshPort - The port your ssh server is listening on
+   * @param {string} sshPassword - The password for the ssh user
    */
   constructor(sshHost: string, sshUsername: string, sshPort: number, sshPassword: string) {
     this.sshHost = sshHost;
@@ -28,6 +30,8 @@ export class ServiceSsh {
 
   /**
    * Setup the connection to the SSH server defined.
+   *
+   * @param {vscode.OutputChannel} chan - The output channel to display progress and results.
    */
   public async initializeSsh(chan: vscode.OutputChannel) {
     try {
@@ -44,13 +48,19 @@ export class ServiceSsh {
     }
   }
 
+  /**
+   * Close the SSH connection.
+   */
   public async closeConn() {
     this.ssh.dispose();
   }
 
   /**
-   * The generated resource will be copied via ssh to remote host (leda)
-   * @param localManifestFile - location of manifest file to copy to remote
+   * Copy a local resource to a remote host using SSH.
+   *
+   * @param {string} local - The local path of the resource to copy.
+   * @param {string} remote - The remote destination path to copy the resource.
+   * @param {vscode.OutputChannel} chan - The output channel to display progress and results.
    */
   public async copyResourceToLeda(local: string, remote: string, chan: vscode.OutputChannel) {
     try {
@@ -67,6 +77,12 @@ export class ServiceSsh {
     }
   }
 
+  /**
+   * Get the configuration file from the Leda device.
+   *
+   * @param {string} tmpConfig - The temporary path to store the configuration file locally.
+   * @param {vscode.OutputChannel} chan - The output channel to display progress and results.
+   */
   public async getConfigFromLedaDevice(tmpConfig: string, chan: vscode.OutputChannel) {
     try {
       await this.ssh.getFile(path.resolve(__dirname, '../../', tmpConfig), this.kantoConfigFile);
@@ -78,6 +94,13 @@ export class ServiceSsh {
     }
   }
 
+  /**
+   * Load and check the configuration JSON file.
+   *
+   * @param {string} configPath - The path to the configuration JSON file.
+   * @param {string} key - The key to check in the configuration JSON.
+   * @param {vscode.OutputChannel} chan - The output channel to display progress and results.
+   */
   public async loadAndCheckConfigJson(configPath: string, key: string, chan: vscode.OutputChannel) {
     try {
       const fileContents = await readFileAsync(path.resolve(__dirname, '../../', configPath));
@@ -97,6 +120,13 @@ export class ServiceSsh {
     }
   }
 
+  /**
+   * Perform container operations on the Leda device.
+   *
+   * @param {string} tag - The tag to use for the container image.
+   * @param {vscode.OutputChannel} chan - The output channel to display progress and results.
+   * @returns {Promise<string>} The container image tag used for the operations.
+   */
   public async containerdOps(tag: string, chan: vscode.OutputChannel): Promise<string> {
     try {
       // Import image
@@ -129,6 +159,11 @@ export class ServiceSsh {
     return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
   }
 
+  /**
+   * Check for errors in the standard error output and throw an error if found.
+   *
+   * @param {string} stderr - The standard error output to check for errors.
+   */
   private checkStdErr(stderr: string) {
     if (stderr !== '') {
       throw Error(stderr);
