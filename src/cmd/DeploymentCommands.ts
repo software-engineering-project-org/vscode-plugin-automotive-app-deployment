@@ -11,7 +11,7 @@ import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
 import { GitConfig } from '../provider/GitConfig';
 import { DockerOps } from '../svc/DockerOps';
-import { checkAndHandleTarSource } from    '../helpers/helpers';
+import { checkAndHandleTarSource } from      '../helpers/helpers';
 
 // Import setup constants from properties file.
 import {
