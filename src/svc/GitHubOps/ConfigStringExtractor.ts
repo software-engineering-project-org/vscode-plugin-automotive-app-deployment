@@ -38,5 +38,5 @@ export class ConfigStringExtractor {
     } catch (error: any) {
       throw new Error('Error reading .git/config: ' + (error as Error).message);
     }
-  }
+  };
 }
