@@ -1,28 +1,31 @@
-import * as vscode from "vscode";
-import { LedaDevice } from "../interfaces/LedaDevice";
-import { loadLedaDevices } from "../helpers/helpers";
+import * as vscode from 'vscode';
+import { LedaDevice } from '../interfaces/LedaDevice';
+import { loadLedaDevices } from '../helpers/helpers';
 
-export class DeviceDataProvider implements vscode.TreeDataProvider<LedaDeviceTreeItem> {
-   
+export class DeviceDataProvider
+  implements vscode.TreeDataProvider<LedaDeviceTreeItem>
+{
   private _onDidChangeTreeData: vscode.EventEmitter<
-  LedaDeviceTreeItem | undefined | void
-> = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>();
-readonly onDidChangeTreeData: vscode.Event<
-LedaDeviceTreeItem | undefined | null | void
-> = this._onDidChangeTreeData.event;
+    LedaDeviceTreeItem | undefined | void
+  > = new vscode.EventEmitter<LedaDeviceTreeItem | undefined | void>();
+  readonly onDidChangeTreeData: vscode.Event<
+    LedaDeviceTreeItem | undefined | null | void
+  > = this._onDidChangeTreeData.event;
 
-update() {
-  this._onDidChangeTreeData.fire();
-}
+  update() {
+    this._onDidChangeTreeData.fire();
+  }
 
-getTreeItem(element: LedaDeviceTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(
+    element: LedaDeviceTreeItem
+  ): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
-}
+  }
 
-async getChildren(
-  element?: LedaDeviceTreeItem
+  async getChildren(
+    element?: LedaDeviceTreeItem
   ): Promise<LedaDeviceTreeItem[] | undefined> {
-  try {
+    try {
       const devices = await loadLedaDevices();
       if (devices) {
         const deviceProfiles = devices.map((device) => {
@@ -33,14 +36,14 @@ async getChildren(
     } catch (error) {
       return Promise.reject([]);
     }
-}
-}
-  
-export class LedaDeviceTreeItem extends vscode.TreeItem {
-    constructor(
-      public readonly label: string,
-      public readonly ledaDevice: LedaDevice
-    ) {
-      super(label);
-    }
   }
+}
+
+export class LedaDeviceTreeItem extends vscode.TreeItem {
+  constructor(
+    public readonly label: string,
+    public readonly ledaDevice: LedaDevice
+  ) {
+    super(label);
+  }
+}

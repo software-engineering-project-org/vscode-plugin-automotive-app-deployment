@@ -1,4 +1,4 @@
-import { Octokit } from "@octokit/core";
+import { Octokit } from '@octokit/core';
 
 /**
  * This class constructs an authorized GitHub Octokit SDK for further usage.
