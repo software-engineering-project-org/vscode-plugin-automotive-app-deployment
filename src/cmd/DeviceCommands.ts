@@ -16,9 +16,7 @@ import { LedaDeviceQuickPickItem } from '../interfaces/QuickPickItem';
  * @param deviceDataProvider The DeviceDataProvider instance used to update the tree view.
  */
 export async function addDevice(deviceDataProvider: DeviceDataProvider) {
-  /**
-   * set name
-   */
+  // Set name.
   const name = await vscode.window.showInputBox({
     prompt: 'Device name',
     placeHolder: 'Waveshare Jetracer',
@@ -27,9 +25,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     return;
   }
 
-  /**
-   * Set ip
-   */
+  // Set IP.
   let ip = await vscode.window.showInputBox({
     prompt: 'IP: ',
     placeHolder: '192.168.0.7',
@@ -41,9 +37,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     return;
   }
 
-  /**
-   * Set sshPort
-   */
+  // Set SSH port.
   let sshPortStr = await vscode.window.showInputBox({
     prompt: 'SSH-Port: ',
     placeHolder: '22',
@@ -53,9 +47,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
   }
   let sshPort = Number(sshPortStr);
 
-  /**
-   * Set sshUsername
-   */
+  // Set SSH username.
   let sshUsername = await vscode.window.showInputBox({
     prompt: 'SSH-Username: ',
     placeHolder: 'root',
@@ -64,9 +56,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     return;
   }
 
-  /**
-   * Save new Device
-   */
+  // Save new device.
   await saveLedaDevice({
     name,
     ip,
