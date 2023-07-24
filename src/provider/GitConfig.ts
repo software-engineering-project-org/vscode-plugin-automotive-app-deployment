@@ -1,5 +1,6 @@
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 
+// TODO: Outsource the hardcode, e.g. in setup directory under providerProperties.ts
 export class GitConfig {
   public static ORG: string;
   public static REPO: string;

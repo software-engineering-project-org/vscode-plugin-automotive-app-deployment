@@ -3,8 +3,8 @@
 export interface PackageVersion {
   image_name_sha: string; // Unique identifier of a Version
   tags: string[]; // Tags associated with the version, empty if no tags given
-  created_at: string; // Timestamp indicating when the version was created
-  updated_at: string; // Timestamp indicating when the version was last updated
+  created_at: string;
+  updated_at: string;
 }
 
 // Helper interface for RegistryOpsOrg Class methods.
