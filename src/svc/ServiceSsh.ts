@@ -11,7 +11,7 @@ export class ServiceSsh {
     private sshPort: number;
     private sshPassword: string;
     private ssh: NodeSSH;
-    private kantoConfigFile: string = "/etc/container-management/config.json"
+    private kantoConfigFile: string = "/etc/container-management/config.json";
 /**
  * Create a new instance of ServiceSsh.
  * @param sshHost - Remote sshd server
@@ -31,7 +31,7 @@ export class ServiceSsh {
    */
   public async initializeSsh(chan: vscode.OutputChannel) {
     try {
-      chan.appendLine(`Establishing SSH connection: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`)
+      chan.appendLine(`Establishing SSH connection: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`);
 
       await this.ssh.connect({
         port: this.sshPort,
@@ -61,7 +61,7 @@ export class ServiceSsh {
         chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
     } catch(e) {
         chan.appendLine(`${e}`);
-        throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`)
+        throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`);
     }
   }
 
@@ -77,7 +77,7 @@ export class ServiceSsh {
     }
     catch(e) {
       chan.appendLine(`${e}`);
-      throw new Error(`Error reading kanto conf -> ${(e as Error).message}`)
+      throw new Error(`Error reading kanto conf -> ${(e as Error).message}`);
     }
   }
 
@@ -108,13 +108,13 @@ export class ServiceSsh {
       chan.appendLine(res.stdout);
 
       // Tag image with local registry prefix 
-      if (tag == "") {
+      if (tag === "") {
         let fullTag = res.stdout.split(" ")[1];
         tag = fullTag.substring(fullTag.indexOf("/") + 1);
         GitConfig.CONTAINER_REGISTRY = 'docker.io';
       }
 
-      chan.appendLine(`Tagging -> ${GitConfig.CONTAINER_REGISTRY}/${tag} TO ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`)
+      chan.appendLine(`Tagging -> ${GitConfig.CONTAINER_REGISTRY}/${tag} TO ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
 
       res = await this.ssh.execCommand(`ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
       this.checkStdErr(res.stderr);
@@ -135,7 +135,7 @@ export class ServiceSsh {
   }
 
   private checkStdErr(stderr: string) {
-    if(stderr != ""){
+    if(stderr !== ""){
       throw Error(stderr);
     }
   }

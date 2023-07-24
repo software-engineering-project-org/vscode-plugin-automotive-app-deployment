@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as Octokit from '@octokit/rest';
 
 const GITHUB_AUTH_PROVIDER = 'github';
-const SCOPES = ['user:email', 'repo', "read:packages"]
+const SCOPES = ['user:email', 'repo', "read:packages"];
 
 export class Credentials {
 

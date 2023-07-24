@@ -11,8 +11,8 @@ export class DockerOps {
       const dockerfilePathAbs = path.resolve(__dirname, '../../', `${GitConfig.DOCKERFILE}`);
 
       if(!fs.existsSync(dockerfilePathAbs)) {
-          chan.appendLine(`Could not find Dockerfile under ${GitConfig.DOCKERFILE}`)
-          throw new Error(`Could not find Dockerfile under ${GitConfig.DOCKERFILE}`)
+          chan.appendLine(`Could not find Dockerfile under ${GitConfig.DOCKERFILE}`);
+          throw new Error(`Could not find Dockerfile under ${GitConfig.DOCKERFILE}`);
       }
       chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
       chan.appendLine('Building image...');
@@ -25,7 +25,7 @@ export class DockerOps {
       try {
           const result = await executeShellCmd(`cd ${path.resolve(__dirname, '../../', './app')} && docker build --platform ${platform} -t ${GitConfig.CONTAINER_REGISTRY}/${tag} .`);
           chan.appendLine(result);
-          return tag
+          return tag;
       } catch (error) {
           chan.appendLine(`${error}`);
           throw new Error(`Error while building image - view Log`);

@@ -24,7 +24,7 @@ export class ManifestGeneratorJson {
       AppManifestPath: velocitasJson.variables.appManifestPath,
       GithubRepoId: velocitasJson.variables.githubRepoId,
       DockerfilePath: velocitasJson.variables.dockerfilePath
-    }
+    };
   }
 
   public static async readAppManifest(manifestPath: string): Promise<any> {
@@ -33,7 +33,7 @@ export class ManifestGeneratorJson {
     const packageName = (manifestJson[0].name as string).toLowerCase();
     return {
       Name: packageName
-    }
+    };
   }
 
   /**

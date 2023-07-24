@@ -54,8 +54,8 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
 
     //Create output channel for user
     let stage01 = vscode.window.createOutputChannel("LAD Remote");
-    stage01.show()
-    stage01.appendLine("Starting remote build and deployment...")
+    stage01.show();
+    stage01.appendLine("Starting remote build and deployment...");
 
   /**
    * STEP 3
@@ -88,7 +88,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
   await serviceSsh.closeConn();
 
-  stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`)
+  stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
@@ -124,8 +124,8 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
 
   // Init 
   let stage02 = vscode.window.createOutputChannel("LAD Hybrid");
-  stage02.show()
-  stage02.appendLine("Starting hybrid build and deployment...")
+  stage02.show();
+  stage02.appendLine("Starting hybrid build and deployment...");
 
   /**
    * STEP 1 & 2
@@ -186,7 +186,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage02);
   await serviceSsh.closeConn();
 
-  stage02.appendLine(`Deploying to Leda:\t `)
+  stage02.appendLine(`Deploying to Leda:\t `);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
@@ -211,8 +211,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
 
   //Create output channel for user
   let stage03 = vscode.window.createOutputChannel("LAD Local");
-  stage03.show()
-  stage03.appendLine("Starting local build and deployment...")
+  stage03.show();
+  stage03.appendLine("Starting local build and deployment...");
 
   /**
    * STEP 1 & 2
@@ -242,7 +242,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 6
    */
-  const localRegTag = await serviceSsh.containerdOps(`${tag}`, stage03)
+  const localRegTag = await serviceSsh.containerdOps(`${tag}`, stage03);
 
   /**
    * STEP 7
@@ -280,7 +280,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
  * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
  */
 
-  stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`)
+  stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
 }
 
@@ -291,7 +291,7 @@ export async function getVersionsWithQuickPick(octokit: Octokit) {
     if (packageVersions) {
       const packageVersion = await vscode.window.showQuickPick(
         packageVersions.map((packageV) => {
-          let tag = packageV.tags.length == 0 ? "No tag avalaible": packageV.tags[0];
+          let tag = packageV.tags.length === 0 ? "No tag avalaible": packageV.tags[0];
           return {
             label: tag,
             description: packageV.updated_at,

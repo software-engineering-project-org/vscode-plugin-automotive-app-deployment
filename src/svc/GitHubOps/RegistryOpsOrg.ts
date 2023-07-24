@@ -76,7 +76,7 @@ export class RegistryOpsOrg {
         org: GitConfig.ORG,
         package_type: GitConfig.PACKAGE_TYPE,
         package_name: `${GitConfig.REPO}/${GitConfig.PACKAGE}`
-      })
+      });
       return response.data;
     } catch (error) {
       console.error("Error retrieving package information:", error);

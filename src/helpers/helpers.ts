@@ -124,9 +124,9 @@ async function downloadTarFileFromWeb(url: string, localPath: string, chan: vsco
 
         fileStream.on('finish', () => {
             fileStream.close();
-            chan.appendLine(`Download finished for ${path.basename(url)}`)
+            chan.appendLine(`Download finished for ${path.basename(url)}`);
         });
-    })
+    });
     chan.appendLine(`Saved file to: ${filename}`);
     return filename;
   } catch(err) {
