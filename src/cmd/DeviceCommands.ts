@@ -11,6 +11,10 @@ import {
 import { LedaDevice } from '../interfaces/LedaDevice';
 import { LedaDeviceQuickPickItem } from '../interfaces/QuickPickItem';
 
+/**
+ * Add a new Leda device to the configuration.
+ * @param deviceDataProvider The DeviceDataProvider instance used to update the tree view.
+ */
 export async function addDevice(deviceDataProvider: DeviceDataProvider) {
   /**
    * set name
@@ -76,6 +80,11 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
   deviceDataProvider.update();
 }
 
+/**
+ * Delete a Leda device from the configuration.
+ * @param deviceDataProvider The DeviceDataProvider instance used to update the tree view.
+ * @param item The LedaDeviceTreeItem representing the device to be deleted (optional, can be null).
+ */
 export async function deleteDevice(
   deviceDataProvider: DeviceDataProvider,
   item: LedaDeviceTreeItem
@@ -106,6 +115,11 @@ export async function deleteDevice(
   deviceDataProvider.update();
 }
 
+/**
+ * Validate an IP address format.
+ * @param ipAddress The IP address to be validated.
+ * @returns true if the IP address is valid, false otherwise.
+ */
 function validateIPaddress(ipAddress: string) {
   if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress)) {
     return true;
@@ -113,6 +127,10 @@ function validateIPaddress(ipAddress: string) {
   return false;
 }
 
+/**
+ * Show a QuickPick dialog to select a target Leda device.
+ * @returns A Promise that resolves to the selected LedaDevice or undefined if no devices are available.
+ */
 export async function getTargetDeviceWithQuickPick() {
   const devices = await loadLedaDevices();
   if (devices) {
