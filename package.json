@@ -182,7 +182,7 @@
     "hooks": {
       "pre-commit": "cd .husky && ./pre-commit"
     }
-  }
+  },
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/jsonpath": "^0.2.0",
