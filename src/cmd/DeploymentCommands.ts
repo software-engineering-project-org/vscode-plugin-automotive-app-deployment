@@ -40,15 +40,14 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   }
 
 /**
- * 1. Übersicht (QuickPick): Drei Auswahl (sha, tag, latest)
- * 2. User klickt Item aus Liste an 
- * 3. Kanto Config -> GH Token gesetzt? 
- *    - /etc/container-management/config.json
- *    - Objekt registry_configurations prüfen 
- * 4. String generieren und in Manifest eintragen 
- * 5. Gesichertes Manifest via SCP auf Leda Device kopieren 
+ * 1. Overview (QuickPick): Three choices (sha, tag, latest)
+ * 2. User clicks on an item from the list
+ * 3. Check if GH Token is set in Kanto Config
+ *    - Check the /etc/container-management/config.json file
+ *    - Examine the registry_configurations object
+ * 4. Generate a string and insert it into the Manifest
+ * 5. Copy the secured Manifest to the Leda Device via SCP
  */
-
 
   /**
    * STEP 1 & 2
@@ -64,7 +63,6 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 3
    */
-
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh(stage01);
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage01);
@@ -112,19 +110,18 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   }
 
 /**
- * 1. Übersicht (QuickPick): Drei Auswahl (sha, tag, latest)
- * 2. User klickt Item aus Liste an 
- * 3. Kanto Config -> local-registries gesetzt? 
- *    - /etc/container-management/config.json
- *    - Objekt insecure-registries prüfen 
- * 4. Download der Auswahl aufs Gerät 
- * 5. Exportieren als Tarball 
- * 6. Tarball via SCP nach Leda Device 
- * 7. Ausführen des containerd imports
- * 8. Einfügen des Strings (index.json) ins Manifest 
- * 9. Gesichertes Manifest via SCP auf Leda Device kopieren 
+ * 1. Overview (QuickPick): Three choices (sha, tag, latest)
+ * 2. User clicks on an item from the list
+ * 3. Check if local-registries are set in Kanto Config
+ *    - Check the /etc/container-management/config.json file
+ *    - Examine the insecure-registries object
+ * 4. Download the selected item to the device
+ * 5. Export it as a Tarball
+ * 6. Copy the Tarball to the Leda Device via SCP
+ * 7. Execute the containerd imports
+ * 8. Insert the string (index.json) into the Manifest
+ * 9. Copy the secured Manifest to the Leda Device via SCP
  */
-
 
   // Init 
   let stage02 = vscode.window.createOutputChannel("LAD Hybrid");
@@ -139,7 +136,6 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
   * STEP 3
   */
-
   const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
   await serviceSsh.initializeSsh(stage02);
   await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage02);
@@ -272,16 +268,16 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
 
 
 /**
- * 1. Pfad zum Dockerfile angeben (vorhanden?)
- * 2. Image lokal bauen (Check Dockerfiel da)
- * 3. Exportieren als Tarball (nach .vscode/tmp/*.tar)
- * 4. Kanto Config -> local-registries gesetzt? 
- *    - /etc/container-management/config.json
- *    - Objekt insecure-registries prüfen
- * 5. Tarball via SCP nach Leda Device
- * 6. Ausführen des containerd commands
- * 7. Einfügen des Strings (index.json) ins Manifest
- * 8. Gesichertes Manifest via SCP auf Leda Device kopieren
+ * 1. Specify the path to the Dockerfile (Is it available?)
+ * 2. Build the image locally (Check if the Dockerfile is present)
+ * 3. Export it as a Tarball (to .vscode/tmp/*.tar)
+ * 4. Check if local-registries are set in Kanto Config
+ *    - Check the /etc/container-management/config.json file
+ *    - Examine the insecure-registries object
+ * 5. Copy the Tarball to the Leda Device via SCP
+ * 6. Execute the containerd commands
+ * 7. Insert the string (index.json) into the Manifest
+ * 8. Copy the secured Manifest to the Leda Device via SCP
  */
 
   stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
