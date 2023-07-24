@@ -25,7 +25,7 @@ export async function saveLedaDevice(newDevice: LedaDevice) {
   const devices = config.get<Array<LedaDevice>>('devices');
   if (devices) {
     const index = devices?.findIndex(
-      (device) => device.name === newDevice.name
+      (device) => device.name === newDevice.name,
     );
     if (index !== undefined && index !== -1) {
       devices[index] = newDevice;
@@ -45,7 +45,7 @@ export async function removeLedaDevice(targetDevice: LedaDevice) {
   const devices = config.get<Array<LedaDevice>>('devices');
   if (devices) {
     const index = devices?.findIndex(
-      (device) => device.name === targetDevice.name
+      (device) => device.name === targetDevice.name,
     );
     if (index !== undefined && index !== -1) {
       devices.splice(index, 1);
@@ -112,7 +112,7 @@ export async function executeShellCmd(command: string): Promise<string> {
  */
 export async function checkAndHandleTarSource(
   src: string,
-  chan: vscode.OutputChannel
+  chan: vscode.OutputChannel,
 ): Promise<string> {
   let filePath = src;
   try {
@@ -120,7 +120,7 @@ export async function checkAndHandleTarSource(
       filePath = await downloadTarFileFromWeb(
         src,
         `.vscode/tmp/${GitConfig.PACKAGE}.tar`,
-        chan
+        chan,
       );
     } else if (src.startsWith('http://')) {
       throw new Error(`Insecure format - HTTP -`);
@@ -150,7 +150,7 @@ export async function checkAndHandleTarSource(
 async function downloadTarFileFromWeb(
   url: string,
   localPath: string,
-  chan: vscode.OutputChannel
+  chan: vscode.OutputChannel,
 ): Promise<string> {
   try {
     const filename = path.resolve(__dirname, '../../', localPath);

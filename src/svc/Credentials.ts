@@ -14,7 +14,7 @@ export class Credentials {
     const session = await vscode.authentication.getSession(
       GITHUB_AUTH_PROVIDER,
       SCOPES,
-      { createIfNone: true }
+      { createIfNone: true },
     );
     this.octokit = new Octokit.Octokit({
       auth: session.accessToken,

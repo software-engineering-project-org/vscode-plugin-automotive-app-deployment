@@ -11,14 +11,14 @@ export class ConfigStringExtractor {
    * @throws {Error} If the .git/config file is not found, remote origin URL is missing, or the URL is invalid.
    */
   public static extractGitOrgAndRepoNameFromConfig = async (
-    gitConfig: string
+    gitConfig: string,
   ): Promise<string> => {
     const gitConfigPath = path.resolve(__dirname, `../../../${gitConfig}`);
 
     try {
       const gitConfigContent = await fs.promises.readFile(
         gitConfigPath,
-        'utf8'
+        'utf8',
       );
 
       // Look for [remote "origin"] and url = ... in config

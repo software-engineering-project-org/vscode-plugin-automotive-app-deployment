@@ -18,10 +18,10 @@ export class ManifestGeneratorJson {
   }
 
   public static async readVelocitasJson(
-    velocitasSettings: string
+    velocitasSettings: string,
   ): Promise<any> {
     const fileContents = await readFileAsync(
-      path.resolve(__dirname, '../../', velocitasSettings)
+      path.resolve(__dirname, '../../', velocitasSettings),
     );
     const velocitasJson = JSON.parse(fileContents);
     return {
@@ -33,7 +33,7 @@ export class ManifestGeneratorJson {
 
   public static async readAppManifest(manifestPath: string): Promise<any> {
     const fileContents = await readFileAsync(
-      path.resolve(__dirname, '../../', manifestPath)
+      path.resolve(__dirname, '../../', manifestPath),
     );
     const manifestJson = JSON.parse(fileContents);
     const packageName = (manifestJson[0].name as string).toLowerCase();
@@ -48,7 +48,7 @@ export class ManifestGeneratorJson {
    */
   public generateKantoContainerManifest(
     keyValuePairs: Record<string, any>,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ): void {
     this.loadTemplateJson(chan, (templateJson: any) => {
       const modifiedJson = this.alterJson(templateJson, keyValuePairs);
@@ -62,7 +62,7 @@ export class ManifestGeneratorJson {
    */
   private loadTemplateJson(
     chan: vscode.OutputChannel,
-    callback: (templateJson: any) => void
+    callback: (templateJson: any) => void,
   ): void {
     fs.readFile(this.templateFilePath, 'utf8', (err, fileContents) => {
       try {
@@ -117,7 +117,7 @@ export class ManifestGeneratorJson {
    */
   private saveModifiedJson(
     modifiedJson: any,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ): void {
     const outputDir = path.dirname(this.outputFilePath);
     if (!fs.existsSync(outputDir)) {

@@ -17,13 +17,13 @@ export class DeviceDataProvider
   }
 
   getTreeItem(
-    element: LedaDeviceTreeItem
+    element: LedaDeviceTreeItem,
   ): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
   async getChildren(
-    element?: LedaDeviceTreeItem
+    element?: LedaDeviceTreeItem,
   ): Promise<LedaDeviceTreeItem[] | undefined> {
     try {
       const devices = await loadLedaDevices();
@@ -42,7 +42,7 @@ export class DeviceDataProvider
 export class LedaDeviceTreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
-    public readonly ledaDevice: LedaDevice
+    public readonly ledaDevice: LedaDevice,
   ) {
     super(label);
   }

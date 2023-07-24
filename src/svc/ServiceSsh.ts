@@ -22,7 +22,7 @@ export class ServiceSsh {
     sshHost: string,
     sshUsername: string,
     sshPort: number,
-    sshPassword: string
+    sshPassword: string,
   ) {
     this.sshHost = sshHost;
     this.sshUsername = sshUsername;
@@ -37,7 +37,7 @@ export class ServiceSsh {
   public async initializeSsh(chan: vscode.OutputChannel) {
     try {
       chan.appendLine(
-        `Establishing SSH connection: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`
+        `Establishing SSH connection: ssh ${this.sshUsername}@${this.sshHost}:${this.sshPort}`,
       );
 
       await this.ssh.connect({
@@ -62,7 +62,7 @@ export class ServiceSsh {
   public async copyResourceToLeda(
     local: string,
     remote: string,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ) {
     try {
       await this.ssh.putFiles([
@@ -75,23 +75,25 @@ export class ServiceSsh {
     } catch (e) {
       chan.appendLine(`${e}`);
       throw new Error(
-        `Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`
+        `Error connecting to device: ${this.sshHost} -> ${
+          (e as Error).message
+        }`,
       );
     }
   }
 
   public async getConfigFromLedaDevice(
     tmpConfig: string,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ) {
     try {
       await this.ssh.getFile(
         path.resolve(__dirname, '../../', tmpConfig),
-        this.kantoConfigFile
+        this.kantoConfigFile,
       );
 
       chan.appendLine(
-        `Fetch Config:\t\t Found file at - ${this.kantoConfigFile} - Checking config...`
+        `Fetch Config:\t\t Found file at - ${this.kantoConfigFile} - Checking config...`,
       );
     } catch (e) {
       chan.appendLine(`${e}`);
@@ -102,18 +104,18 @@ export class ServiceSsh {
   public async loadAndCheckConfigJson(
     configPath: string,
     key: string,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ) {
     try {
       const fileContents = await readFileAsync(
-        path.resolve(__dirname, '../../', configPath)
+        path.resolve(__dirname, '../../', configPath),
       );
       const configJson = JSON.parse(fileContents);
       const keys = JSONPath({ path: key, json: configJson });
 
       if (keys.length === 0) {
         throw new Error(
-          `Stage requires key: ${key} to be set in ${configPath}`
+          `Stage requires key: ${key} to be set in ${configPath}`,
         );
       } else {
         chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
@@ -128,13 +130,13 @@ export class ServiceSsh {
 
   public async containerdOps(
     tag: string,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ): Promise<string> {
     try {
       // Import image
       let res = await this.ssh.execCommand(
         `ctr image import ${GitConfig.PACKAGE}.tar`,
-        { cwd: '/tmp' }
+        { cwd: '/tmp' },
       );
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
@@ -147,18 +149,18 @@ export class ServiceSsh {
       }
 
       chan.appendLine(
-        `Tagging -> ${GitConfig.CONTAINER_REGISTRY}/${tag} TO ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`
+        `Tagging -> ${GitConfig.CONTAINER_REGISTRY}/${tag} TO ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`,
       );
 
       res = await this.ssh.execCommand(
-        `ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`
+        `ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`,
       );
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
 
       // Push image to local registry
       res = await this.ssh.execCommand(
-        `ctr image push ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`
+        `ctr image push ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`,
       );
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
@@ -169,8 +171,8 @@ export class ServiceSsh {
         path.resolve(
           __dirname,
           '../../',
-          `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`
-        )
+          `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`,
+        ),
       );
     }
     return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;

@@ -87,7 +87,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
  */
 export async function deleteDevice(
   deviceDataProvider: DeviceDataProvider,
-  item: LedaDeviceTreeItem
+  item: LedaDeviceTreeItem,
 ) {
   let device = item?.ledaDevice;
   if (!device) {
@@ -104,7 +104,7 @@ export async function deleteDevice(
       modal: true,
     },
     'Yes',
-    'No'
+    'No',
   );
 
   if (!result || result === 'No') {
@@ -142,7 +142,7 @@ export async function getTargetDeviceWithQuickPick() {
           detail: `Host: ${device.ip} Port: ${device.sshPort}`,
           ...device,
         } as LedaDeviceQuickPickItem;
-      })
+      }),
     );
     return deviceName;
   }

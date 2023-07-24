@@ -9,7 +9,7 @@ import { GitConfig } from '../../provider/GitConfig';
  */
 export class RegistryOpsOrg {
   public async getPackageVersionsObj(
-    octokit: Octokit
+    octokit: Octokit,
   ): Promise<PackageVersion[]> {
     try {
       // Fetch Organization and Repository the user operates in from .git/config. This is named "context" in this module.
@@ -25,7 +25,7 @@ export class RegistryOpsOrg {
           tags: item.metadata.container.tags,
           created_at: item.created_at,
           updated_at: item.updated_at,
-        })
+        }),
       );
 
       return packageVersionsObj;
@@ -43,7 +43,7 @@ export class RegistryOpsOrg {
    */
   private extractPackageName(
     orgPackagesList: any,
-    orgRepoContext: string
+    orgRepoContext: string,
   ): string | null {
     // Parse the data containing 1...n packages assigned to 1...n Repositories in an Organization.
     const json = JSON.parse(JSON.stringify(orgPackagesList));
@@ -67,7 +67,7 @@ export class RegistryOpsOrg {
   private async getOrganizationPackageImages(octokit: Octokit): Promise<any[]> {
     try {
       const response = await octokit.request(
-        `GET /orgs/${GitConfig.ORG}/packages?package_type=${GitConfig.PACKAGE_TYPE}`
+        `GET /orgs/${GitConfig.ORG}/packages?package_type=${GitConfig.PACKAGE_TYPE}`,
       );
       return response.data;
     } catch (error) {

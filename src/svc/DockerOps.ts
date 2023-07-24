@@ -9,15 +9,15 @@ export class DockerOps {
     const dockerfilePathAbs = path.resolve(
       __dirname,
       '../../',
-      `${GitConfig.DOCKERFILE}`
+      `${GitConfig.DOCKERFILE}`,
     );
 
     if (!fs.existsSync(dockerfilePathAbs)) {
       chan.appendLine(
-        `Could not find Dockerfile under ${GitConfig.DOCKERFILE}`
+        `Could not find Dockerfile under ${GitConfig.DOCKERFILE}`,
       );
       throw new Error(
-        `Could not find Dockerfile under ${GitConfig.DOCKERFILE}`
+        `Could not find Dockerfile under ${GitConfig.DOCKERFILE}`,
       );
     }
     chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
@@ -33,10 +33,10 @@ export class DockerOps {
         `cd ${path.resolve(
           __dirname,
           '../../',
-          './app'
+          './app',
         )} && docker build --platform ${platform} -t ${
           GitConfig.CONTAINER_REGISTRY
-        }/${tag} .`
+        }/${tag} .`,
       );
       chan.appendLine(result);
       return tag;
@@ -48,7 +48,7 @@ export class DockerOps {
 
   public async exportImageAsTarball(
     tag: string,
-    chan: vscode.OutputChannel
+    chan: vscode.OutputChannel,
   ): Promise<string> {
     const relTarPath = `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
     const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
@@ -56,7 +56,7 @@ export class DockerOps {
       const result = await executeShellCmd(`docker save ${tag} > ${outputTar}`);
       chan.appendLine(result);
       chan.appendLine(
-        `Exported image as tarball to ${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`
+        `Exported image as tarball to ${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`,
       );
       return relTarPath;
     } catch (error) {

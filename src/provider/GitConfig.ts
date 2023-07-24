@@ -12,10 +12,10 @@ export class GitConfig {
 
   public static async init() {
     const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson(
-      '.velocitas.json'
+      '.velocitas.json',
     );
     const manifestData = await ManifestGeneratorJson.readAppManifest(
-      velocitasSettings.AppManifestPath
+      velocitasSettings.AppManifestPath,
     );
     const remoteOrigin = velocitasSettings.GithubRepoId;
     this.DOCKERFILE = velocitasSettings.DockerfilePath;

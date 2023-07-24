@@ -22,7 +22,10 @@ export default class LedaAutoDeployer {
     this.credentials = new Credentials();
 
     context.subscriptions.push(
-      vscode.window.registerTreeDataProvider('devices', this.deviceDataProvider)
+      vscode.window.registerTreeDataProvider(
+        'devices',
+        this.deviceDataProvider,
+      ),
     );
 
     vscode.workspace.onDidChangeConfiguration(() => {
@@ -38,8 +41,8 @@ export default class LedaAutoDeployer {
         'automotive-app-deployment.addDevice',
         async () => {
           await addDevice(this.deviceDataProvider);
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -47,8 +50,8 @@ export default class LedaAutoDeployer {
         'automotive-app-deployment.deleteDevice',
         async (item: LedaDeviceTreeItem) => {
           await deleteDevice(this.deviceDataProvider, item);
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -56,8 +59,8 @@ export default class LedaAutoDeployer {
         'automotive-app-deployment.refreshDevices',
         async () => {
           this.deviceDataProvider.update();
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -65,10 +68,10 @@ export default class LedaAutoDeployer {
         'automotive-app-deployment.editDevice',
         async () => {
           await vscode.commands.executeCommand(
-            'workbench.action.openWorkspaceSettingsFile'
+            'workbench.action.openWorkspaceSettingsFile',
           );
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -76,10 +79,10 @@ export default class LedaAutoDeployer {
         'automotive-app-deployment.openConfig',
         async () => {
           await vscode.commands.executeCommand(
-            'workbench.action.openWorkspaceSettingsFile'
+            'workbench.action.openWorkspaceSettingsFile',
           );
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -88,8 +91,8 @@ export default class LedaAutoDeployer {
         async (item: LedaDeviceTreeItem) => {
           const octokit = await this.credentials.getOctokit();
           await deployStageOne(item, octokit);
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -98,8 +101,8 @@ export default class LedaAutoDeployer {
         async (item: LedaDeviceTreeItem) => {
           const octokit = await this.credentials.getOctokit();
           await deployStageTwo(item, octokit);
-        }
-      )
+        },
+      ),
     );
 
     this.context.subscriptions.push(
@@ -107,8 +110,8 @@ export default class LedaAutoDeployer {
         'automotive-app-deployment.deployStageThree',
         async (item: LedaDeviceTreeItem) => {
           await deployStageThree(item);
-        }
-      )
+        },
+      ),
     );
   }
 }
