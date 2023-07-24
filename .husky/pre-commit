@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Run Prettier on staged files
+npm run format

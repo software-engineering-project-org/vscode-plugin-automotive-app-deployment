@@ -178,6 +178,11 @@
     "test-jest": "npx jest",
     "format": "prettier --write \"src/**/*.ts\""
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "cd .husky && ./pre-commit"
+    }
+  }
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/jsonpath": "^0.2.0",
@@ -190,6 +195,7 @@
     "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.36.0",
     "glob": "^8.1.0",
+    "husky": "^8.0.3",
     "mocha": "^10.2.0",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
