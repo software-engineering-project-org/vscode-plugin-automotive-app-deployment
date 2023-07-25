@@ -1,3 +1,8 @@
+
+// TODO: Refactor me.
+
+
+
 // Represents a generic internal error that indicates unexpected issues within the system.
 export class GenericInternalError extends Error {
   constructor(message: string) {
