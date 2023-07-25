@@ -23,7 +23,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     prompt: 'IP: ',
     placeHolder: '192.168.0.7',
     validateInput: (text) => {
-      return validateIPaddress(text) ? null : 'No valid IP Address.';
+      return isValidIp(text) ? null : 'No valid IP Address.';
     },
   });
   if (!ip) {
@@ -35,8 +35,8 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     prompt: 'SSH-Port: ',
     placeHolder: '22',
     validateInput: (text) => {
-      return validatePort(text) ? null : 'No valid port specification. Define an integer in range 0 - 65535.';
-    }
+      return isValidPort(text) ? null : 'No valid port specification. Define an integer in range 0 - 65535.';
+    },
   });
   if (!sshPortStr) {
     sshPortStr = '22';
@@ -103,7 +103,7 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
  * @param ipAddress The IP address to be validated.
  * @returns true if the IP address is valid, false otherwise.
  */
-function validateIPaddress(ipAddress: string) {
+function isValidIp(ipAddress: string) {
   if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress)) {
     return true;
   }
@@ -115,13 +115,14 @@ function validateIPaddress(ipAddress: string) {
  * @param port The port number to be validated.
  * @returns true if the port number is valid, false otherwise.
  */
-function validatePort(port: string) {
+function isValidPort(port: string) {
   // Convert the input port to a number and check if it's a valid number
   const portNumber = parseInt(port, 10);
-  if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
-    return false; // Invalid port number
+  const HIGHPORT = 65535;
+  if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > HIGHPORT) {
+    return false;
   }
-  return true; // Valid port number
+  return true;
 }
 
 /**
