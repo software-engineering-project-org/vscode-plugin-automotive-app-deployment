@@ -1,9 +1,7 @@
-import { QuickPickItem } from "vscode";
-import { LedaDevice} from "./LedaDevice";
-import { PackageVersion } from "./GitHubTypes";
+import { QuickPickItem } from 'vscode';
+import { LedaDevice } from './LedaDevice';
+import { PackageVersion } from './GitHubTypes';
 
-export interface LedaDeviceQuickPickItem 
-    extends QuickPickItem, LedaDevice {}
+export interface LedaDeviceQuickPickItem extends QuickPickItem, LedaDevice {}
 
-export interface PackageQuickPickItem 
-    extends QuickPickItem,  PackageVersion {}
+export interface PackageQuickPickItem extends QuickPickItem, PackageVersion {}

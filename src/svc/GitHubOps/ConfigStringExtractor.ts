@@ -18,23 +18,25 @@ export class ConfigStringExtractor {
 
       // Look for [remote "origin"] and url = ... in config
       const remoteOriginRegex = /\[remote\s+"origin"\]\s*\n.*url\s*=\s*(\S+)/;
-      const remoteOriginMatch = gitConfigContent.match(remoteOriginRegex);
-      if (!remoteOriginMatch) throw new Error('Remote origin URL not found');
-
+      const remoteOriginMatch = remoteOriginRegex.exec(gitConfigContent);
+      if (!remoteOriginMatch) {
+        throw new Error('Remote origin URL not found');
+      }
       // Extract URL from the matched pattern
       const url = remoteOriginMatch[1];
 
       // Extract organization and repository name from URL
-      const orgRepoRegex = /github\.com\/([^\/]+\/[^\/]+)\.git/; // Define <org>/<repo> as captured group inside the matching pattern.
-      const matches = url.match(orgRepoRegex);
-      if (!matches) throw new Error('Invalid remote origin URL');
-      
+      const orgRepoRegex = /github\.com\/([^/]+\/[^/]+)\.git/; // Define <org>/<repo> as captured group inside the matching pattern.
+      const matches = orgRepoRegex.exec(url);
+      if (!matches) {
+        throw new Error('Invalid remote origin URL');
+      }
       // Return the first (and only) captured group in the match which is <org>/<repo>. [0] would be the entire match.
-      const orgRepo = matches[1]; 
+      const orgRepo = matches[1];
 
       return orgRepo;
     } catch (error: any) {
       throw new Error('Error reading .git/config: ' + (error as Error).message);
     }
-  }
+  };
 }

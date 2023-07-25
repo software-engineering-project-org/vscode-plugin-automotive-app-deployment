@@ -23,8 +23,8 @@ export class ManifestGeneratorJson {
     return {
       AppManifestPath: velocitasJson.variables.appManifestPath,
       GithubRepoId: velocitasJson.variables.githubRepoId,
-      DockerfilePath: velocitasJson.variables.dockerfilePath
-    }
+      DockerfilePath: velocitasJson.variables.dockerfilePath,
+    };
   }
 
   public static async readAppManifest(manifestPath: string): Promise<any> {
@@ -32,8 +32,8 @@ export class ManifestGeneratorJson {
     const manifestJson = JSON.parse(fileContents);
     const packageName = (manifestJson[0].name as string).toLowerCase();
     return {
-      Name: packageName
-    }
+      Name: packageName,
+    };
   }
 
   /**
@@ -55,7 +55,8 @@ export class ManifestGeneratorJson {
     fs.readFile(this.templateFilePath, 'utf8', (err, fileContents) => {
       try {
         if (err) {
-          throw new Error(`Error reading template JSON file: ${err}`);
+          chan.appendLine(err.message);
+          throw new Error('Error reading template JSON file');
         }
         const templateJson = JSON.parse(fileContents);
         callback(templateJson);
@@ -111,7 +112,8 @@ export class ManifestGeneratorJson {
     const updatedJson = JSON.stringify(modifiedJson, null, 2);
     fs.writeFile(this.outputFilePath, updatedJson, 'utf8', (err) => {
       if (err) {
-        throw new Error(`Error writing modified JSON file: ${err}`);
+        chan.appendLine(err.message);
+        throw new Error('Error writing modified JSON file');
       }
       chan.appendLine(`Adjust Kanto Manifest:\t Modified JSON saved!`);
     });
