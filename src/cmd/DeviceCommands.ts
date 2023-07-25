@@ -23,7 +23,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     prompt: 'IP: ',
     placeHolder: '192.168.0.7',
     validateInput: (text) => {
-      return validateIPaddress(text) ? null : 'No valid IP Address';
+      return validateIPaddress(text) ? null : 'No valid IP Address.';
     },
   });
   if (!ip) {
@@ -34,6 +34,9 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
   let sshPortStr = await vscode.window.showInputBox({
     prompt: 'SSH-Port: ',
     placeHolder: '22',
+    validateInput: (text) => {
+      return validatePort(text) ? null : 'No valid port specification. Define an integer in range 0 - 65535.';
+    }
   });
   if (!sshPortStr) {
     sshPortStr = '22';
@@ -79,7 +82,7 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
 
   const deviceName = device?.name;
   const result = await vscode.window.showWarningMessage(
-    `Are you sure you want to delete profile: ${deviceName} ?`,
+    `Are you sure you want to delete the profile: ${deviceName} ?`,
     {
       modal: true,
     },
@@ -105,6 +108,20 @@ function validateIPaddress(ipAddress: string) {
     return true;
   }
   return false;
+}
+
+/**
+ * Validate a port number.
+ * @param port The port number to be validated.
+ * @returns true if the port number is valid, false otherwise.
+ */
+function validatePort(port: string) {
+  // Convert the input port to a number and check if it's a valid number
+  const portNumber = parseInt(port, 10);
+  if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
+    return false; // Invalid port number
+  }
+  return true; // Valid port number
 }
 
 /**
