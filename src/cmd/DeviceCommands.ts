@@ -99,33 +99,6 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
 }
 
 /**
- * Validate an IP address format.
- * @param ipAddress The IP address to be validated.
- * @returns true if the IP address is valid, false otherwise.
- */
-function isValidIp(ipAddress: string) {
-  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress)) {
-    return true;
-  }
-  return false;
-}
-
-/**
- * Validate a port number.
- * @param port The port number to be validated.
- * @returns true if the port number is valid, false otherwise.
- */
-function isValidPort(port: string) {
-  // Convert the input port to a number and check if it's a valid number
-  const portNumber = parseInt(port, 10);
-  const HIGHPORT = 65535;
-  if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > HIGHPORT) {
-    return false;
-  }
-  return true;
-}
-
-/**
  * Show a QuickPick dialog to select a target Leda device.
  * @returns A Promise that resolves to the selected LedaDevice or undefined if no devices are available.
  */
@@ -144,4 +117,31 @@ export async function getTargetDeviceWithQuickPick() {
     );
     return deviceName;
   }
+}
+
+/**
+ * Helper to validate an IP address format.
+ * @param ipAddress The IP address to be validated.
+ * @returns true if the IP address is valid, false otherwise.
+ */
+function isValidIp(ipAddress: string) {
+  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Helper to validate a port number.
+ * @param port The port number to be validated.
+ * @returns true if the port number is valid, false otherwise.
+ */
+function isValidPort(port: string) {
+  // Convert the input port to a number and check if it's a valid number
+  const portNumber = parseInt(port, 10);
+  const HIGHPORT = 65535;
+  if (Number.isNaN(portNumber) || portNumber < 1 || portNumber > HIGHPORT) {
+    return false;
+  }
+  return true;
 }
