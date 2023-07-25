@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { GitConfig } from '../provider/GitConfig';
 import { executeShellCmd } from '../helpers/helpers';
+import { CONTAINER_REGISTRY, TARBALL_OUTPUT_PATH } from '../setup/cmdProperties';
 
 export class DockerOps {
   /**
@@ -34,7 +35,7 @@ export class DockerOps {
 
     try {
       // Execute the Docker build command to build the image.
-      const result = await executeShellCmd(`cd ${path.resolve(__dirname, '../../', './app')} && docker build --platform ${platform} -t ${GitConfig.CONTAINER_REGISTRY}/${tag} .`);
+      const result = await executeShellCmd(`cd ${path.resolve(__dirname, '../../', './app')} && docker build --platform ${platform} -t ${CONTAINER_REGISTRY.ghcr}/${tag} .`);
       chan.appendLine(result);
       return tag; // Return the tag of the built Docker image.
     } catch (error) {
@@ -53,14 +54,14 @@ export class DockerOps {
    */
   public async exportImageAsTarball(tag: string, chan: vscode.OutputChannel): Promise<string> {
     // Specify the relative path for the tarball based on the GitConfig settings.
-    const relTarPath = `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
+    const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
     const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
 
     try {
       // Execute the Docker save command to export the image as a tarball.
       const result = await executeShellCmd(`docker save ${tag} > ${outputTar}`);
       chan.appendLine(result);
-      chan.appendLine(`Exported image as tarball to ${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
+      chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
       return relTarPath; // Return the relative path of the exported tarball.
     } catch (error) {
       chan.appendLine('Error while exporting image to tar...');

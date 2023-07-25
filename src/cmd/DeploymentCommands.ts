@@ -14,7 +14,15 @@ import { DockerOps } from '../svc/DockerOps';
 import { checkAndHandleTarSource } from '../helpers/helpers';
 
 // Import setup constants from properties file.
-import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR } from '../setup/cmdProperties';
+import {
+  CONTAINER_REGISTRY,
+  TMP_KANTO_CONFIG_PATH,
+  KANTO_CONFIG_REMOTE_REG_JSON_PATH,
+  KANTO_CONFIG_LOCAL_REG_JSON_PATH,
+  TEMPLATE_FILE_PATH,
+  OUTPUT_FILE_PATH,
+  MANIFEST_DIR,
+} from '../setup/cmdProperties';
 
 /**
  * ###############################################################################
@@ -68,7 +76,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   const keyValuePairs = {
     id: GitConfig.PACKAGE,
     name: GitConfig.PACKAGE,
-    'image.name': `${GitConfig.CONTAINER_REGISTRY}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
+    'image.name': `${CONTAINER_REGISTRY.ghcr}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
   };
 
   await new Promise((resolve) => {
@@ -215,7 +223,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 3
    */
-  const tar = await dockerOps.exportImageAsTarball(`${GitConfig.CONTAINER_REGISTRY}/${tag}`, stage03);
+  const tar = await dockerOps.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
 
   /**
    * STEP 4

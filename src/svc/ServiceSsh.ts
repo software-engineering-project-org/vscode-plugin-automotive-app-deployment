@@ -4,6 +4,7 @@ import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { GitConfig } from '../provider/GitConfig';
+import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH } from '../setup/cmdProperties';
 
 export class ServiceSsh {
   private sshHost: string;
@@ -11,7 +12,6 @@ export class ServiceSsh {
   private sshPort: number;
   private sshPassword: string;
   private ssh: NodeSSH;
-  private kantoConfigFile: string = '/etc/container-management/config.json';
 
   /**
    * Create a new instance of ServiceSsh.
@@ -85,9 +85,9 @@ export class ServiceSsh {
    */
   public async getConfigFromLedaDevice(tmpConfig: string, chan: vscode.OutputChannel) {
     try {
-      await this.ssh.getFile(path.resolve(__dirname, '../../', tmpConfig), this.kantoConfigFile);
+      await this.ssh.getFile(path.resolve(__dirname, '../../', tmpConfig), KANTO_CONFIG_FILE);
 
-      chan.appendLine(`Fetch Config:\t\t Found file at - ${this.kantoConfigFile} - Checking config...`);
+      chan.appendLine(`Fetch Config:\t\t Found file at - ${KANTO_CONFIG_FILE} - Checking config...`);
     } catch (e) {
       chan.appendLine(`${e}`);
       throw new Error(`Error reading kanto conf -> ${(e as Error).message}`);
@@ -133,30 +133,31 @@ export class ServiceSsh {
       let res = await this.ssh.execCommand(`ctr image import ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp' });
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
+      let registry = CONTAINER_REGISTRY.ghcr;
 
       // Tag image with local registry prefix
       if (tag === '') {
         let fullTag = res.stdout.split(' ')[1];
         tag = fullTag.substring(fullTag.indexOf('/') + 1);
-        GitConfig.CONTAINER_REGISTRY = 'docker.io';
+        registry = CONTAINER_REGISTRY.docker;
       }
 
-      chan.appendLine(`Tagging -> ${GitConfig.CONTAINER_REGISTRY}/${tag} TO ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      chan.appendLine(`Tagging -> ${registry}/${tag} TO ${LOCAL_KANTO_REGISTRY}/${tag}`);
 
-      res = await this.ssh.execCommand(`ctr image tag ${GitConfig.CONTAINER_REGISTRY}/${tag} ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      res = await this.ssh.execCommand(`ctr image tag ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}`);
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
 
       // Push image to local registry
-      res = await this.ssh.execCommand(`ctr image push ${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`);
+      res = await this.ssh.execCommand(`ctr image push ${LOCAL_KANTO_REGISTRY}/${tag}`);
       this.checkStdErr(res.stderr);
       chan.appendLine(res.stdout);
     } catch (error) {
       chan.appendLine(`${error}`);
     } finally {
-      await deleteTmpFile(path.resolve(__dirname, '../../', `${GitConfig.TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
+      await deleteTmpFile(path.resolve(__dirname, '../../', `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
     }
-    return `${GitConfig.LOCAL_KANTO_REGISTRY}/${tag}`;
+    return `${LOCAL_KANTO_REGISTRY}/${tag}`;
   }
 
   /**

@@ -1,8 +1,8 @@
 import { JSONPath } from 'jsonpath-plus';
-
 import { PackageVersion } from '../../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
 import { GitConfig } from '../../provider/GitConfig';
+import { PACKAGE_TYPE } from '../../setup/cmdProperties';
 
 /**
  * Class for interacting with GitHub using an authenticated Octokit SDK object, fetching GitHub organization-specific registry information.
@@ -59,7 +59,7 @@ export class RegistryOpsOrg {
    */
   private async getOrganizationPackageImages(octokit: Octokit): Promise<any[]> {
     try {
-      const response = await octokit.request(`GET /orgs/${GitConfig.ORG}/packages?package_type=${GitConfig.PACKAGE_TYPE}`);
+      const response = await octokit.request(`GET /orgs/${GitConfig.ORG}/packages?package_type=${PACKAGE_TYPE}`);
       return response.data;
     } catch (error) {
       console.error('Error retrieving package images:', error);
@@ -76,7 +76,7 @@ export class RegistryOpsOrg {
     try {
       const response = await octokit.packages.getAllPackageVersionsForPackageOwnedByOrg({
         org: GitConfig.ORG,
-        package_type: GitConfig.PACKAGE_TYPE,
+        package_type: PACKAGE_TYPE,
         package_name: `${GitConfig.REPO}/${GitConfig.PACKAGE}`,
       });
       return response.data;
