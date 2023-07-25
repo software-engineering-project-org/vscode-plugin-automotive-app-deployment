@@ -1,3 +1,12 @@
+// Represents a generic internal error that indicates unexpected issues within the system.
+export class GenericInternalError extends Error {
+  constructor(message: string) {
+    super(`Internal Error - > SYSTEM: ${message}`);
+    this.name = 'GenericInternalError';
+  }
+}
+
+// Represents an error that occurs when the provided web source (HTTP) is insecure and not using HTTPS.
 export class InsecureWebSourceError extends Error {
   constructor(sourcePath: string) {
     super(`Error - Insecure web source (HTTP) in given path: "${sourcePath}". Please specify a HTTPS address or a local path.`);
@@ -5,6 +14,7 @@ export class InsecureWebSourceError extends Error {
   }
 }
 
+// Represents an error that occurs when the specified local path is not found on the device.
 export class LocalPathNotFoundError extends Error {
   constructor(sourcePath: string) {
     super(`Error - Local path: "${sourcePath}" not found on the device.`);
@@ -12,6 +22,7 @@ export class LocalPathNotFoundError extends Error {
   }
 }
 
+// Represents an error that occurs when the file located at the specified path is not a TAR file.
 export class NotTARFileError extends Error {
   constructor(sourcePath: string) {
     super(`Error - File located at path: ${sourcePath} is not a TAR file. Please add a *.tar file.`);
@@ -19,9 +30,18 @@ export class NotTARFileError extends Error {
   }
 }
 
-export class GenericInternalError extends Error {
-  constructor(message: string) {
-    super(`${message}`);
-    this.name = 'GenericInternalError';
+// Represents an error that occurs when the remote origin URL is not found in the specified git configuration file.
+export class RemoteOriginNotFoundError extends Error {
+  constructor(gitConfig: string) {
+    super(`Error - Remote origin URL not found in "${gitConfig}".`);
+    this.name = 'RemoteOriginNotFoundError';
+  }
+}
+
+// Represents an error that occurs when the remote origin URL in the specified git configuration file is invalid.
+export class InvalidRemoteOriginError extends Error {
+  constructor(gitConfig: string) {
+    super(`Error - Invalid remote origin URL in "${gitConfig}".`);
+    this.name = 'InvalidRemoteOriginError';
   }
 }
