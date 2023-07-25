@@ -39,11 +39,10 @@ export class ConfigStringExtractor {
     } catch (err: any) {
       if (err instanceof RemoteOriginNotFoundError || err instanceof InvalidRemoteOriginError) {
         // Handle specific errors here (e.g., log, display error message, etc.)
-        console.error(err.message);
         throw err; // Re-throw the caught error to propagate it further if needed
       } else {
-        // Handle other errors (e.g., internal errors) here
-        throw new GenericInternalError(err.message);
+        // Handle other errors
+        throw new GenericInternalError(err);
       }
     }
   };
