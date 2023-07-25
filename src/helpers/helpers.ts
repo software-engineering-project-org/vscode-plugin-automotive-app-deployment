@@ -76,7 +76,7 @@ export function readFileAsync(filePath: string): any {
 export async function deleteTmpFile(filePath: string): Promise<void> {
   fs.unlink(filePath, (err) => {
     if (err) {
-      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err}`)
+      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err}`);
     }
   });
 }
@@ -125,7 +125,6 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
     throw new GenericInternalError(`Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`);
   }
 }
-
 
 /**
  * Download a TAR file from a URL and save it to a local path.
