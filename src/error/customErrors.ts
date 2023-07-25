@@ -45,3 +45,27 @@ export class InvalidRemoteOriginError extends Error {
     this.name = 'InvalidRemoteOriginError';
   }
 }
+
+// Represents an error that occurs when there is a problem retrieving package images from the GitHub Package Registry.
+export class PackageImagesFetchError extends Error {
+  constructor(message: string) {
+    super(`Error retrieving package images > SYSTEM: ${message}`);
+    this.name = 'PackageImagesFetchError';
+  }
+}
+
+// Represents an error that occurs when there is a problem retrieving package versions from the GitHub Package Registry.
+export class PackageVersionsFetchError extends Error {
+  constructor(message: string) {
+    super(`Error retrieving package versions: ${message}.`);
+    this.name = 'PackageVersionsFetchError';
+  }
+}
+
+// Represents an error that occurs when the package name is not found in the retrieved data.
+export class PackageNameNotFoundError extends Error {
+  constructor(message: string) {
+    super(`Package name not found in the retrieved data.`);
+    this.name = 'PackageNameNotFoundError';
+  }
+}
