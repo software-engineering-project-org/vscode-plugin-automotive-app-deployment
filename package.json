@@ -1,8 +1,8 @@
 {
-  "name": "automotive-app-deployment",
-  "displayName": "Automotive App Deployment",
-  "description": "Deploy a given docker image from a GitHub package registry to a remote microcontroller",
-  "version": "0.0.1",
+  "name": "vscode-plugin-for-sdv-app-deployment",
+  "displayName": "A VSCode Plugin for SDV Development - Automotive App Deployment",
+  "description": "Multi-stage deployment simplification for Automotive App Deployment regarding Software Defined Vehicles (SDV) Development via VSCode Plugin",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.77.0"
   },
