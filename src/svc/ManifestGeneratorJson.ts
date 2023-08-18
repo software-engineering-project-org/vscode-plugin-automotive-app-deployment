@@ -56,12 +56,14 @@ export class ManifestGeneratorJson {
       try {
         if (err) {
           chan.appendLine(err.message);
+          // TODO: Error class
           throw new Error('Error reading template JSON file');
         }
         const templateJson = JSON.parse(fileContents);
         callback(templateJson);
       } catch (error) {
         chan.appendLine(`${error}`);
+        // TODO: Error class
         throw new Error(`Error parsing template JSON: ${error}`);
       }
     });
@@ -84,6 +86,7 @@ export class ManifestGeneratorJson {
         for (let i = 0; i < keys.length - 1; i++) {
           const currentKey = keys[i];
           if (!currentObj.hasOwnProperty(currentKey)) {
+            // TODO: Error class
             throw new Error(`Key '${currentKey}' not found in JSON object.`);
           }
           currentObj = currentObj[currentKey];
@@ -91,6 +94,7 @@ export class ManifestGeneratorJson {
 
         const lastKey = keys[keys.length - 1];
         if (!currentObj.hasOwnProperty(lastKey)) {
+          // TODO: Error class
           throw new Error(`Key '${lastKey}' not found in JSON object.`);
         }
         currentObj[lastKey] = value;
@@ -113,6 +117,7 @@ export class ManifestGeneratorJson {
     fs.writeFile(this.outputFilePath, updatedJson, 'utf8', (err) => {
       if (err) {
         chan.appendLine(err.message);
+        // TODO: Error class
         throw new Error('Error writing modified JSON file');
       }
       chan.appendLine(`Adjust Kanto Manifest:\t Modified JSON saved!`);

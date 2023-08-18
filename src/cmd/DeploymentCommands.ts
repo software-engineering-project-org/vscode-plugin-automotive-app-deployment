@@ -32,10 +32,13 @@ import {
 
 export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
+
+  // TODO: Outsource QuickPickFunction as it is used for each stage. @carlo
+
   if (!device) {
-    const quickPickResult = await getTargetDeviceWithQuickPick();
+    const quickPickResult = await getTargetDeviceWithQuickPick(); // If no device exists, it calls the Quick Pick menu.
     if (quickPickResult) {
-      device = quickPickResult as LedaDevice;
+      device = quickPickResult as LedaDevice; // If exists, it shows the result list as dropdown.
     }
   }
 
@@ -79,6 +82,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
     'image.name': `${CONTAINER_REGISTRY.ghcr}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
   };
 
+  // TODO: Refactor into aysnc-await but keept readfile function in mind.
   await new Promise((resolve) => {
     generator.generateKantoContainerManifest(keyValuePairs, stage01);
     setTimeout(resolve, 100); // Adjust the delay if needed
@@ -91,7 +95,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   await serviceSsh.closeConn();
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
-  vscode.window.showInformationMessage(`Deployed to ${device.name}`);
+  vscode.window.showInformationMessage(`Success. Deployed to ${device.name}`);
 }
 
 /**

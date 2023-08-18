@@ -45,6 +45,8 @@ export class ServiceSsh {
       });
     } catch (e) {
       chan.appendLine(`${e}`);
+      // TODO: Throw appropriate Error to stop application from executing if connection is refused.
+      // TODO: Make an error class for this.
     }
   }
 
@@ -90,6 +92,7 @@ export class ServiceSsh {
       chan.appendLine(`Fetch Config:\t\t Found file at - ${KANTO_CONFIG_FILE} - Checking config...`);
     } catch (e) {
       chan.appendLine(`${e}`);
+      // TODO: Add cutom error in error class.
       throw new Error(`Error reading kanto conf -> ${(e as Error).message}`);
     }
   }
@@ -108,12 +111,14 @@ export class ServiceSsh {
       const keys = JSONPath({ path: key, json: configJson });
 
       if (keys.length === 0) {
+        // TODO: Add error class
         throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
       } else {
         chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
       }
     } catch (error) {
       chan.appendLine(`${error}`);
+      // TODO: Add error class
       throw new Error(`Error reading config JSON file: ${error}`);
     } finally {
       await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
