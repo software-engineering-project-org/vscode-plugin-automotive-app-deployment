@@ -81,8 +81,7 @@ export default class LedaAutoDeployer {
     // Register the 'deployStageTwo' command and associate it with the 'deployStageTwo' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
-        const octokit = await this.credentials.getOctokit();
-        await deployStageTwo(item, octokit);
+        await deployStageTwo(item);
       }),
     );
 

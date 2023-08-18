@@ -100,7 +100,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
  * ###############################################################################
  */
 
-export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
+export async function deployStageTwo(item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
   if (!device) {
     const quickPickResult = await getTargetDeviceWithQuickPick();
