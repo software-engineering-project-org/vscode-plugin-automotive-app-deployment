@@ -3,6 +3,7 @@ import { PackageVersion } from '../../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
 import { GitConfig } from '../../provider/GitConfig';
 import { PACKAGE_TYPE } from '../../setup/cmdProperties';
+import { PackageImagesFetchError, PackageVersionsFetchError, PackageNameNotFoundError } from '../../error/customErrors';
 
 /**
  * Class for interacting with GitHub using an authenticated Octokit SDK object, fetching GitHub organization-specific registry information.
@@ -25,9 +26,8 @@ export class RegistryOpsOrg {
       }));
 
       return packageVersionsObj;
-    } catch (error) {
-      console.error('An error occurred:', error);
-      throw error;
+    } catch (err: any) {
+      throw new PackageVersionsFetchError(err.message);
     }
   }
 
@@ -38,18 +38,22 @@ export class RegistryOpsOrg {
    * @returns - The name of the package or null if not found.
    */
   private extractPackageName(orgPackagesList: any, orgRepoContext: string): string | null {
-    // Parse the data containing 1...n packages assigned to 1...n Repositories in an Organization.
-    const json = JSON.parse(JSON.stringify(orgPackagesList));
-    // Only get the name of the package assigned to the Repository matching the context.
-    const filteredData = JSONPath({
-      path: `$[?(@.repository.full_name === "${GitConfig.REPO}")].name`,
-      json: json,
-    });
+    try {
+      // Parse the data containing 1...n packages assigned to 1...n Repositories in an Organization.
+      const json = JSON.parse(JSON.stringify(orgPackagesList));
+      // Only get the name of the package assigned to the Repository matching the context.
+      const filteredData = JSONPath({
+        path: `$[?(@.repository.full_name === "${GitConfig.REPO}")].name`,
+        json: json,
+      });
 
-    if (filteredData.length > 0) {
-      return filteredData[0];
+      if (filteredData.length > 0) {
+        return filteredData[0];
+      }
+      return null;
+    } catch (err: any) {
+      throw new PackageNameNotFoundError(err.message);
     }
-    return null;
   }
 
   /**
@@ -61,9 +65,8 @@ export class RegistryOpsOrg {
     try {
       const response = await octokit.request(`GET /orgs/${GitConfig.ORG}/packages?package_type=${PACKAGE_TYPE}`);
       return response.data;
-    } catch (error) {
-      console.error('Error retrieving package images:', error);
-      throw error;
+    } catch (err: any) {
+      throw new PackageImagesFetchError(err.message);
     }
   }
 
@@ -80,9 +83,8 @@ export class RegistryOpsOrg {
         package_name: `${GitConfig.REPO}/${GitConfig.PACKAGE}`,
       });
       return response.data;
-    } catch (error) {
-      console.error('Error retrieving package information:', error);
-      throw error;
+    } catch (err: any) {
+      throw new PackageVersionsFetchError(err.message);
     }
   }
 }

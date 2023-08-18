@@ -42,7 +42,7 @@ export class DeviceDataProvider implements vscode.TreeDataProvider<LedaDeviceTre
         });
         return Promise.resolve(deviceProfiles);
       }
-    } catch (error) {
+    } catch (err) {
       return Promise.reject([]);
     }
   }

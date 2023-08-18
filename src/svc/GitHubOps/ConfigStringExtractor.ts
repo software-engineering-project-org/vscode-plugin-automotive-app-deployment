@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { RemoteOriginNotFoundError, InvalidRemoteOriginError, GenericInternalError } from '../../error/customErrors';
 
 /**
  * Helper to get the organization and repository name out of the current Git working context.
@@ -20,23 +21,29 @@ export class ConfigStringExtractor {
       const remoteOriginRegex = /\[remote\s+"origin"\]\s*\n.*url\s*=\s*(\S+)/;
       const remoteOriginMatch = remoteOriginRegex.exec(gitConfigContent);
       if (!remoteOriginMatch) {
-        throw new Error('Remote origin URL not found');
+        throw new RemoteOriginNotFoundError(gitConfig);
       }
       // Extract URL from the matched pattern
       const url = remoteOriginMatch[1];
 
       // Extract organization and repository name from URL
-      const orgRepoRegex = /github\.com\/([^/]+\/[^/]+)\.git/; // Define <org>/<repo> as captured group inside the matching pattern.
+      const orgRepoRegex = /github\.com\/([^/]+\/[^/]+)\.git/;
       const matches = orgRepoRegex.exec(url);
       if (!matches) {
-        throw new Error('Invalid remote origin URL');
+        throw new InvalidRemoteOriginError(gitConfig);
       }
       // Return the first (and only) captured group in the match which is <org>/<repo>. [0] would be the entire match.
       const orgRepo = matches[1];
 
       return orgRepo;
-    } catch (error: any) {
-      throw new Error('Error reading .git/config: ' + (error as Error).message);
+    } catch (err: any) {
+      if (err instanceof RemoteOriginNotFoundError || err instanceof InvalidRemoteOriginError) {
+        // Handle specific errors here (e.g., log, display error message, etc.)
+        throw err; // Re-throw the caught error to propagate it further if needed
+      } else {
+        // Handle other errors
+        throw new GenericInternalError(err);
+      }
     }
   };
 }

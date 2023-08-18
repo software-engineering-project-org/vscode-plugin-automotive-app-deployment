@@ -5,6 +5,7 @@ import * as path from 'path';
 import { exec } from 'child_process';
 import { GitConfig } from '../provider/GitConfig';
 import * as https from 'https';
+import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError } from '../error/customErrors';
 
 /**
  * Load the list of Leda devices from the configuration.
@@ -75,7 +76,7 @@ export function readFileAsync(filePath: string): any {
 export async function deleteTmpFile(filePath: string): Promise<void> {
   fs.unlink(filePath, (err) => {
     if (err) {
-      throw new Error('Could not delete tmp file');
+      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err}`);
     }
   });
 }
@@ -88,10 +89,8 @@ export async function deleteTmpFile(filePath: string): Promise<void> {
 export async function executeShellCmd(command: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else if (stderr) {
-        resolve(stderr);
+      if (error || stderr) {
+        reject(error || stderr);
       } else {
         resolve(stdout);
       }
@@ -101,30 +100,29 @@ export async function executeShellCmd(command: string): Promise<string> {
 
 /**
  * Check the source of a TAR file and handle it accordingly.
- * @param src The source of the TAR file (can be a file path or a URL).
+ * @param src The source of the TAR file (can be a file path or a https URL).
  * @param chan The VSCode OutputChannel for logging.
  * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
  * @throws Throws an error if the source is not valid or encounters any issues.
  */
-export async function checkAndHandleTarSource(src: string, chan: vscode.OutputChannel): Promise<string> {
-  let filePath = src;
+export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
   try {
-    if (src.startsWith('https://')) {
-      filePath = await downloadTarFileFromWeb(src, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
-    } else if (src.startsWith('http://')) {
-      throw new Error(`Insecure format - HTTP -`);
+    if (srcPath.startsWith('https://')) {
+      return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
+    } else if (srcPath.startsWith('http://')) {
+      throw new InsecureWebSourceError(srcPath);
     } else {
-      if (!fs.existsSync(src)) {
-        throw new Error(`File ${src} does not exist on local device!`);
+      if (!fs.existsSync(srcPath)) {
+        throw new LocalPathNotFoundError(srcPath);
       }
-      if (!src.endsWith('.tar')) {
-        throw new Error(`File ${src} has wrong type - no TAR!`);
+      if (!srcPath.endsWith('.tar')) {
+        throw new NotTARFileError(srcPath);
       }
+      return srcPath;
     }
-    return filePath;
   } catch (err) {
     chan.appendLine(`${err}`);
-    throw new Error(`Error identifying *.tar source`);
+    throw new GenericInternalError(`Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`);
   }
 }
 
@@ -145,13 +143,13 @@ async function downloadTarFileFromWeb(url: string, localPath: string, chan: vsco
 
       fileStream.on('finish', () => {
         fileStream.close();
-        chan.appendLine(`Download finished for ${path.basename(url)}`);
+        chan.appendLine(`Download finished for file: "${path.basename(url)}".`);
       });
     });
-    chan.appendLine(`Saved file to: ${filename}`);
+    chan.appendLine(`Saved file as: "${filename}"`);
     return filename;
   } catch (err) {
     chan.appendLine(`${err}`);
-    throw new Error(`Failed to read from URL`);
+    throw new GenericInternalError(`Internal Error - Failed to read from URL: "${url}". > SYSTEM: ${err}`);
   }
 }
