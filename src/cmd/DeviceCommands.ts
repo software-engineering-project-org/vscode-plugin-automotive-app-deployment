@@ -11,7 +11,7 @@ import { LedaDeviceQuickPickItem } from '../interfaces/QuickPickItem';
 export async function addDevice(deviceDataProvider: DeviceDataProvider) {
   // Set name.
   const name = await vscode.window.showInputBox({
-    prompt: 'Device name',
+    prompt: 'Device name: ',
     placeHolder: 'Waveshare Jetracer',
   });
   if (!name) {

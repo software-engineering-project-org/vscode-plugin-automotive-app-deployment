@@ -1,13 +1,13 @@
 {
   "name": "vscode-plugin-for-sdv-app-deployment",
-  "displayName": "A VSCode Plugin for SDV Development - Automotive App Deployment",
-  "description": "Multi-stage deployment simplification for Automotive App Deployment regarding Software Defined Vehicles (SDV) Development via VSCode Plugin",
+  "displayName": "LAD - Leda Auto Deployer: Simply deploy Containerized-Software on your Target Devices that run Eclipse Leda",
+  "description": "LAD simplifies Deployment for Software Defined Vehicles (SDV) via multiple Deployment Automation Options in the Eclipse Leda Stack",
   "version": "0.1.0",
   "engines": {
     "vscode": "^1.77.0"
   },
   "categories": [
-    "Other"
+    "Testing"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
@@ -22,8 +22,8 @@
       "activitybar": [
         {
           "id": "leda-app-auto-deployer",
-          "title": "Leda App Deployer",
-          "icon": "$(tools)"
+          "title": "LAD - Leda App Deployer",
+          "icon": "$(target)"
         }
       ]
     },

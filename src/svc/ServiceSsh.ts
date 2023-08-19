@@ -54,6 +54,8 @@ export class ServiceSsh {
    * Close the SSH connection.
    */
   public async closeConn() {
+    // TODO: Error handling
+    // TODO: Chan
     this.ssh.dispose();
   }
 
@@ -75,6 +77,7 @@ export class ServiceSsh {
       chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
     } catch (e) {
       chan.appendLine(`${e}`);
+      // TODO: Error class
       throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`);
     }
   }
@@ -111,7 +114,7 @@ export class ServiceSsh {
       const keys = JSONPath({ path: key, json: configJson });
 
       if (keys.length === 0) {
-        // TODO: Add error class
+        // TODO: Add error class -> Possible solution: Check which config JSON version you have. Plugin is capable until version X.
         throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
       } else {
         chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
