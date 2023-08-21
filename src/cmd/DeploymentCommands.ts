@@ -58,7 +58,7 @@ import {
 
 export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
-  device = await chooseDeviceFromListOrContext(device)
+  device = await chooseDeviceFromListOrContext(device);
 
   /**
    * STEP 1 & 2
@@ -128,8 +128,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
 
 export async function deployStageTwo(item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
-  device = await chooseDeviceFromListOrContext(device)
-
+  device = await chooseDeviceFromListOrContext(device);
 
   // Init
   let stage02 = vscode.window.createOutputChannel('LAD Hybrid');
@@ -217,10 +216,9 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
  * 8. Copy the secured Manifest to the Leda Device via SCP
  */
 
-
 export async function deployStageThree(item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
-  device = await chooseDeviceFromListOrContext(device)
+  device = await chooseDeviceFromListOrContext(device);
 
   //Init
   await GitConfig.init();

@@ -126,7 +126,7 @@ export async function chooseDeviceFromListOrContext(device: LedaDevice) {
       device = quickPickResult as LedaDevice; // If exists, it shows the result list as dropdown.
     }
   }
-  return device
+  return device;
 }
 
 /**
