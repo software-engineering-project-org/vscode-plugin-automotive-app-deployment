@@ -72,20 +72,12 @@ export class ManifestGeneratorJson {
     fs.readFile(this.templateFilePath, 'utf8', (err, fileContents) => {
       try {
         if (err) {
-          logToChannelAndErrorConsole(
-            chan, 
-            new LADLoadTemplateJSONError(err as Error), 
-            'Error reading template JSON file'
-          );
+          logToChannelAndErrorConsole(chan, new LADLoadTemplateJSONError(err as Error), 'Error reading template JSON file');
         }
         const templateJson = JSON.parse(fileContents);
         callback(templateJson);
       } catch (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new LADLoadTemplateJSONError(err as Error), 
-          'Error parsing template JSON'
-        );
+        logToChannelAndErrorConsole(chan, new LADLoadTemplateJSONError(err as Error), 'Error parsing template JSON');
       }
     });
   }
@@ -107,22 +99,14 @@ export class ManifestGeneratorJson {
         for (let i = 0; i < keys.length - 1; i++) {
           const currentKey = keys[i];
           if (!currentObj.hasOwnProperty(currentKey)) {
-            logToChannelAndErrorConsole(
-              chan, 
-              new LADAlterJSONError(new Error(`Key '${currentKey}' not found in JSON object.`)), 
-              'Check keys'
-            );
+            logToChannelAndErrorConsole(chan, new LADAlterJSONError(new Error(`Key '${currentKey}' not found in JSON object.`)), 'Check keys');
           }
           currentObj = currentObj[currentKey];
         }
 
         const lastKey = keys[keys.length - 1];
         if (!currentObj.hasOwnProperty(lastKey)) {
-          logToChannelAndErrorConsole(
-            chan, 
-            new LADAlterJSONError(new Error(`Key '${lastKey}' not found in JSON object.`)), 
-            'Check keys'
-          );
+          logToChannelAndErrorConsole(chan, new LADAlterJSONError(new Error(`Key '${lastKey}' not found in JSON object.`)), 'Check keys');
         }
         currentObj[lastKey] = value;
       }
@@ -143,11 +127,7 @@ export class ManifestGeneratorJson {
     const updatedJson = JSON.stringify(modifiedJson, null, 2);
     fs.writeFile(this.outputFilePath, updatedJson, 'utf8', (err) => {
       if (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new LADSaveModifiedJSONError(err as Error), 
-          'Error parsing template JSON'
-        );
+        logToChannelAndErrorConsole(chan, new LADSaveModifiedJSONError(err as Error), 'Error parsing template JSON');
       }
       chan.appendLine(`Adjust Kanto Manifest:\t Modified JSON saved!`);
     });

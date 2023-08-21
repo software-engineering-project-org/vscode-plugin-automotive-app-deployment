@@ -61,11 +61,7 @@ export class ServiceSsh {
         password: this.sshPassword,
       });
     } catch (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new SSHConnectionInitilizationError(err as Error), 
-          `Device ${this.sshHost} on port ${this.sshPort} -> Check config`
-        );
+      logToChannelAndErrorConsole(chan, new SSHConnectionInitilizationError(err as Error), `Device ${this.sshHost} on port ${this.sshPort} -> Check config`);
     }
   }
 
@@ -75,13 +71,8 @@ export class ServiceSsh {
   public async closeConn(chan: vscode.OutputChannel) {
     try {
       this.ssh.dispose();
-    }
-    catch(err) {
-      logToChannelAndErrorConsole(
-        chan, 
-        new SSHCloseConnectionError(err as Error), 
-        `Device ${this.sshHost} on port ${this.sshPort} -> Check config`
-      );
+    } catch (err) {
+      logToChannelAndErrorConsole(chan, new SSHCloseConnectionError(err as Error), `Device ${this.sshHost} on port ${this.sshPort} -> Check config`);
     }
   }
 
@@ -102,11 +93,7 @@ export class ServiceSsh {
       ]);
       chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
     } catch (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new SSHCopyFileError(err as Error), 
-          `Error copying resource to leda from (local) ${local} (to) ${remote}`
-        );
+      logToChannelAndErrorConsole(chan, new SSHCopyFileError(err as Error), `Error copying resource to leda from (local) ${local} (to) ${remote}`);
     }
   }
 
@@ -121,11 +108,7 @@ export class ServiceSsh {
       await this.ssh.getFile(path.resolve(__dirname, '../../', tmpConfig), KANTO_CONFIG_FILE);
       chan.appendLine(`Fetch Config:\t\t Found file at - ${KANTO_CONFIG_FILE} - Checking config...`);
     } catch (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new SSHCopyFileError(err as Error), 
-          `Error copying Kanto config from Leda to ${KANTO_CONFIG_FILE}`
-        );
+      logToChannelAndErrorConsole(chan, new SSHCopyFileError(err as Error), `Error copying Kanto config from Leda to ${KANTO_CONFIG_FILE}`);
     }
   }
 
@@ -148,11 +131,7 @@ export class ServiceSsh {
         chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
       }
     } catch (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new LADCheckKantoConfig(err as Error), 
-          `Check config version and remote file`
-        );
+      logToChannelAndErrorConsole(chan, new LADCheckKantoConfig(err as Error), `Check config version and remote file`);
     } finally {
       await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
     }
@@ -167,11 +146,9 @@ export class ServiceSsh {
    */
   public async containerdOps(tag: string, chan: vscode.OutputChannel): Promise<string> {
     try {
-
-
       const ctrImageImport = 'ctr image import';
       const ctrImageTag = 'ctr image tag';
-      const ctrImagePush = 'ctr image push'; 
+      const ctrImagePush = 'ctr image push';
 
       // Import image
       let res = await this.ssh.execCommand(`${ctrImageImport} ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp' });
@@ -197,11 +174,7 @@ export class ServiceSsh {
       this.checkStdErr(res.stderr, ctrImagePush);
       chan.appendLine(res.stdout);
     } catch (err) {
-        logToChannelAndErrorConsole(
-          chan, 
-          new SSHRemoteCommandFailedError(err as Error), 
-          `Failed with command`
-        );
+      logToChannelAndErrorConsole(chan, new SSHRemoteCommandFailedError(err as Error), `Failed with command`);
     } finally {
       await deleteTmpFile(path.resolve(__dirname, '../../', `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
     }

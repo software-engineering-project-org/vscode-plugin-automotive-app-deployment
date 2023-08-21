@@ -14,8 +14,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ERROR_CONSOLE_HEADER } from "../setup/cmdProperties";
-import { OutputChannel } from "vscode";
+import { ERROR_CONSOLE_HEADER } from '../setup/cmdProperties';
+import { OutputChannel } from 'vscode';
 
 // TODO: Refactor all error messages.
 
@@ -153,8 +153,6 @@ export class LADAlterJSONError extends Error {
     this.name = 'LADAlterJSONError';
   }
 }
-
-
 
 export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg: string) {
   chan.appendLine(`${ERROR_CONSOLE_HEADER}\n${err}\n${msg}`);

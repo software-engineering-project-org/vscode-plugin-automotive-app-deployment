@@ -20,7 +20,7 @@ export const STAGE_ONE_CONSOLE_HEADER = `
 ******************************************************************************
 
 For further informations/dependencies/configuration refer to the welcome page.
-`
+`;
 
 export const STAGE_TWO_CONSOLE_HEADER = `
 ******************************************************************************
@@ -28,7 +28,7 @@ export const STAGE_TWO_CONSOLE_HEADER = `
 ******************************************************************************
 
 For further informations/dependencies/configuration refer to the welcome page.
-`
+`;
 
 export const STAGE_THREE_CONSOLE_HEADER = `
 ******************************************************************************
@@ -36,13 +36,13 @@ export const STAGE_THREE_CONSOLE_HEADER = `
 ******************************************************************************
 
 For further informations/dependencies/configuration refer to the welcome page.
-`
+`;
 
 export const ERROR_CONSOLE_HEADER = `
 ******************************************************************************
 ***         ERROR - Encountered error during extension execution           ***
 ******************************************************************************
-`
+`;
 
 export const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
 export const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
