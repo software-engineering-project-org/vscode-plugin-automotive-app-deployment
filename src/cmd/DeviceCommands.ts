@@ -115,10 +115,25 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
 }
 
 /**
+ * initialise the device object to perform a stage on
+ * @param device device from context or null object
+ * @returns initialized device
+ */
+export async function chooseDeviceFromListOrContext(device: LedaDevice) {
+  if (!device) {
+    const quickPickResult = await getTargetDeviceWithQuickPick(); // If no device exists, it calls the Quick Pick menu.
+    if (quickPickResult) {
+      device = quickPickResult as LedaDevice; // If exists, it shows the result list as dropdown.
+    }
+  }
+  return device
+}
+
+/**
  * Show a QuickPick dialog to select a target Leda device.
  * @returns A Promise that resolves to the selected LedaDevice or undefined if no devices are available.
  */
-export async function getTargetDeviceWithQuickPick() {
+async function getTargetDeviceWithQuickPick() {
   const devices = await loadLedaDevices();
   if (devices) {
     const deviceName = await vscode.window.showQuickPick(
