@@ -105,8 +105,10 @@ export async function deleteTmpFile(filePath: string): Promise<void> {
 export async function executeShellCmd(command: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
-      if (error || stderr) {
-        reject(error || stderr);
+      if (error) {
+        reject(error);
+      } else if (stderr) {
+        resolve(stderr);
       } else {
         resolve(stdout);
       }
