@@ -18,6 +18,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { readFileAsync } from '../helpers/helpers';
 import * as vscode from 'vscode';
+import { LADAlterJSONError, LADLoadTemplateJSONError, LADSaveModifiedJSONError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 export class ManifestGeneratorJson {
   private templateFilePath: string;
@@ -58,7 +59,7 @@ export class ManifestGeneratorJson {
    */
   public generateKantoContainerManifest(keyValuePairs: Record<string, any>, chan: vscode.OutputChannel): void {
     this.loadTemplateJson(chan, (templateJson: any) => {
-      const modifiedJson = this.alterJson(templateJson, keyValuePairs);
+      const modifiedJson = this.alterJson(chan, templateJson, keyValuePairs);
       this.saveModifiedJson(modifiedJson, chan);
     });
   }
@@ -71,16 +72,20 @@ export class ManifestGeneratorJson {
     fs.readFile(this.templateFilePath, 'utf8', (err, fileContents) => {
       try {
         if (err) {
-          chan.appendLine(err.message);
-          // TODO: Error class
-          throw new Error('Error reading template JSON file');
+          logToChannelAndErrorConsole(
+            chan, 
+            new LADLoadTemplateJSONError(err as Error), 
+            'Error reading template JSON file'
+          );
         }
         const templateJson = JSON.parse(fileContents);
         callback(templateJson);
-      } catch (error) {
-        chan.appendLine(`${error}`);
-        // TODO: Error class
-        throw new Error(`Error parsing template JSON: ${error}`);
+      } catch (err) {
+        logToChannelAndErrorConsole(
+          chan, 
+          new LADLoadTemplateJSONError(err as Error), 
+          'Error parsing template JSON'
+        );
       }
     });
   }
@@ -91,7 +96,7 @@ export class ManifestGeneratorJson {
    * @param {Record<string, any>} keyValuePairs - The key-value pairs to modify in the JSON object.
    * @returns {any} The modified JSON object.
    */
-  private alterJson(jsonObj: any, keyValuePairs: Record<string, any>): any {
+  private alterJson(chan: vscode.OutputChannel, jsonObj: any, keyValuePairs: Record<string, any>): any {
     const modifiedJson = { ...jsonObj };
     for (const key in keyValuePairs) {
       if (Object.prototype.hasOwnProperty.call(keyValuePairs, key)) {
@@ -102,16 +107,22 @@ export class ManifestGeneratorJson {
         for (let i = 0; i < keys.length - 1; i++) {
           const currentKey = keys[i];
           if (!currentObj.hasOwnProperty(currentKey)) {
-            // TODO: Error class
-            throw new Error(`Key '${currentKey}' not found in JSON object.`);
+            logToChannelAndErrorConsole(
+              chan, 
+              new LADAlterJSONError(new Error(`Key '${currentKey}' not found in JSON object.`)), 
+              'Check keys'
+            );
           }
           currentObj = currentObj[currentKey];
         }
 
         const lastKey = keys[keys.length - 1];
         if (!currentObj.hasOwnProperty(lastKey)) {
-          // TODO: Error class
-          throw new Error(`Key '${lastKey}' not found in JSON object.`);
+          logToChannelAndErrorConsole(
+            chan, 
+            new LADAlterJSONError(new Error(`Key '${lastKey}' not found in JSON object.`)), 
+            'Check keys'
+          );
         }
         currentObj[lastKey] = value;
       }
@@ -132,9 +143,11 @@ export class ManifestGeneratorJson {
     const updatedJson = JSON.stringify(modifiedJson, null, 2);
     fs.writeFile(this.outputFilePath, updatedJson, 'utf8', (err) => {
       if (err) {
-        chan.appendLine(err.message);
-        // TODO: Error class
-        throw new Error('Error writing modified JSON file');
+        logToChannelAndErrorConsole(
+          chan, 
+          new LADSaveModifiedJSONError(err as Error), 
+          'Error parsing template JSON'
+        );
       }
       chan.appendLine(`Adjust Kanto Manifest:\t Modified JSON saved!`);
     });

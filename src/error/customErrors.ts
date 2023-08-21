@@ -14,7 +14,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// TODO: Refactor me.
+import { ERROR_CONSOLE_HEADER } from "../setup/cmdProperties";
+import { OutputChannel } from "vscode";
+
+// TODO: Refactor all error messages.
 
 // Represents a generic internal error that indicates unexpected issues within the system.
 export class GenericInternalError extends Error {
@@ -83,7 +86,77 @@ export class PackageVersionsFetchError extends Error {
 // Represents an error that occurs when the package name is not found in the retrieved data.
 export class PackageNameNotFoundError extends Error {
   constructor(message: string) {
-    super(`Package name not found in the retrieved data.`);
+    super(`Package name not found in the retrieved data: ${message}.`);
     this.name = 'PackageNameNotFoundError';
   }
+}
+
+// Represents Error while connecting to device via SSH
+export class SSHConnectionInitilizationError extends Error {
+  constructor(err: Error) {
+    super(`Error while trying to establish ssh connection: ${err.message}`);
+    this.name = 'SSHConnectionInitilizationError';
+  }
+}
+
+// Represents error while closing SSH connection to device
+export class SSHCloseConnectionError extends Error {
+  constructor(err: Error) {
+    super(`Error while trying to close ssh connection: ${err.message}`);
+    this.name = 'SSHCloseConnectionError';
+  }
+}
+
+// Represents error while copying file via ssh
+export class SSHCopyFileError extends Error {
+  constructor(err: Error) {
+    super(`Error while trying to copy artefact: ${err.message}`);
+    this.name = 'SSHCopyFileError';
+  }
+}
+
+// Represents command failure on remote device
+export class SSHRemoteCommandFailedError extends Error {
+  constructor(err: Error) {
+    super(`Error while trying to execute remote command: ${err.message}`);
+    this.name = 'SSHRemoteCommandFailedError';
+  }
+}
+
+// Represents kanto config check error
+export class LADCheckKantoConfig extends Error {
+  constructor(err: Error) {
+    super(`Error while checking kanto config: ${err.message}`);
+    this.name = 'LADCheckKantoConfig';
+  }
+}
+
+// Represents error while loading template Json
+export class LADLoadTemplateJSONError extends Error {
+  constructor(err: Error) {
+    super(`Error loading template JSON: ${err.message}`);
+    this.name = 'LADLoadTemplateJSONError';
+  }
+}
+
+// Represents error saving modfied template JSON
+export class LADSaveModifiedJSONError extends Error {
+  constructor(err: Error) {
+    super(`Error saving modified JSON: ${err.message}`);
+    this.name = 'LADSaveModifiedJSONError';
+  }
+}
+
+export class LADAlterJSONError extends Error {
+  constructor(err: Error) {
+    super(`Error altering JSON: ${err.message}`);
+    this.name = 'LADAlterJSONError';
+  }
+}
+
+
+
+export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg: string) {
+  chan.appendLine(`${ERROR_CONSOLE_HEADER}\n${err}\n${msg}`);
+  throw new Error(err.name);
 }

@@ -38,6 +38,7 @@ import {
   TEMPLATE_FILE_PATH,
   OUTPUT_FILE_PATH,
   MANIFEST_DIR,
+  STAGE_ONE_CONSOLE_HEADER,
 } from '../setup/cmdProperties';
 
 /**
@@ -69,7 +70,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   //Create output channel for user
   let stage01 = vscode.window.createOutputChannel('LAD Remote');
   stage01.show();
-  stage01.appendLine('Starting remote build and deployment...');
+  stage01.appendLine(STAGE_ONE_CONSOLE_HEADER);
 
   /**
    * STEP 3
@@ -90,7 +91,6 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
     'image.name': `${CONTAINER_REGISTRY.ghcr}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
   };
 
-  // TODO: Refactor into aysnc-await but keept readfile function in mind.
   await new Promise((resolve) => {
     generator.generateKantoContainerManifest(keyValuePairs, stage01);
     setTimeout(resolve, 100); // Adjust the delay if needed
@@ -100,7 +100,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 5
    */
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
-  await serviceSsh.closeConn();
+  await serviceSsh.closeConn(stage01);
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
   vscode.window.showInformationMessage(`Success. Deployed to ${device.name}`);
@@ -191,7 +191,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
    * STEP 8
    */
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage02);
-  await serviceSsh.closeConn();
+  await serviceSsh.closeConn(stage02);
 
   stage02.appendLine(`Deploying to Leda:\t `);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
@@ -278,7 +278,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
    * STEP 8
    */
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
-  await serviceSsh.closeConn();
+  await serviceSsh.closeConn(stage03);
 
   stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);

@@ -14,9 +14,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { VELOCITAS_CONFIG_FILE } from '../setup/cmdProperties';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 
-// TODO: Outsource the hardcode, e.g. in setup directory under providerProperties.ts
 export class GitConfig {
   public static ORG: string;
   public static REPO: string;
@@ -24,7 +24,7 @@ export class GitConfig {
   public static DOCKERFILE: string;
 
   public static async init() {
-    const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson('.velocitas.json');
+    const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson(VELOCITAS_CONFIG_FILE);
     const manifestData = await ManifestGeneratorJson.readAppManifest(velocitasSettings.AppManifestPath);
     const remoteOrigin = velocitasSettings.GithubRepoId;
     this.DOCKERFILE = velocitasSettings.DockerfilePath;

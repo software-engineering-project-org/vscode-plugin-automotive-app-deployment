@@ -14,6 +14,36 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export const STAGE_ONE_CONSOLE_HEADER = `
+******************************************************************************
+***           DEPLOYING STAGE ONE - Remote Build and Deployment            ***
+******************************************************************************
+
+For further informations/dependencies/configuration refer to the welcome page.
+`
+
+export const STAGE_TWO_CONSOLE_HEADER = `
+******************************************************************************
+***           DEPLOYING STAGE TWO - Hybrid Build and Deployment            ***
+******************************************************************************
+
+For further informations/dependencies/configuration refer to the welcome page.
+`
+
+export const STAGE_THREE_CONSOLE_HEADER = `
+******************************************************************************
+***           DEPLOYING STAGE THREE - Local Build and Deployment           ***
+******************************************************************************
+
+For further informations/dependencies/configuration refer to the welcome page.
+`
+
+export const ERROR_CONSOLE_HEADER = `
+******************************************************************************
+***         ERROR - Encountered error during extension execution           ***
+******************************************************************************
+`
+
 export const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
 export const KANTO_CONFIG_REMOTE_REG_JSON_PATH = 'containers.registry_configurations["ghcr.io"]';
 export const KANTO_CONFIG_LOCAL_REG_JSON_PATH = 'containers.insecure-registries';
@@ -28,3 +58,4 @@ export const CONTAINER_REGISTRY = {
   ghcr: 'ghcr.io',
   docker: 'docker.io',
 };
+export const VELOCITAS_CONFIG_FILE = '.velocitas.json';

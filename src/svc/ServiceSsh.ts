@@ -21,6 +21,7 @@ import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { GitConfig } from '../provider/GitConfig';
 import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH } from '../setup/cmdProperties';
+import { LADCheckKantoConfig, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 export class ServiceSsh {
   private sshHost: string;
@@ -59,20 +60,29 @@ export class ServiceSsh {
         username: this.sshUsername,
         password: this.sshPassword,
       });
-    } catch (e) {
-      chan.appendLine(`${e}`);
-      // TODO: Throw appropriate Error to stop application from executing if connection is refused.
-      // TODO: Make an error class for this.
+    } catch (err) {
+        logToChannelAndErrorConsole(
+          chan, 
+          new SSHConnectionInitilizationError(err as Error), 
+          `Device ${this.sshHost} on port ${this.sshPort} -> Check config`
+        );
     }
   }
 
   /**
    * Close the SSH connection.
    */
-  public async closeConn() {
-    // TODO: Error handling
-    // TODO: Chan
-    this.ssh.dispose();
+  public async closeConn(chan: vscode.OutputChannel) {
+    try {
+      this.ssh.dispose();
+    }
+    catch(err) {
+      logToChannelAndErrorConsole(
+        chan, 
+        new SSHCloseConnectionError(err as Error), 
+        `Device ${this.sshHost} on port ${this.sshPort} -> Check config`
+      );
+    }
   }
 
   /**
@@ -91,10 +101,12 @@ export class ServiceSsh {
         },
       ]);
       chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
-    } catch (e) {
-      chan.appendLine(`${e}`);
-      // TODO: Error class
-      throw new Error(`Error connecting to device: ${this.sshHost} -> ${(e as Error).message}`);
+    } catch (err) {
+        logToChannelAndErrorConsole(
+          chan, 
+          new SSHCopyFileError(err as Error), 
+          `Error copying resource to leda from (local) ${local} (to) ${remote}`
+        );
     }
   }
 
@@ -107,12 +119,13 @@ export class ServiceSsh {
   public async getConfigFromLedaDevice(tmpConfig: string, chan: vscode.OutputChannel) {
     try {
       await this.ssh.getFile(path.resolve(__dirname, '../../', tmpConfig), KANTO_CONFIG_FILE);
-
       chan.appendLine(`Fetch Config:\t\t Found file at - ${KANTO_CONFIG_FILE} - Checking config...`);
-    } catch (e) {
-      chan.appendLine(`${e}`);
-      // TODO: Add cutom error in error class.
-      throw new Error(`Error reading kanto conf -> ${(e as Error).message}`);
+    } catch (err) {
+        logToChannelAndErrorConsole(
+          chan, 
+          new SSHCopyFileError(err as Error), 
+          `Error copying Kanto config from Leda to ${KANTO_CONFIG_FILE}`
+        );
     }
   }
 
@@ -130,15 +143,16 @@ export class ServiceSsh {
       const keys = JSONPath({ path: key, json: configJson });
 
       if (keys.length === 0) {
-        // TODO: Add error class -> Possible solution: Check which config JSON version you have. Plugin is capable until version X.
         throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
       } else {
         chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
       }
-    } catch (error) {
-      chan.appendLine(`${error}`);
-      // TODO: Add error class
-      throw new Error(`Error reading config JSON file: ${error}`);
+    } catch (err) {
+        logToChannelAndErrorConsole(
+          chan, 
+          new LADCheckKantoConfig(err as Error), 
+          `Check config version and remote file`
+        );
     } finally {
       await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
     }
@@ -153,9 +167,15 @@ export class ServiceSsh {
    */
   public async containerdOps(tag: string, chan: vscode.OutputChannel): Promise<string> {
     try {
+
+
+      const ctrImageImport = 'ctr image import';
+      const ctrImageTag = 'ctr image tag';
+      const ctrImagePush = 'ctr image push'; 
+
       // Import image
-      let res = await this.ssh.execCommand(`ctr image import ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp' });
-      this.checkStdErr(res.stderr);
+      let res = await this.ssh.execCommand(`${ctrImageImport} ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp' });
+      this.checkStdErr(res.stderr, ctrImageImport);
       chan.appendLine(res.stdout);
       let registry = CONTAINER_REGISTRY.ghcr;
 
@@ -168,16 +188,20 @@ export class ServiceSsh {
 
       chan.appendLine(`Tagging -> ${registry}/${tag} TO ${LOCAL_KANTO_REGISTRY}/${tag}`);
 
-      res = await this.ssh.execCommand(`ctr image tag ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}`);
-      this.checkStdErr(res.stderr);
+      res = await this.ssh.execCommand(`${ctrImageTag} ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}`);
+      this.checkStdErr(res.stderr, ctrImageTag);
       chan.appendLine(res.stdout);
 
       // Push image to local registry
-      res = await this.ssh.execCommand(`ctr image push ${LOCAL_KANTO_REGISTRY}/${tag}`);
-      this.checkStdErr(res.stderr);
+      res = await this.ssh.execCommand(`${ctrImagePush} ${LOCAL_KANTO_REGISTRY}/${tag}`);
+      this.checkStdErr(res.stderr, ctrImagePush);
       chan.appendLine(res.stdout);
-    } catch (error) {
-      chan.appendLine(`${error}`);
+    } catch (err) {
+        logToChannelAndErrorConsole(
+          chan, 
+          new SSHRemoteCommandFailedError(err as Error), 
+          `Failed with command`
+        );
     } finally {
       await deleteTmpFile(path.resolve(__dirname, '../../', `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
     }
@@ -189,9 +213,9 @@ export class ServiceSsh {
    *
    * @param {string} stderr - The standard error output to check for errors.
    */
-  private checkStdErr(stderr: string) {
+  private checkStdErr(stderr: string, cmd: string) {
     if (stderr !== '') {
-      throw Error(stderr);
+      throw Error(`${cmd}\n${stderr}`);
     }
   }
 }
