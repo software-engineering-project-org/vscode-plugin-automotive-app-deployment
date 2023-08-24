@@ -38,6 +38,8 @@ import {
   OUTPUT_FILE_PATH,
   MANIFEST_DIR,
   STAGE_ONE_CONSOLE_HEADER,
+  STAGE_TWO_CONSOLE_HEADER,
+  STAGE_THREE_CONSOLE_HEADER,
 } from '../setup/cmdProperties';
 
 /**
@@ -132,7 +134,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
   // Init
   let stage02 = vscode.window.createOutputChannel('LAD Hybrid');
   stage02.show();
-  stage02.appendLine('Starting hybrid build and deployment...');
+  stage02.appendLine(STAGE_TWO_CONSOLE_HEADER);
 
   /**
    * STEP 1 & 2
@@ -158,7 +160,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
     return;
   }
 
-  const outputTarPath = await checkAndHandleTarSource(tarSource, stage02);
+  const outputTarPath = await checkAndHandleTarSource(tarSource, stage02) as string;
 
   /**
    * STEP 5
@@ -225,7 +227,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   //Create output channel for user
   let stage03 = vscode.window.createOutputChannel('LAD Local');
   stage03.show();
-  stage03.appendLine('Starting local build and deployment...');
+  stage03.appendLine(STAGE_THREE_CONSOLE_HEADER);
 
   /**
    * STEP 1 & 2

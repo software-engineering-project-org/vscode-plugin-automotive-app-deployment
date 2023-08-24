@@ -58,4 +58,5 @@ export const CONTAINER_REGISTRY = {
   ghcr: 'ghcr.io',
   docker: 'docker.io',
 };
+export const TARGET_CONTAINER_PLATFORM = 'linux/arm64';
 export const VELOCITAS_CONFIG_FILE = '.velocitas.json';

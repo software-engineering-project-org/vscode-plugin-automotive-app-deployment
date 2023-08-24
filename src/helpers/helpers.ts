@@ -21,7 +21,7 @@ import * as path from 'path';
 import { exec } from 'child_process';
 import { GitConfig } from '../provider/GitConfig';
 import * as https from 'https';
-import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError } from '../error/customErrors';
+import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 /**
  * Load the list of Leda devices from the configuration.
@@ -92,7 +92,7 @@ export function readFileAsync(filePath: string): any {
 export async function deleteTmpFile(filePath: string): Promise<void> {
   fs.unlink(filePath, (err) => {
     if (err) {
-      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err}`);
+      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err.message}`);
     }
   });
 }
@@ -123,7 +123,7 @@ export async function executeShellCmd(command: string): Promise<string> {
  * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
  * @throws Throws an error if the source is not valid or encounters any issues.
  */
-export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
+export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string | undefined> {
   try {
     if (srcPath.startsWith('https://')) {
       return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
@@ -136,11 +136,13 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
       if (!srcPath.endsWith('.tar')) {
         throw new NotTARFileError(srcPath);
       }
-      return srcPath;
     }
+    return srcPath;
   } catch (err) {
-    chan.appendLine(`${err}`);
-    throw new GenericInternalError(`Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`);
+    logToChannelAndErrorConsole(chan, 
+      new GenericInternalError((err as Error).message), 
+      `Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`
+    )
   }
 }
 

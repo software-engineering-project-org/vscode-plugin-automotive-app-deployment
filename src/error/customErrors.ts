@@ -147,6 +147,7 @@ export class LADSaveModifiedJSONError extends Error {
   }
 }
 
+//
 export class LADAlterJSONError extends Error {
   constructor(err: Error) {
     super(`Error altering JSON: ${err.message}`);
@@ -154,7 +155,34 @@ export class LADAlterJSONError extends Error {
   }
 }
 
-export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg: string) {
+export class DockerfileNotFoundError extends Error {
+  constructor(err: Error) {
+    super(`Error finding Dockerfile: ${err.message}`);
+    this.name = 'DockerfileNotFoundError';
+  }
+}
+
+export class DockerBuildFailedError extends Error {
+  constructor(err: Error) {
+    super(`Error while build: ${err.message}`);
+    this.name = 'DockerBuildFailedError';
+  }
+}
+
+export class DockerExportImageError extends Error {
+  constructor(err: Error) {
+    super(`Error exporting image: ${err.message}`);
+    this.name = 'DockerExportImageError';
+  }
+}
+
+export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg?: string): never {
+  if(msg === undefined) {
+    msg = "";
+  }
+  if(err === undefined) {
+    err = new GenericInternalError(msg)
+  }
   chan.appendLine(`${ERROR_CONSOLE_HEADER}\n${err}\n${msg}`);
   throw new Error(err.name);
 }
