@@ -22,7 +22,7 @@ export class GitConfig {
   public static REPO: string;
   public static PACKAGE: string;
   public static DOCKERFILE: string;
-  public static KCM_TIMESTAMP: string; 
+  public static KCM_TIMESTAMP: string;
 
   public static async init() {
     const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson(VELOCITAS_CONFIG_FILE);

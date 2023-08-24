@@ -87,8 +87,8 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: `${GitConfig.PACKAGE}_${GitConfig.KCM_TIMESTAMP}`,
-    name: `${GitConfig.PACKAGE}_${GitConfig.KCM_TIMESTAMP}`,
+    id: `${GitConfig.PACKAGE}`,
+    name: `${GitConfig.PACKAGE}`,
     'image.name': `${CONTAINER_REGISTRY.ghcr}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
   };
 
@@ -178,8 +178,8 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: `${GitConfig.PACKAGE}_${GitConfig.KCM_TIMESTAMP}`,
-    name: `${GitConfig.PACKAGE}_${GitConfig.KCM_TIMESTAMP}`,
+    id: `${GitConfig.PACKAGE}`,
+    name: `${GitConfig.PACKAGE}`,
     'image.name': localRegTag,
   };
 
@@ -265,8 +265,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: `${GitConfig.PACKAGE}_${GitConfig.KCM_TIMESTAMP}`,
-    name: `${GitConfig.PACKAGE}_${GitConfig.KCM_TIMESTAMP}`,
+    id: `${GitConfig.PACKAGE}`,
+    name: `${GitConfig.PACKAGE}`,
     'image.name': localRegTag,
   };
 
