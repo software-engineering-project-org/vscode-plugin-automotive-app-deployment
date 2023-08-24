@@ -36,10 +36,7 @@ export class DockerOps {
 
     // Check if the Dockerfile exists at the specified path.
     if (!fs.existsSync(dockerfilePathAbs)) {
-      throw logToChannelAndErrorConsole(
-        chan, 
-        new DockerfileNotFoundError(new GenericInternalError(GitConfig.DOCKERFILE)), 
-      )
+      throw logToChannelAndErrorConsole(chan, new DockerfileNotFoundError(new GenericInternalError(GitConfig.DOCKERFILE)));
     }
     chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
     chan.appendLine('Building image...');
@@ -57,10 +54,7 @@ export class DockerOps {
       chan.appendLine(result);
       return tag; // Return the tag of the built Docker image.
     } catch (err) {
-      throw logToChannelAndErrorConsole(
-        chan, 
-        new DockerBuildFailedError(err as Error)
-      );
+      throw logToChannelAndErrorConsole(chan, new DockerBuildFailedError(err as Error));
     }
   }
 
@@ -84,10 +78,7 @@ export class DockerOps {
       chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
       return relTarPath; // Return the relative path of the exported tarball.
     } catch (err) {
-      logToChannelAndErrorConsole(
-        chan, 
-        new DockerExportImageError(err as Error),
-      )
+      logToChannelAndErrorConsole(chan, new DockerExportImageError(err as Error));
     }
   }
 }

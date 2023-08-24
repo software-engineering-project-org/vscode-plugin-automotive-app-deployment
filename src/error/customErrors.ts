@@ -177,11 +177,11 @@ export class DockerExportImageError extends Error {
 }
 
 export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg?: string): never {
-  if(msg === undefined) {
-    msg = "";
+  if (msg === undefined) {
+    msg = '';
   }
-  if(err === undefined) {
-    err = new GenericInternalError(msg)
+  if (err === undefined) {
+    err = new GenericInternalError(msg);
   }
   chan.appendLine(`${ERROR_CONSOLE_HEADER}\n${err}\n${msg}`);
   throw new Error(err.name);

@@ -160,7 +160,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
     return;
   }
 
-  const outputTarPath = await checkAndHandleTarSource(tarSource, stage02) as string;
+  const outputTarPath = (await checkAndHandleTarSource(tarSource, stage02)) as string;
 
   /**
    * STEP 5

@@ -139,10 +139,11 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
     }
     return srcPath;
   } catch (err) {
-    logToChannelAndErrorConsole(chan, 
-      new GenericInternalError((err as Error).message), 
-      `Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`
-    )
+    logToChannelAndErrorConsole(
+      chan,
+      new GenericInternalError((err as Error).message),
+      `Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`,
+    );
   }
 }
 
