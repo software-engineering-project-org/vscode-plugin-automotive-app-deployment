@@ -17,7 +17,7 @@
 import { VELOCITAS_CONFIG_FILE } from '../setup/cmdProperties';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 
-export class GitConfig {
+export class TopConfig {
   public static ORG: string;
   public static REPO: string;
   public static PACKAGE: string;

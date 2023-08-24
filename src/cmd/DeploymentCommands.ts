@@ -20,12 +20,12 @@ import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 import { ServiceSsh } from '../svc/ServiceSsh';
-import { RegistryOpsOrg } from '../svc/GitHubOps/RegistryOpsOrg';
+import { RegistryOperationsOrg } from '../svc/GitHubOperations/RegistryOperationsOrg';
 import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 import { PackageVersion } from '../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
-import { GitConfig } from '../provider/GitConfig';
-import { DockerOps } from '../svc/DockerOps';
+import { TopConfig } from '../provider/TopConfig';
+import { DockerOperations } from '../svc/DockerOperations';
 import { checkAndHandleTarSource } from '../helpers/helpers';
 
 // Import setup constants from properties file.
@@ -65,7 +65,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 1 & 2
    */
-  await GitConfig.init();
+  await TopConfig.init();
   const packageVersion = (await getVersionsWithQuickPick(octokit)) as PackageVersion;
 
   //Create output channel for user
@@ -87,9 +87,9 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: `${GitConfig.PACKAGE}`,
-    name: `${GitConfig.PACKAGE}`,
-    'image.name': `${CONTAINER_REGISTRY.ghcr}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
+    id: `${TopConfig.PACKAGE}`,
+    name: `${TopConfig.PACKAGE}`,
+    'image.name': `${CONTAINER_REGISTRY.ghcr}/${TopConfig.ORG}/${TopConfig.REPO}/${TopConfig.PACKAGE}@${packageVersion.image_name_sha}`,
   };
 
   await new Promise((resolve) => {
@@ -100,7 +100,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
   await serviceSsh.closeConn(stage01);
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
@@ -139,7 +139,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
   /**
    * STEP 1 & 2
    */
-  await GitConfig.init();
+  await TopConfig.init();
 
   /**
    * STEP 3
@@ -165,12 +165,12 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(outputTarPath, `/tmp/${GitConfig.PACKAGE}.tar`, stage02);
+  await serviceSsh.copyResourceToLeda(outputTarPath, `/tmp/${TopConfig.PACKAGE}.tar`, stage02);
 
   /**
    * STEP 6
    */
-  const localRegTag = await serviceSsh.containerdOps('', stage02);
+  const localRegTag = await serviceSsh.containerdOperations('', stage02);
 
   /**
    * STEP 7
@@ -178,8 +178,8 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: `${GitConfig.PACKAGE}`,
-    name: `${GitConfig.PACKAGE}`,
+    id: `${TopConfig.PACKAGE}`,
+    name: `${TopConfig.PACKAGE}`,
     'image.name': localRegTag,
   };
 
@@ -191,7 +191,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem) {
   /**
    * STEP 8
    */
-  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage02);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage02);
   await serviceSsh.closeConn(stage02);
 
   stage02.appendLine(`Deploying to Leda:\t `);
@@ -222,7 +222,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   device = await chooseDeviceFromListOrContext(device);
 
   //Init
-  await GitConfig.init();
+  await TopConfig.init();
 
   //Create output channel for user
   let stage03 = vscode.window.createOutputChannel('LAD Local');
@@ -233,13 +233,13 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
    * STEP 1 & 2
    */
 
-  const dockerOps = new DockerOps();
-  const tag = await dockerOps.buildDockerImage(stage03);
+  const dockerOperations = new DockerOperations();
+  const tag = await dockerOperations.buildDockerImage(stage03);
 
   /**
    * STEP 3
    */
-  const tar = await dockerOps.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
+  const tar = await dockerOperations.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
 
   /**
    * STEP 4
@@ -252,12 +252,12 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 5
    */
-  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', tar), `/tmp/${GitConfig.PACKAGE}.tar`, stage03);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', tar), `/tmp/${TopConfig.PACKAGE}.tar`, stage03);
 
   /**
    * STEP 6
    */
-  const localRegTag = await serviceSsh.containerdOps(`${tag}`, stage03);
+  const localRegTag = await serviceSsh.containerdOperations(`${tag}`, stage03);
 
   /**
    * STEP 7
@@ -265,8 +265,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: `${GitConfig.PACKAGE}`,
-    name: `${GitConfig.PACKAGE}`,
+    id: `${TopConfig.PACKAGE}`,
+    name: `${TopConfig.PACKAGE}`,
     'image.name': localRegTag,
   };
 
@@ -278,7 +278,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   /**
    * STEP 8
    */
-  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
+  await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage03);
   await serviceSsh.closeConn(stage03);
 
   stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
@@ -286,9 +286,9 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
 }
 
 export async function getVersionsWithQuickPick(octokit: Octokit) {
-  const regOpsOrg = new RegistryOpsOrg();
+  const registryOperationsOrg = new RegistryOperationsOrg();
 
-  const packageVersions = await regOpsOrg.getPackageVersionsObj(octokit);
+  const packageVersions = await registryOperationsOrg.getPackageVersionsObj(octokit);
   if (packageVersions) {
     const packageVersion = await vscode.window.showQuickPick(
       packageVersions.map((packageV) => {

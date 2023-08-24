@@ -19,7 +19,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { exec } from 'child_process';
-import { GitConfig } from '../provider/GitConfig';
+import { GitConfig } from '../provider/TopConfig';
 import * as https from 'https';
 import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 

@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { ConfigStringExtractor } = require('../../svc/GitHubOps/ConfigStringExtractor');
+const { ConfigStringExtractor } = require('../../svc/GitHubOperations/ConfigStringExtractor');
 
 describe('ConfigStringExtractor', () => {
   it('should extract the organization and repository name from .git/config file', async () => {

@@ -19,7 +19,7 @@ import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
-import { GitConfig } from '../provider/GitConfig';
+import { TopConfig } from '../provider/TopConfig';
 import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH } from '../setup/cmdProperties';
 import { LADCheckKantoConfig, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
 
@@ -144,14 +144,14 @@ export class ServiceSsh {
    * @param {vscode.OutputChannel} chan - The output channel to display progress and results.
    * @returns {Promise<string>} The container image tag used for the operations.
    */
-  public async containerdOps(tag: string, chan: vscode.OutputChannel): Promise<string> {
+  public async containerdOperations(tag: string, chan: vscode.OutputChannel): Promise<string> {
     try {
       const ctrImageImport = 'ctr image import';
       const ctrImageTag = 'ctr image tag';
       const ctrImagePush = 'ctr image push';
 
       // Import image
-      let res = await this.ssh.execCommand(`${ctrImageImport} ${GitConfig.PACKAGE}.tar`, { cwd: '/tmp' });
+      let res = await this.ssh.execCommand(`${ctrImageImport} ${TopConfig.PACKAGE}.tar`, { cwd: '/tmp' });
       this.checkStdErr(res.stderr, ctrImageImport);
       chan.appendLine(res.stdout);
       let registry = CONTAINER_REGISTRY.ghcr;
@@ -163,13 +163,13 @@ export class ServiceSsh {
         registry = CONTAINER_REGISTRY.docker;
       }
 
-      chan.appendLine(`Tagging -> ${registry}/${tag} TO ${LOCAL_KANTO_REGISTRY}/${tag}_${GitConfig.KCM_TIMESTAMP}`);
+      chan.appendLine(`Tagging -> ${registry}/${tag} TO ${LOCAL_KANTO_REGISTRY}/${tag}_${TopConfig.KCM_TIMESTAMP}`);
 
-      res = await this.ssh.execCommand(`${ctrImageTag} ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}_${GitConfig.KCM_TIMESTAMP}`);
+      res = await this.ssh.execCommand(`${ctrImageTag} ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}_${TopConfig.KCM_TIMESTAMP}`);
       this.checkStdErr(res.stderr, ctrImageTag);
       chan.appendLine(res.stdout);
 
-      tag += `_${GitConfig.KCM_TIMESTAMP}`;
+      tag += `_${TopConfig.KCM_TIMESTAMP}`;
 
       // Push image to local registry
       res = await this.ssh.execCommand(`${ctrImagePush} ${LOCAL_KANTO_REGISTRY}/${tag}`);
@@ -178,7 +178,7 @@ export class ServiceSsh {
     } catch (err) {
       throw logToChannelAndErrorConsole(chan, new SSHRemoteCommandFailedError(err as Error), `Failed with command`);
     } finally {
-      await deleteTmpFile(path.resolve(__dirname, '../../', `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`));
+      await deleteTmpFile(path.resolve(__dirname, '../../', `${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`));
     }
     return `${LOCAL_KANTO_REGISTRY}/${tag}`;
   }

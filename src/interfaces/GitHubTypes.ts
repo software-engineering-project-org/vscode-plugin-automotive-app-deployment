@@ -23,7 +23,7 @@ export interface PackageVersion {
   updated_at: string;
 }
 
-// Helper interface for RegistryOpsOrg Class methods.
+// Helper interface for RegistryOperationsOrg Class methods.
 export interface PackageImage {
   name: string; // Name of the package image
   repository: {

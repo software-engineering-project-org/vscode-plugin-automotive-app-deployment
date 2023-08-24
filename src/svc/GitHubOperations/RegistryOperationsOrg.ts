@@ -17,14 +17,14 @@
 import { JSONPath } from 'jsonpath-plus';
 import { PackageVersion } from '../../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
-import { GitConfig } from '../../provider/GitConfig';
+import { GitConfig } from '../../provider/TopConfig';
 import { PACKAGE_TYPE } from '../../setup/cmdProperties';
 import { PackageImagesFetchError, PackageVersionsFetchError, PackageNameNotFoundError } from '../../error/customErrors';
 
 /**
  * Class for interacting with GitHub using an authenticated Octokit SDK object, fetching GitHub organization-specific registry information.
  */
-export class RegistryOpsOrg {
+export class RegistryOperationsOrg {
   public async getPackageVersionsObj(octokit: Octokit): Promise<PackageVersion[]> {
     try {
       // Fetch Organization and Repository the user operates in from .git/config. This is named "context" in this module.
