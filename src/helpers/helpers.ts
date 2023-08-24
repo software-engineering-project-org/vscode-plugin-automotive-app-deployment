@@ -1,3 +1,19 @@
+/**
+ * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { LedaDevice } from '../interfaces/LedaDevice';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
@@ -5,7 +21,7 @@ import * as path from 'path';
 import { exec } from 'child_process';
 import { GitConfig } from '../provider/GitConfig';
 import * as https from 'https';
-import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError } from '../error/customErrors';
+import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 /**
  * Load the list of Leda devices from the configuration.
@@ -76,7 +92,7 @@ export function readFileAsync(filePath: string): any {
 export async function deleteTmpFile(filePath: string): Promise<void> {
   fs.unlink(filePath, (err) => {
     if (err) {
-      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err}`);
+      throw new GenericInternalError(`Internal Error - Could not delete tmp file under "${filePath}". > SYSTEM: ${err.message}`);
     }
   });
 }
@@ -89,8 +105,10 @@ export async function deleteTmpFile(filePath: string): Promise<void> {
 export async function executeShellCmd(command: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
-      if (error || stderr) {
-        reject(error || stderr);
+      if (error) {
+        reject(error);
+      } else if (stderr) {
+        resolve(stderr);
       } else {
         resolve(stdout);
       }
@@ -105,7 +123,7 @@ export async function executeShellCmd(command: string): Promise<string> {
  * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
  * @throws Throws an error if the source is not valid or encounters any issues.
  */
-export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
+export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string | undefined> {
   try {
     if (srcPath.startsWith('https://')) {
       return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
@@ -118,11 +136,14 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
       if (!srcPath.endsWith('.tar')) {
         throw new NotTARFileError(srcPath);
       }
-      return srcPath;
     }
+    return srcPath;
   } catch (err) {
-    chan.appendLine(`${err}`);
-    throw new GenericInternalError(`Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`);
+    logToChannelAndErrorConsole(
+      chan,
+      new GenericInternalError((err as Error).message),
+      `Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`,
+    );
   }
 }
 

@@ -1,3 +1,19 @@
+/**
+ * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import * as vscode from 'vscode';
 import { DeviceDataProvider, LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { saveLedaDevice, removeLedaDevice, loadLedaDevices } from '../helpers/helpers';
@@ -11,7 +27,7 @@ import { LedaDeviceQuickPickItem } from '../interfaces/QuickPickItem';
 export async function addDevice(deviceDataProvider: DeviceDataProvider) {
   // Set name.
   const name = await vscode.window.showInputBox({
-    prompt: 'Device name',
+    prompt: 'Device name: ',
     placeHolder: 'Waveshare Jetracer',
   });
   if (!name) {
@@ -99,10 +115,25 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
 }
 
 /**
+ * initialise the device object to perform a stage on
+ * @param device device from context or null object
+ * @returns initialized device
+ */
+export async function chooseDeviceFromListOrContext(device: LedaDevice) {
+  if (!device) {
+    const quickPickResult = await getTargetDeviceWithQuickPick(); // If no device exists, it calls the Quick Pick menu.
+    if (quickPickResult) {
+      device = quickPickResult as LedaDevice; // If exists, it shows the result list as dropdown.
+    }
+  }
+  return device;
+}
+
+/**
  * Show a QuickPick dialog to select a target Leda device.
  * @returns A Promise that resolves to the selected LedaDevice or undefined if no devices are available.
  */
-export async function getTargetDeviceWithQuickPick() {
+async function getTargetDeviceWithQuickPick() {
   const devices = await loadLedaDevices();
   if (devices) {
     const deviceName = await vscode.window.showQuickPick(

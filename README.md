@@ -9,7 +9,7 @@ You need:
 
 ```shell
 # Set local port forward to remote host (local machine)
-ssh -f -N -L 2222:localhost:2222 bosch@52.166.39.71
+ssh -f -N -L 2222:localhost:2222 eclipse@20.229.224.77
 
 # Connect with local ssh cli (local machine)
 ssh root@localhost -p 2222

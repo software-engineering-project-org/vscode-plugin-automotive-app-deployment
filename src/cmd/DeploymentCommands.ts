@@ -1,8 +1,23 @@
+/**
+ * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
-import { getTargetDeviceWithQuickPick } from './DeviceCommands';
-import { LedaDevice } from '../interfaces/LedaDevice';
+import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 import { ServiceSsh } from '../svc/ServiceSsh';
 import { RegistryOpsOrg } from '../svc/GitHubOps/RegistryOpsOrg';
@@ -22,6 +37,9 @@ import {
   TEMPLATE_FILE_PATH,
   OUTPUT_FILE_PATH,
   MANIFEST_DIR,
+  STAGE_ONE_CONSOLE_HEADER,
+  STAGE_TWO_CONSOLE_HEADER,
+  STAGE_THREE_CONSOLE_HEADER,
 } from '../setup/cmdProperties';
 
 /**
@@ -30,24 +48,19 @@ import {
  * ###############################################################################
  */
 
+/**
+ * 1. Overview (QuickPick): Three choices (sha, tag, latest)
+ * 2. User clicks on an item from the list
+ * 3. Check if GH Token is set in Kanto Config
+ *    - Check the /etc/container-management/config.json file
+ *    - Examine the registry_configurations object
+ * 4. Generate a string and insert it into the Manifest
+ * 5. Copy the secured Manifest to the Leda Device via SCP
+ */
+
 export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit) {
   let device = item?.ledaDevice;
-  if (!device) {
-    const quickPickResult = await getTargetDeviceWithQuickPick();
-    if (quickPickResult) {
-      device = quickPickResult as LedaDevice;
-    }
-  }
-
-  /**
-   * 1. Overview (QuickPick): Three choices (sha, tag, latest)
-   * 2. User clicks on an item from the list
-   * 3. Check if GH Token is set in Kanto Config
-   *    - Check the /etc/container-management/config.json file
-   *    - Examine the registry_configurations object
-   * 4. Generate a string and insert it into the Manifest
-   * 5. Copy the secured Manifest to the Leda Device via SCP
-   */
+  device = await chooseDeviceFromListOrContext(device);
 
   /**
    * STEP 1 & 2
@@ -58,7 +71,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   //Create output channel for user
   let stage01 = vscode.window.createOutputChannel('LAD Remote');
   stage01.show();
-  stage01.appendLine('Starting remote build and deployment...');
+  stage01.appendLine(STAGE_ONE_CONSOLE_HEADER);
 
   /**
    * STEP 3
@@ -74,8 +87,8 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: GitConfig.PACKAGE,
-    name: GitConfig.PACKAGE,
+    id: `${GitConfig.PACKAGE}`,
+    name: `${GitConfig.PACKAGE}`,
     'image.name': `${CONTAINER_REGISTRY.ghcr}/${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}@${packageVersion.image_name_sha}`,
   };
 
@@ -88,10 +101,10 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 5
    */
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage01);
-  await serviceSsh.closeConn();
+  await serviceSsh.closeConn(stage01);
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
-  vscode.window.showInformationMessage(`Deployed to ${device.name}`);
+  vscode.window.showInformationMessage(`Success. Deployed to ${device.name}`);
 }
 
 /**
@@ -100,33 +113,28 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
  * ###############################################################################
  */
 
-export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit) {
-  let device = item?.ledaDevice;
-  if (!device) {
-    const quickPickResult = await getTargetDeviceWithQuickPick();
-    if (quickPickResult) {
-      device = quickPickResult as LedaDevice;
-    }
-  }
+/**
+ * 1. Overview (QuickPick): Three choices (sha, tag, latest)
+ * 2. User clicks on an item from the list
+ * 3. Check if local-registries are set in Kanto Config
+ *    - Check the /etc/container-management/config.json file
+ *    - Examine the insecure-registries object
+ * 4. Download the selected item to the device
+ * 5. Export it as a Tarball
+ * 6. Copy the Tarball to the Leda Device via SCP
+ * 7. Execute the containerd imports
+ * 8. Insert the string (index.json) into the Manifest
+ * 9. Copy the secured Manifest to the Leda Device via SCP
+ */
 
-  /**
-   * 1. Overview (QuickPick): Three choices (sha, tag, latest)
-   * 2. User clicks on an item from the list
-   * 3. Check if local-registries are set in Kanto Config
-   *    - Check the /etc/container-management/config.json file
-   *    - Examine the insecure-registries object
-   * 4. Download the selected item to the device
-   * 5. Export it as a Tarball
-   * 6. Copy the Tarball to the Leda Device via SCP
-   * 7. Execute the containerd imports
-   * 8. Insert the string (index.json) into the Manifest
-   * 9. Copy the secured Manifest to the Leda Device via SCP
-   */
+export async function deployStageTwo(item: LedaDeviceTreeItem) {
+  let device = item?.ledaDevice;
+  device = await chooseDeviceFromListOrContext(device);
 
   // Init
   let stage02 = vscode.window.createOutputChannel('LAD Hybrid');
   stage02.show();
-  stage02.appendLine('Starting hybrid build and deployment...');
+  stage02.appendLine(STAGE_TWO_CONSOLE_HEADER);
 
   /**
    * STEP 1 & 2
@@ -152,7 +160,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
     return;
   }
 
-  const outputTarPath = await checkAndHandleTarSource(tarSource, stage02);
+  const outputTarPath = (await checkAndHandleTarSource(tarSource, stage02)) as string;
 
   /**
    * STEP 5
@@ -170,8 +178,8 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: GitConfig.PACKAGE,
-    name: GitConfig.PACKAGE,
+    id: `${GitConfig.PACKAGE}`,
+    name: `${GitConfig.PACKAGE}`,
     'image.name': localRegTag,
   };
 
@@ -184,7 +192,7 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
    * STEP 8
    */
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage02);
-  await serviceSsh.closeConn();
+  await serviceSsh.closeConn(stage02);
 
   stage02.appendLine(`Deploying to Leda:\t `);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
@@ -196,14 +204,22 @@ export async function deployStageTwo(item: LedaDeviceTreeItem, octokit: Octokit)
  * ###############################################################################
  */
 
+/**
+ * 1. Specify the path to the Dockerfile (Is it available?)
+ * 2. Build the image locally (Check if the Dockerfile is present)
+ * 3. Export it as a Tarball (to .vscode/tmp/*.tar)
+ * 4. Check if local-registries are set in Kanto Config
+ *    - Check the /etc/container-management/config.json file
+ *    - Examine the insecure-registries object
+ * 5. Copy the Tarball to the Leda Device via SCP
+ * 6. Execute the containerd commands
+ * 7. Insert the string (index.json) into the Manifest
+ * 8. Copy the secured Manifest to the Leda Device via SCP
+ */
+
 export async function deployStageThree(item: LedaDeviceTreeItem) {
   let device = item?.ledaDevice;
-  if (!device) {
-    const quickPickResult = await getTargetDeviceWithQuickPick();
-    if (quickPickResult) {
-      device = quickPickResult as LedaDevice;
-    }
-  }
+  device = await chooseDeviceFromListOrContext(device);
 
   //Init
   await GitConfig.init();
@@ -211,7 +227,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   //Create output channel for user
   let stage03 = vscode.window.createOutputChannel('LAD Local');
   stage03.show();
-  stage03.appendLine('Starting local build and deployment...');
+  stage03.appendLine(STAGE_THREE_CONSOLE_HEADER);
 
   /**
    * STEP 1 & 2
@@ -249,8 +265,8 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
   const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
   const keyValuePairs = {
-    id: GitConfig.PACKAGE,
-    name: GitConfig.PACKAGE,
+    id: `${GitConfig.PACKAGE}`,
+    name: `${GitConfig.PACKAGE}`,
     'image.name': localRegTag,
   };
 
@@ -263,20 +279,7 @@ export async function deployStageThree(item: LedaDeviceTreeItem) {
    * STEP 8
    */
   await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${GitConfig.PACKAGE}.json`, stage03);
-  await serviceSsh.closeConn();
-
-  /**
-   * 1. Specify the path to the Dockerfile (Is it available?)
-   * 2. Build the image locally (Check if the Dockerfile is present)
-   * 3. Export it as a Tarball (to .vscode/tmp/*.tar)
-   * 4. Check if local-registries are set in Kanto Config
-   *    - Check the /etc/container-management/config.json file
-   *    - Examine the insecure-registries object
-   * 5. Copy the Tarball to the Leda Device via SCP
-   * 6. Execute the containerd commands
-   * 7. Insert the string (index.json) into the Manifest
-   * 8. Copy the secured Manifest to the Leda Device via SCP
-   */
+  await serviceSsh.closeConn(stage03);
 
   stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
   vscode.window.showInformationMessage(`Deployed to ${device.name}`);
