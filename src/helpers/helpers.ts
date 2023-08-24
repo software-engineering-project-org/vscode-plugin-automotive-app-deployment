@@ -123,7 +123,7 @@ export async function executeShellCmd(command: string): Promise<string> {
  * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
  * @throws Throws an error if the source is not valid or encounters any issues.
  */
-export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string | undefined> {
+export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
   try {
     if (srcPath.startsWith('https://')) {
       return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
@@ -139,7 +139,7 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
     }
     return srcPath;
   } catch (err) {
-    logToChannelAndErrorConsole(
+    throw logToChannelAndErrorConsole(
       chan,
       new GenericInternalError((err as Error).message),
       `Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`,
