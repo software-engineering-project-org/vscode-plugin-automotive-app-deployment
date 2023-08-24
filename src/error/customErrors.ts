@@ -17,9 +17,8 @@
 import { ERROR_CONSOLE_HEADER } from '../setup/cmdProperties';
 import { OutputChannel } from 'vscode';
 
-
 // The main error function to call when error messages should be channeled to the plugin user.
-// Pass the underlying errors here for vscode channeling.  
+// Pass the underlying errors here for vscode channeling.
 export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg?: string): never {
   if (msg === undefined) {
     msg = '';
