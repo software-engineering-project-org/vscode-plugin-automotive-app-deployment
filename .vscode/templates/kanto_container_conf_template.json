@@ -19,7 +19,7 @@
         "restart_policy": {
             "maximum_retry_count": 0,
             "retry_timeout": 0,
-            "type": "unless-stopped"
+            "type": "always"
         },
         "runtime": "io.containerd.runc.v2",
         "extra_hosts": [],

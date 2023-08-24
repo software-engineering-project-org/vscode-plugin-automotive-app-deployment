@@ -163,11 +163,13 @@ export class ServiceSsh {
         registry = CONTAINER_REGISTRY.docker;
       }
 
-      chan.appendLine(`Tagging -> ${registry}/${tag} TO ${LOCAL_KANTO_REGISTRY}/${tag}`);
+      chan.appendLine(`Tagging -> ${registry}/${tag} TO ${LOCAL_KANTO_REGISTRY}/${tag}_${GitConfig.KCM_TIMESTAMP}`);
 
-      res = await this.ssh.execCommand(`${ctrImageTag} ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}`);
+      res = await this.ssh.execCommand(`${ctrImageTag} ${registry}/${tag} ${LOCAL_KANTO_REGISTRY}/${tag}_${GitConfig.KCM_TIMESTAMP}`);
       this.checkStdErr(res.stderr, ctrImageTag);
       chan.appendLine(res.stdout);
+
+      tag += `_${GitConfig.KCM_TIMESTAMP}`;
 
       // Push image to local registry
       res = await this.ssh.execCommand(`${ctrImagePush} ${LOCAL_KANTO_REGISTRY}/${tag}`);

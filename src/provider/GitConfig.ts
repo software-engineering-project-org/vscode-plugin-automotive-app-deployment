@@ -22,6 +22,7 @@ export class GitConfig {
   public static REPO: string;
   public static PACKAGE: string;
   public static DOCKERFILE: string;
+  public static KCM_TIMESTAMP: string; 
 
   public static async init() {
     const velocitasSettings = await ManifestGeneratorJson.readVelocitasJson(VELOCITAS_CONFIG_FILE);
@@ -31,5 +32,8 @@ export class GitConfig {
     this.ORG = remoteOrigin.split('/')[0];
     this.REPO = remoteOrigin.split('/')[1];
     this.PACKAGE = manifestData.Name;
+
+    const d = new Date();
+    this.KCM_TIMESTAMP = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}_${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}`;
   }
 }
