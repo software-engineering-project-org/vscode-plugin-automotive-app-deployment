@@ -17,7 +17,19 @@
 import { ERROR_CONSOLE_HEADER } from '../setup/cmdProperties';
 import { OutputChannel } from 'vscode';
 
-// TODO: Refactor all error messages.
+
+// The main error function to call when error messages should be channeled to the plugin user.
+// Pass the underlying errors here for vscode channeling.  
+export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg?: string): never {
+  if (msg === undefined) {
+    msg = '';
+  }
+  if (err === undefined) {
+    err = new GenericInternalError(msg);
+  }
+  chan.appendLine(`${ERROR_CONSOLE_HEADER}\n${err}\n${msg}`);
+  throw new Error(err.name);
+}
 
 // Represents a generic internal error that indicates unexpected issues within the system.
 export class GenericInternalError extends Error {
@@ -83,7 +95,7 @@ export class PackageVersionsFetchError extends Error {
   }
 }
 
-// Represents an error that occurs when the package name is not found in the retrieved data.
+// Represents an error that occurs when the the package name is not found in the retrieved data.
 export class PackageNameNotFoundError extends Error {
   constructor(message: string) {
     super(`Package name not found in the retrieved data: ${message}.`);
@@ -99,7 +111,7 @@ export class SSHConnectionInitilizationError extends Error {
   }
 }
 
-// Represents error while closing SSH connection to device
+//  Represents an error while closing SSH connection to device.
 export class SSHCloseConnectionError extends Error {
   constructor(err: Error) {
     super(`Error while trying to close ssh connection: ${err.message}`);
@@ -107,7 +119,7 @@ export class SSHCloseConnectionError extends Error {
   }
 }
 
-// Represents error while copying file via ssh
+//  Represents an error while copying file via SSH.
 export class SSHCopyFileError extends Error {
   constructor(err: Error) {
     super(`Error while trying to copy artefact: ${err.message}`);
@@ -115,7 +127,7 @@ export class SSHCopyFileError extends Error {
   }
 }
 
-// Represents command failure on remote device
+// Represents command failure on remote device.
 export class SSHRemoteCommandFailedError extends Error {
   constructor(err: Error) {
     super(`Error while trying to execute remote command: ${err.message}`);
@@ -123,7 +135,7 @@ export class SSHRemoteCommandFailedError extends Error {
   }
 }
 
-// Represents kanto config check error
+// Represents a kanto config check error.
 export class LADCheckKantoConfig extends Error {
   constructor(err: Error) {
     super(`Error while checking kanto config: ${err.message}`);
@@ -131,7 +143,7 @@ export class LADCheckKantoConfig extends Error {
   }
 }
 
-// Represents error while loading template Json
+//  Represents an error while loading template JSON.
 export class LADLoadTemplateJSONError extends Error {
   constructor(err: Error) {
     super(`Error loading template JSON: ${err.message}`);
@@ -139,7 +151,7 @@ export class LADLoadTemplateJSONError extends Error {
   }
 }
 
-// Represents error saving modfied template JSON
+//  Represents an error while saving modfied template JSON.
 export class LADSaveModifiedJSONError extends Error {
   constructor(err: Error) {
     super(`Error saving modified JSON: ${err.message}`);
@@ -147,7 +159,7 @@ export class LADSaveModifiedJSONError extends Error {
   }
 }
 
-//
+//  Represents an error while altering template JSON.
 export class LADAlterJSONError extends Error {
   constructor(err: Error) {
     super(`Error altering JSON: ${err.message}`);
@@ -155,6 +167,7 @@ export class LADAlterJSONError extends Error {
   }
 }
 
+//  Represents an error while retrieving Dockerfile.
 export class DockerfileNotFoundError extends Error {
   constructor(err: Error) {
     super(`Error finding Dockerfile: ${err.message}`);
@@ -162,6 +175,7 @@ export class DockerfileNotFoundError extends Error {
   }
 }
 
+//  Represents an error while building Docker image.
 export class DockerBuildFailedError extends Error {
   constructor(err: Error) {
     super(`Error while build: ${err.message}`);
@@ -169,20 +183,10 @@ export class DockerBuildFailedError extends Error {
   }
 }
 
+//  Represents an error while exporting Docker image.
 export class DockerExportImageError extends Error {
   constructor(err: Error) {
     super(`Error exporting image: ${err.message}`);
     this.name = 'DockerExportImageError';
   }
-}
-
-export function logToChannelAndErrorConsole(chan: OutputChannel, err: Error, msg?: string): never {
-  if (msg === undefined) {
-    msg = '';
-  }
-  if (err === undefined) {
-    err = new GenericInternalError(msg);
-  }
-  chan.appendLine(`${ERROR_CONSOLE_HEADER}\n${err}\n${msg}`);
-  throw new Error(err.name);
 }
