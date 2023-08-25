@@ -39,9 +39,9 @@ For further informations/dependencies/configuration refer to the welcome page.
 `;
 
 export const ERROR_CONSOLE_HEADER = `
-******************************************************************************
-***         ERROR - Encountered error during extension execution           ***
-******************************************************************************
+
+************ ERROR - Encountered error during extension execution ************
+
 `;
 
 export const TMP_KANTO_CONFIG_PATH = '.vscode/tmp/config.json';
