@@ -104,7 +104,7 @@ export async function deployStageOne(item: LedaDeviceTreeItem, octokit: Octokit)
   await serviceSsh.closeConn(stage01);
 
   stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
-  vscode.window.showInformationMessage(`Success. Deployed to ${device.name}`);
+  vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
 }
 
 /**

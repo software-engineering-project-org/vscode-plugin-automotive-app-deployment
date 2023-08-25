@@ -30,15 +30,19 @@ import { PackageQuickPickItem } from '../../interfaces/QuickPickItem';
 import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_ONE_CONSOLE_HEADER } from '../../setup/cmdProperties';
 
 /**
- * 1. Overview (QuickPick): Three choices (sha, tag, latest)
- * 2. User clicks on an item from the list
- * 3. Check if GH Token is set in Kanto Config
- *    - Check the /etc/container-management/config.json file
- *    - Examine the registry_configurations object
- * 4. Generate a string and insert it into the Manifest
- * 5. Copy the secured Manifest to the Leda Device via SCP
+ * Implements Deployment Functionality for Stage 1:
+ *
+ *
+ *      1. Overview (QuickPick): Three choices (sha, tag, latest)
+ *      2. User clicks on an item from the list
+ *      3. Check if GH Token is set in Kanto Config
+ *           - Check the /etc/container-management/config.json file
+ *            - Examine the registry_configurations object
+ *      4. Generate a string and insert it into the Manifest
+ *      5. Copy the secured Manifest to the Leda Device via SCP
+ *
+ *
  */
-
 export class StageOne {
   public static deploy = async (item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
     let device = item?.ledaDevice;
@@ -86,7 +90,7 @@ export class StageOne {
     await serviceSsh.closeConn(stage01);
 
     stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
-    vscode.window.showInformationMessage(`Success. Deployed to ${device.name}`);
+    vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
   };
 
   private static getVersionsWithQuickPick = async (octokit: Octokit): Promise<any> => {

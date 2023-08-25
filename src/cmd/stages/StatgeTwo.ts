@@ -27,19 +27,23 @@ import { checkAndHandleTarSource } from '../../helpers/helpers';
 import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_TWO_CONSOLE_HEADER } from '../../setup/cmdProperties';
 
 /**
- * 1. Overview (QuickPick): Three choices (sha, tag, latest)
- * 2. User clicks on an item from the list
- * 3. Check if local-registries are set in Kanto Config
- *    - Check the /etc/container-management/config.json file
- *    - Examine the insecure-registries object
- * 4. Download the selected item to the device
- * 5. Export it as a Tarball
- * 6. Copy the Tarball to the Leda Device via SCP
- * 7. Execute the containerd imports
- * 8. Insert the string (index.json) into the Manifest
- * 9. Copy the secured Manifest to the Leda Device via SCP
+ * Implements Deployment Functionality for Stage 2:
+ *
+ *
+ *      1. Overview (QuickPick): Three choices (sha, tag, latest)
+ *      2. User clicks on an item from the list
+ *      3. Check if local-registries are set in Kanto Config
+ *            - Check the /etc/container-management/config.json file
+ *           - Examine the insecure-registries object
+ *      4. Download the selected item to the device
+ *      5. Export it as a Tarball
+ *      6. Copy the Tarball to the Leda Device via SCP
+ *      7. Execute the containerd imports
+ *      8. Insert the string (index.json) into the Manifest
+ *      9. Copy the secured Manifest to the Leda Device via SCP
+ *
+ *
  */
-
 export class StageTwo {
   public static deploy = async (item: LedaDeviceTreeItem): Promise<void> => {
     let device = item?.ledaDevice;
@@ -109,6 +113,6 @@ export class StageTwo {
     await serviceSsh.closeConn(stage02);
 
     stage02.appendLine(`Deploying to Leda:\t `);
-    vscode.window.showInformationMessage(`Deployed to ${device.name}`);
+    vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
   };
 }

@@ -27,18 +27,22 @@ import { DockerOperations } from '../../svc/DockerOperations';
 import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_THREE_CONSOLE_HEADER } from '../../setup/cmdProperties';
 
 /**
- * 1. Specify the path to the Dockerfile (Is it available?)
- * 2. Build the image locally (Check if the Dockerfile is present)
- * 3. Export it as a Tarball (to .vscode/tmp/*.tar)
- * 4. Check if local-registries are set in Kanto Config
- *    - Check the /etc/container-management/config.json file
- *    - Examine the insecure-registries object
- * 5. Copy the Tarball to the Leda Device via SCP
- * 6. Execute the containerd commands
- * 7. Insert the string (index.json) into the Manifest
- * 8. Copy the secured Manifest to the Leda Device via SCP
+ * Implements Deployment Functionality for Stage 3:
+ *
+ *
+ *      1. Specify the path to the Dockerfile (Is it available?)
+ *      2. Build the image locally (Check if the Dockerfile is present)
+ *      3. Export it as a Tarball (to .vscode/tmp/*.tar)
+ *      4. Check if local-registries are set in Kanto Config
+ *            - Check the /etc/container-management/config.json file
+ *           - Examine the insecure-registries object
+ *      5. Copy the Tarball to the Leda Device via SCP
+ *      6. Execute the containerd commands
+ *      7. Insert the string (index.json) into the Manifest
+ *      8. Copy the secured Manifest to the Leda Device via SCP
+ *
+ *
  */
-
 export class StageThree {
   public static deploy = async (item: LedaDeviceTreeItem): Promise<void> => {
     let device = item?.ledaDevice;
@@ -55,7 +59,6 @@ export class StageThree {
     /**
      * STEP 1 & 2
      */
-
     const dockerOperations = new DockerOperations();
     const tag = await dockerOperations.buildDockerImage(stage03);
 
@@ -105,6 +108,6 @@ export class StageThree {
     await serviceSsh.closeConn(stage03);
 
     stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
-    vscode.window.showInformationMessage(`Deployed to ${device.name}`);
+    vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
   };
 }
