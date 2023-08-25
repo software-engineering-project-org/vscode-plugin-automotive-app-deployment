@@ -17,7 +17,7 @@
 import { JSONPath } from 'jsonpath-plus';
 import { PackageVersion } from '../../interfaces/GitHubTypes';
 import { Octokit } from '@octokit/rest';
-import { GitConfig } from '../../provider/TopConfig';
+import { TopConfig } from '../../provider/TopConfig';
 import { PACKAGE_TYPE } from '../../setup/cmdProperties';
 import { PackageImagesFetchError, PackageVersionsFetchError, PackageNameNotFoundError } from '../../error/customErrors';
 
@@ -59,7 +59,7 @@ export class RegistryOperationsOrg {
       const json = JSON.parse(JSON.stringify(orgPackagesList));
       // Only get the name of the package assigned to the Repository matching the context.
       const filteredData = JSONPath({
-        path: `$[?(@.repository.full_name === "${GitConfig.REPO}")].name`,
+        path: `$[?(@.repository.full_name === "${TopConfig.REPO}")].name`,
         json: json,
       });
 
@@ -79,7 +79,7 @@ export class RegistryOperationsOrg {
    */
   private async getOrganizationPackageImages(octokit: Octokit): Promise<any[]> {
     try {
-      const response = await octokit.request(`GET /orgs/${GitConfig.ORG}/packages?package_type=${PACKAGE_TYPE}`);
+      const response = await octokit.request(`GET /orgs/${TopConfig.ORG}/packages?package_type=${PACKAGE_TYPE}`);
       return response.data;
     } catch (err: any) {
       throw new PackageImagesFetchError(err.message);
@@ -94,9 +94,9 @@ export class RegistryOperationsOrg {
   private async getPackageVersions(octokit: Octokit): Promise<any> {
     try {
       const response = await octokit.packages.getAllPackageVersionsForPackageOwnedByOrg({
-        org: GitConfig.ORG,
+        org: TopConfig.ORG,
         package_type: PACKAGE_TYPE,
-        package_name: `${GitConfig.REPO}/${GitConfig.PACKAGE}`,
+        package_name: `${TopConfig.REPO}/${TopConfig.PACKAGE}`,
       });
       return response.data;
     } catch (err: any) {
