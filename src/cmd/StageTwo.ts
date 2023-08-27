@@ -16,31 +16,29 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { LedaDeviceTreeItem } from '../../provider/DeviceDataProvider';
-import { chooseDeviceFromListOrContext } from './../DeviceCommands';
-import { ManifestGeneratorJson } from '../../svc/ManifestGeneratorJson';
-import { ServiceSsh } from '../../svc/ServiceSsh';
-import { TopConfig } from '../../provider/TopConfig';
-import { checkAndHandleTarSource } from '../../helpers/helpers';
+import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
+import { chooseDeviceFromListOrContext } from './DeviceCommands';
+import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
+import { ServiceSsh } from '../svc/ServiceSsh';
+import { TopConfig } from '../provider/TopConfig';
+import { checkAndHandleTarSource } from '../helpers/helpers';
 
 // Import setup constants from properties file.
-import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_TWO_CONSOLE_HEADER } from '../../setup/cmdProperties';
+import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_TWO_CONSOLE_HEADER } from '../setup/cmdProperties';
 
 /**
  * Implements Deployment Functionality for Stage 2:
  *
- *
- *      1. Overview (QuickPick): Three choices (sha, tag, latest)
- *      2. User clicks on an item from the list
- *      3. Check if local-registries are set in Kanto Config
+ *      0. Config initilization & Overview (QuickPick)
+ *      1. Connect to device with SSH
+ *      2. Check if local-registries are set in Kanto Config
  *            - Check the /etc/container-management/config.json file
  *           - Examine the insecure-registries object
- *      4. Download the selected item to the device
- *      5. Export it as a Tarball
- *      6. Copy the Tarball to the Leda Device via SCP
- *      7. Execute the containerd imports
- *      8. Insert the string (index.json) into the Manifest
- *      9. Copy the secured Manifest to the Leda Device via SCP
+ *      3. Download tar source or reference from local device
+ *      4. Copy the Tarball to the Leda Device via SCP
+ *      5. Execute the containerd imports
+ *      6. Insert the string (index.json) into the Manifest
+ *      7. Copy the secured Manifest to the Leda Device via SCP
  *
  *
  */
@@ -55,12 +53,12 @@ export class StageTwo {
     stage02.appendLine(STAGE_TWO_CONSOLE_HEADER);
 
     /**
-     * STEP 1 & 2
+     * STEP 0
      */
     await TopConfig.init();
 
     /**
-     * STEP 3
+     * STEP 1 & 2
      */
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage02);
@@ -68,7 +66,7 @@ export class StageTwo {
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
 
     /**
-     * STEP 4
+     * STEP 3
      */
     const tarSource = await vscode.window.showInputBox({
       prompt: 'Image source',
@@ -78,20 +76,20 @@ export class StageTwo {
       return;
     }
 
-    const outputTarPath = (await checkAndHandleTarSource(tarSource, stage02)) as string;
+    const outputTarPath = await checkAndHandleTarSource(tarSource, stage02);
 
     /**
-     * STEP 5
+     * STEP 4
      */
     await serviceSsh.copyResourceToLeda(outputTarPath, `/tmp/${TopConfig.PACKAGE}.tar`, stage02);
 
     /**
-     * STEP 6
+     * STEP 5
      */
     const localRegTag = await serviceSsh.containerdOperations('', stage02);
 
     /**
-     * STEP 7
+     * STEP 6
      */
     const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
@@ -107,7 +105,7 @@ export class StageTwo {
     });
 
     /**
-     * STEP 8
+     * STEP 7
      */
     await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage02);
     await serviceSsh.closeConn(stage02);

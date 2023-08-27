@@ -16,15 +16,15 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { LedaDeviceTreeItem } from '../../provider/DeviceDataProvider';
-import { chooseDeviceFromListOrContext } from './../DeviceCommands';
-import { ManifestGeneratorJson } from '../../svc/ManifestGeneratorJson';
-import { ServiceSsh } from '../../svc/ServiceSsh';
-import { TopConfig } from '../../provider/TopConfig';
-import { DockerOperations } from '../../svc/DockerOperations';
+import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
+import { chooseDeviceFromListOrContext } from './DeviceCommands';
+import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
+import { ServiceSsh } from '../svc/ServiceSsh';
+import { TopConfig } from '../provider/TopConfig';
+import { DockerOperations } from '../svc/DockerOperations';
 
 // Import setup constants from properties file.
-import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_THREE_CONSOLE_HEADER } from '../../setup/cmdProperties';
+import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_THREE_CONSOLE_HEADER } from '../setup/cmdProperties';
 
 /**
  * Implements Deployment Functionality for Stage 3:

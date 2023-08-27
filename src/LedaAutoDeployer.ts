@@ -17,9 +17,9 @@
 import * as vscode from 'vscode';
 import { LedaDeviceTreeItem, DeviceDataProvider } from './provider/DeviceDataProvider';
 import { addDevice, deleteDevice } from './cmd/DeviceCommands';
-import { StageOne } from './cmd/stages/StageOne';
-import { StageTwo } from './cmd/stages/StatgeTwo';
-import { StageThree } from './cmd/stages/StageThree';
+import { StageOne } from './cmd/StageOne';
+import { StageTwo } from './cmd/StageTwo';
+import { StageThree } from './cmd/StageThree';
 import { Credentials } from './svc/Credentials';
 
 export default class LedaAutoDeployer {
