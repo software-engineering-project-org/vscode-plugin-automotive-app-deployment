@@ -93,7 +93,7 @@ export class ServiceSsh {
       ]);
       chan.appendLine(`Copied:\t\t\t Dest - ${remote} - on Remote!`);
     } catch (err) {
-      throw logToChannelAndErrorConsole(chan, new SSHCopyFileError(err as Error), `Error copying resource to leda from (local) ${local} (to) ${remote}`);
+      throw logToChannelAndErrorConsole(chan, new SSHCopyFileError(err as Error), `Error copying resource to Leda from (local) ${local} (to) ${remote}`);
     }
   }
 

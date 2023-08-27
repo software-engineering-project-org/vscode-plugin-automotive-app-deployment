@@ -1,6 +1,6 @@
 # Setup environment 
 You need:
-- Running leda instance connected to a local network or the internet 
+- Running Eclipse Leda instance connected to a local network or the internet 
 - Working private container registry that is running on leda 
 - Preconfigured configuration of the container-management service
 - Further resources in `resources` folder
