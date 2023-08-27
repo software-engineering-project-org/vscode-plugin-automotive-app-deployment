@@ -6,8 +6,8 @@
 		"lib": [
 			"ES2020"
 		],
+		"allowJs": false, // Workaround for JEST
 		"sourceMap": true,
-		"allowJs": true, // for lazy mocking with jest
 		"rootDir": "src",
 		"allowSyntheticDefaultImports": true,
 		"strict": true   /* enable all strict type-checking options */

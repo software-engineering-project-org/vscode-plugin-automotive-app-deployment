@@ -19,7 +19,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { exec } from 'child_process';
-import { GitConfig } from '../provider/GitConfig';
+import { TopConfig } from '../provider/TopConfig';
 import * as https from 'https';
 import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 
@@ -126,7 +126,7 @@ export async function executeShellCmd(command: string): Promise<string> {
 export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
   try {
     if (srcPath.startsWith('https://')) {
-      return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${GitConfig.PACKAGE}.tar`, chan);
+      return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${TopConfig.PACKAGE}.tar`, chan);
     } else if (srcPath.startsWith('http://')) {
       throw new InsecureWebSourceError(srcPath);
     } else {

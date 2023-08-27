@@ -14,12 +14,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { ConfigStringExtractor } = require('../../svc/GitHubOperations/ConfigStringExtractor');
 
-describe('ConfigStringExtractor', () => {
-  it('should extract the organization and repository name from .git/config file', async () => {
-    const gitConfig = "sample-config-git";
-    const organizationAndRepository = await ConfigStringExtractor.extractGitOrgAndRepoNameFromConfig(gitConfig);
-    expect(organizationAndRepository).toMatch(/^[^/]+\/[^/]+$/);
-  });
-});
+// __mocks__/vscode.js
+
+class OutputChannel {
+  static CreateOutputChannel = () => {};
+}
+
+const vscode = {
+  window: {
+    createOutputChannel: jest.fn(() => new OutputChannel()),
+  },
+};
+
+const chan = {};
+
+module.exports = { OutputChannel, vscode, chan };

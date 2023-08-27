@@ -13,6 +13,6 @@ module.exports = {
     },
   },
   moduleNameMapper: {
-    'vscode': '<rootDir>/src/test/jest/__mock__/vscode.ts',
+    'vscode': '<rootDir>/src/test/jest/__mock__/vscode.js',
   },
 };

@@ -17,7 +17,9 @@
 import * as vscode from 'vscode';
 import { LedaDeviceTreeItem, DeviceDataProvider } from './provider/DeviceDataProvider';
 import { addDevice, deleteDevice } from './cmd/DeviceCommands';
-import { deployStageOne, deployStageTwo, deployStageThree } from './cmd/DeploymentCommands';
+import { StageOne } from './cmd/StageOne';
+import { StageTwo } from './cmd/StageTwo';
+import { StageThree } from './cmd/StageThree';
 import { Credentials } from './svc/Credentials';
 
 export default class LedaAutoDeployer {
@@ -86,25 +88,25 @@ export default class LedaAutoDeployer {
       }),
     );
 
-    // Register the 'deployStageOne' command and associate it with the 'deployStageOne' function
+    // Register the 'deployStageOne' command and associate it with the 'StageOne.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageOne', async (item: LedaDeviceTreeItem) => {
         const octokit = await this.credentials.getOctokit();
-        await deployStageOne(item, octokit);
+        await StageOne.deploy(item, octokit);
       }),
     );
 
-    // Register the 'deployStageTwo' command and associate it with the 'deployStageTwo' function
+    // Register the 'deployStageTwo' command and associate it with the 'StageTwo.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
-        await deployStageTwo(item);
+        await StageTwo.deploy(item);
       }),
     );
 
-    // Register the 'deployStageThree' command and associate it with the 'deployStageThree' function
+    // Register the 'deployStageThree' command and associate it with the 'StageThree.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageThree', async (item: LedaDeviceTreeItem) => {
-        await deployStageThree(item);
+        await StageThree.deploy(item);
       }),
     );
   }

@@ -17,28 +17,28 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { GitConfig } from '../provider/GitConfig';
+import { TopConfig } from '../provider/TopConfig';
 import { executeShellCmd } from '../helpers/helpers';
 import { CONTAINER_REGISTRY, TARBALL_OUTPUT_PATH, TARGET_CONTAINER_PLATFORM } from '../setup/cmdProperties';
 import { DockerBuildFailedError, DockerExportImageError, DockerfileNotFoundError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 
-export class DockerOps {
+export class DockerOperations {
   /**
-   * Builds a Docker image using the Dockerfile specified in the GitConfig.
+   * Builds a Docker image using the Dockerfile specified in the TopConfig.
    *
    * @param chan - The output channel to display build progress and results.
    * @returns A Promise that resolves to the tag of the built Docker image.
    * @throws Error if the Dockerfile is not found or an error occurs during the build process.
    */
   public async buildDockerImage(chan: vscode.OutputChannel): Promise<string> {
-    // Get the absolute path of the Dockerfile based on the GitConfig settings.
-    const dockerfilePathAbs = path.resolve(__dirname, '../../', `${GitConfig.DOCKERFILE}`);
+    // Get the absolute path of the Dockerfile based on the TopConfig settings.
+    const dockerfilePathAbs = path.resolve(__dirname, '../../', `${TopConfig.DOCKERFILE}`);
 
     // Check if the Dockerfile exists at the specified path.
     if (!fs.existsSync(dockerfilePathAbs)) {
-      throw logToChannelAndErrorConsole(chan, new DockerfileNotFoundError(new GenericInternalError(GitConfig.DOCKERFILE)));
+      throw logToChannelAndErrorConsole(chan, new DockerfileNotFoundError(new GenericInternalError(TopConfig.DOCKERFILE)));
     }
-    chan.appendLine(`Found Dockerfile in ${GitConfig.DOCKERFILE}`);
+    chan.appendLine(`Found Dockerfile in ${TopConfig.DOCKERFILE}`);
     chan.appendLine('Building image...');
 
     // Generate a version string based on the current date and time.
@@ -46,7 +46,7 @@ export class DockerOps {
     const version = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}_${d.getHours()}-${d.getMinutes()}-${d.getSeconds()}`;
 
     // Specify the platform, tag, and full tag for the built Docker image.
-    const tag = `${GitConfig.ORG}/${GitConfig.REPO}/${GitConfig.PACKAGE}:${version}`;
+    const tag = `${TopConfig.ORG}/${TopConfig.REPO}/${TopConfig.PACKAGE}:${version}`;
 
     try {
       // Execute the Docker build command to build the image.
@@ -67,15 +67,15 @@ export class DockerOps {
    * @throws Error if an error occurs during the export process.
    */
   public async exportImageAsTarball(tag: string, chan: vscode.OutputChannel): Promise<string> {
-    // Specify the relative path for the tarball based on the GitConfig settings.
-    const relTarPath = `${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`;
+    // Specify the relative path for the tarball based on the TopConfig settings.
+    const relTarPath = `${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`;
     const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
 
     try {
       // Execute the Docker save command to export the image as a tarball.
       const result = await executeShellCmd(`docker save ${tag} > ${outputTar}`);
       chan.appendLine(result);
-      chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${GitConfig.PACKAGE}.tar`);
+      chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`);
       return relTarPath; // Return the relative path of the exported tarball.
     } catch (err) {
       logToChannelAndErrorConsole(chan, new DockerExportImageError(err as Error));
