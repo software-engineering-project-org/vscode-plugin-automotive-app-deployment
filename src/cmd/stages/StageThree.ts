@@ -29,18 +29,17 @@ import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_
 /**
  * Implements Deployment Functionality for Stage 3:
  *
- *
- *      1. Specify the path to the Dockerfile (Is it available?)
- *      2. Build the image locally (Check if the Dockerfile is present)
- *      3. Export it as a Tarball (to .vscode/tmp/*.tar)
+ *      0. Config initilization & Overview (QuickPick)
+ *      1. Build Docker Image (checks included)
+ *      2. Export it as a Tarball (to .vscode/tmp/*.tar)
+ *      3. Connect to device via SSH
  *      4. Check if local-registries are set in Kanto Config
- *            - Check the /etc/container-management/config.json file
+ *           - Check the /etc/container-management/config.json file
  *           - Examine the insecure-registries object
  *      5. Copy the Tarball to the Leda Device via SCP
  *      6. Execute the containerd commands
  *      7. Insert the string (index.json) into the Manifest
  *      8. Copy the secured Manifest to the Leda Device via SCP
- *
  *
  */
 export class StageThree {
@@ -57,18 +56,18 @@ export class StageThree {
     stage03.appendLine(STAGE_THREE_CONSOLE_HEADER);
 
     /**
-     * STEP 1 & 2
+     * STEP 1
      */
     const dockerOperations = new DockerOperations();
     const tag = await dockerOperations.buildDockerImage(stage03);
 
     /**
-     * STEP 3
+     * STEP 2
      */
     const tar = await dockerOperations.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
 
     /**
-     * STEP 4
+     * STEP 3 & 4
      */
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage03);
