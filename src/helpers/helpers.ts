@@ -9,6 +9,7 @@ import * as https from 'https';
 /**
  * Open a new WebView after the Extesion is installed or updated.
  * @param context Give the Extesion Context to look for the global State
+ * @param disableFirstTimeCheck Disables the check if opens the first time, to open it via command
  */
 export function openWelcomePage(context: vscode.ExtensionContext, disableFirstTimeCheck = false): void {
   const version = context.extension.packageJSON.version ?? '1.0.0';
