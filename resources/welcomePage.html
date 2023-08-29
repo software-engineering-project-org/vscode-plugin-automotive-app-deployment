@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<br lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Leda App Deployer</title>
+</head>
+<br>
+    
+    <h1>Leda App Deployer</h1>
+    <p>Leda App Deployer facilitates the installation of a Velocitas app using Kanto. Three different options are available for deployment. Some of these deployment types require configurations on the target system. These are also described below.</p>
+
+    </br>
+    <h2>3 Ways to deploy your application</h2>
+
+    </br>
+    <h3>1. Deploy remote built image remote</h3>
+        <p>Using this function the Velocitas app images that are available in the GitHub repository your application is pulled from can be installed. The target system downloads the required image independently. An Internet connection is required.
+        If the image is located in a repository that requires authentication (private repository), this must be configured on the target system. Instructions on how to do this can be found under "Authentication on device".</p>
+        <p>You can choose between the different releases which are available for your repository.</p>
+        <img src="${stage_1}" width="500" />
+
+        <p>At the technical level, the following steps are performed:</p>
+
+        <ul>
+            <li>1. Connect to device via SSH</li>
+            <li>2. Check if local-registries are set in Kanto Config</br>- Check the /etc/container-management/config.json file</br>- Examine the registry_configurations object</li>
+            <li>3. Generate a string and insert it into the Manifest</li>
+            <li>4. Copy the secured Manifest to the Leda Device via SCP</li>
+        </ul>
+
+    </br>
+    <h3>2. Deploy local built image remote</h3>
+        <p>This function first downloads the Velocitas App image and then transfers it to the target system via the local network. The target system does not need to be connected to the Internet. A local image registry on the target system is used. This use must be allowed manually beforehand. How this works can be found under "Use the local image registry of the device".</p>
+        <img src="${stage_2}" width="500" />
+
+        <p>At the technical level, the following steps are performed:</p>
+
+        <ul>
+            <li>1. Connect to device via SSH</li>
+            <li>2. Check if local-registries are set in Kanto Config</br>- Check the /etc/container-management/config.json file</br>- Examine the registry_configurations object</li>
+            <li>3. Download tar source or reference from local device</li>
+            <li>4. Copy the Tarball to the Leda Device via SCP</li>
+            <li>5. Execute the containerd imports</li>
+            <li>6. Generate a string and insert it into the Manifest</li>
+            <li>7. Copy the secured Manifest to the Leda Device via SCP</li>
+        </ul>
+
+    </br>
+    <h3>3. Deploy local built image local</h3>
+        <p>This function builds the Velocitas app image locally. A valid Dockerfile is required for this. The deployment is done via the local network. The target system does not need to be connected to the Internet. A local image registry of the target system is used, the use of which must be set up manually. How to do this is explained in the section "Use the local image registry of the device".</p>
+        <img src="${stage_3}" width="500" />
+
+        <p>At the technical level, the following steps are performed:</p>
+
+        <ul>
+            <li>1. Build Docker Image (checks included)</li>
+            <li>2. Export it as a Tarball (to .vscode/tmp/*.tar)</li>
+            <li>3. Connect to device via SSH</li>
+            <li>4. Check if local-registries are set in Kanto Config</br>- Check the /etc/container-management/config.json file</br>- Examine the registry_configurations object</li>
+            <li>5. Copy the Tarball to the Leda Device via SCP</li>
+            <li>6. Execute the containerd imports</li>
+            <li>7. Generate a string and insert it into the Manifest</li>
+            <li>8. Copy the secured Manifest to the Leda Device via SCP</li>
+        </ul>
+
+    </br>
+    <h2>Device handling</h2>
+
+    </br>
+    <h3>Add, edit and remove devices, run apps on device</h3>
+
+    <p>If no devices have been created yet, this can be done via the "+" button. To do this, the required information is entered in the prompt that opens.</p>
+    <p>Once a device has been created, it can be deleted using the trash can button. </p>
+    <p>Changes are possible via the pencil icon. The workspace config file then opens with the existing devices. The data can be adjusted there. After saving and clicking the reload button, the changes are displayed searchable/effective. </p>
+
+    </br>
+
+    <p>To deploy a Velocitas app, you can choose between the three variants described above. The cloud icon without arrow executes the 1st option "Deploy remote built image remote". The cloud with the arrow executes the second option "Deploy local built image remote". And the document icon with the arrow executes the third variant "Deploy local built image local".</p>
+
+    </br>
+    <h3>Authentication on device</h3>
+        <p>Edit the config.json in the kanto container-management of the target system/device:</p>
+
+        <ul>
+            <li>cd /etc/container-management</li>
+            <li>vim config.json</li>
+            <li>add: "containers":{} </br>After that or in case there is already the "containers" section, just add into that section: "insecure-registries":["localhost:5000"]</li>
+            <li>sudo systemctl restart container-management.service</li>
+        </ul>
+
+    </br>
+    <h3>Use the local image registry of the device</h3>
+        <p>Edit the config.json in the kanto container-management of the target system/device:</p>
+
+        <ul>
+            <li>cd /etc/container-management</li>
+            <li>vim config.json</li>
+            <li>add the following section: "containers":{} </br>After that or in case there is already the "containers" section, just add into that section:  
+            "registry_configurations": {
+                "ghcr.io": {
+                    "credentials": {
+                        "user_id": "GITHUB USERNAME",
+                        "password": "GITHUB PASSWORD",
+                    }
+                }
+            }</li>
+            <li>sudo systemctl restart container-management.service</li>
+        </ul>
+    </br>
+
+
+</body>
+</html>

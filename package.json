@@ -128,6 +128,10 @@
     },
     "commands": [
       {
+        "command": "automotive-app-deployment.openWelcomePage",
+        "title": "LAD: open Welcome Page"
+      },
+      {
         "command": "automotive-app-deployment.addDevice",
         "title": "LAD: Add Device",
         "icon": "$(plus)"

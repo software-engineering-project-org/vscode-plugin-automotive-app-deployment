@@ -3,6 +3,7 @@ import { LedaDeviceTreeItem, DeviceDataProvider } from './provider/DeviceDataPro
 import { addDevice, deleteDevice } from './cmd/DeviceCommands';
 import { deployStageOne, deployStageTwo, deployStageThree } from './cmd/DeploymentCommands';
 import { Credentials } from './svc/Credentials';
+import { openWelcomePage } from './helpers/helpers';
 
 export default class LedaAutoDeployer {
   private context: vscode.ExtensionContext;
@@ -28,6 +29,9 @@ export default class LedaAutoDeployer {
 
     // Initialize commands for the extension
     this.initCommands();
+
+    //Open the Welcome screen
+    openWelcomePage(context);
   }
 
   /**
@@ -35,6 +39,13 @@ export default class LedaAutoDeployer {
    * Registers various commands and their corresponding actions.
    */
   private initCommands() {
+    //Register the 'openWelcomePage' command and associate it with the 'openWelcomePage' function
+    this.context.subscriptions.push(
+      vscode.commands.registerCommand('automotive-app-deployment.openWelcomePage', () => {
+        openWelcomePage(this.context, true);
+      }),
+    );
+
     // Register the 'addDevice' command and associate it with the 'addDevice' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.addDevice', async () => {
