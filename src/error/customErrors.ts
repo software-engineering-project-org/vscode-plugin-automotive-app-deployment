@@ -166,6 +166,14 @@ export class LADAlterJSONError extends Error {
   }
 }
 
+// Represent an error that indicates that necessary dependencies are not installed on the target device.
+export class LADUnmetDependenciesError extends Error {
+  constructor(err: Error) {
+    super(`Error checking dependencies: ${err.message}`);
+    this.name = 'LADUnmetDependenciesError';
+  }
+}
+
 //  Represents an error while retrieving Dockerfile.
 export class DockerfileNotFoundError extends Error {
   constructor(err: Error) {

@@ -20,8 +20,8 @@ import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { TopConfig } from '../provider/TopConfig';
-import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH } from '../setup/cmdProperties';
-import { LADCheckKantoConfig, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
+import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH, NECESSARY_DEVICE_CLI_TOOLINGS } from '../setup/cmdProperties';
+import { LADCheckKantoConfig, LADUnmetDependenciesError, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 export class ServiceSsh {
   private sshHost: string;
@@ -65,6 +65,24 @@ export class ServiceSsh {
     }
   }
 
+
+  /**
+   * Check all necessary dependencies before stage execution
+   */
+  public async checkDeviceDependencies(chan: vscode.OutputChannel) {
+    chan.appendLine('Checking dependencies...')
+    for(const tool of NECESSARY_DEVICE_CLI_TOOLINGS) {
+      try {
+        let res = await this.ssh.execCommand(tool);
+        this.checkStdErr(res.stderr, tool);
+        chan.appendLine(`${tool} \u2705`);
+      } catch(err) {
+        chan.appendLine(`${tool} \u26A0`);
+        throw logToChannelAndErrorConsole(chan, new LADUnmetDependenciesError(err as Error), `Install ${tool} on your device`);
+      }
+    }
+  }
+  
   /**
    * Close the SSH connection.
    */
