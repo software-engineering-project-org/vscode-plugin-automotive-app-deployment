@@ -70,15 +70,18 @@ export class ServiceSsh {
    * Check all necessary dependencies before stage execution
    */
   public async checkDeviceDependencies(chan: vscode.OutputChannel) {
-    chan.appendLine('Checking dependencies...')
-    for(const tool of NECESSARY_DEVICE_CLI_TOOLINGS) {
+    chan.appendLine('Checking dependencies...');
+    for (let tool of NECESSARY_DEVICE_CLI_TOOLINGS) {
       try {
-        let res = await this.ssh.execCommand(tool);
-        this.checkStdErr(res.stderr, tool);
-        chan.appendLine(`${tool} \u2705`);
-      } catch(err) {
-        chan.appendLine(`${tool} \u26A0`);
-        throw logToChannelAndErrorConsole(chan, new LADUnmetDependenciesError(err as Error), `Install ${tool} on your device`);
+        let prefix = tool.type == 'service' ? `systemctl status` : '';
+        let suffix = tool.type == 'cli' ? 'is installed' : 'is active';
+        let res = await this.ssh.execCommand(`${prefix} ${tool.name}`);
+        this.checkStdErr(res.stderr, tool.name);
+        chan.appendLine(`${tool.name} ${suffix} \u2705`);
+      } catch (err) {
+        let suffix = tool.type == 'cli' ? 'not installed' : 'not active';
+        chan.appendLine(`${tool.name} ${suffix} \u26A0`);
+        throw logToChannelAndErrorConsole(chan, new LADUnmetDependenciesError(err as Error));
       }
     }
   }
