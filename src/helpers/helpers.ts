@@ -65,7 +65,6 @@ export function openWelcomePage(context: vscode.ExtensionContext, disableFirstTi
   context.globalState.update(context.extension.id, version);
 }
 
-
 /**
  * Save a new Leda device to the configuration.
  * @param newDevice The LedaDevice object to be saved.

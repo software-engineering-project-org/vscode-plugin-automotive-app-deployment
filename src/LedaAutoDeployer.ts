@@ -47,7 +47,7 @@ export default class LedaAutoDeployer {
 
     // Initialize commands for the extension
     this.initCommands();
-    
+
     //Open the Welcome screen
     openWelcomePage(context);
   }
