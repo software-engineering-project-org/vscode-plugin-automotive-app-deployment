@@ -29,7 +29,7 @@ import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_
 /**
  * Implements Deployment Functionality for Stage 3:
  *
- *      0. Config initilization & Overview (QuickPick)
+ *      0. Config initilization & Overview (QuickPick) & Dependency Check 
  *      1. Build Docker Image (checks included)
  *      2. Export it as a Tarball (to .vscode/tmp/*.tar)
  *      3. Connect to device via SSH
@@ -71,6 +71,7 @@ export class StageThree {
      */
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage03);
+    await serviceSsh.checkDeviceDependencies(stage03);
     await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage03);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage03);
 

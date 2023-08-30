@@ -60,3 +60,4 @@ export const CONTAINER_REGISTRY = {
 };
 export const TARGET_CONTAINER_PLATFORM = 'linux/arm64';
 export const VELOCITAS_CONFIG_FILE = '.velocitas.json';
+export const NECESSARY_DEVICE_CLI_TOOLINGS = ['kanto-cm', 'ctr'];
