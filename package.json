@@ -129,7 +129,7 @@
     "commands": [
       {
         "command": "automotive-app-deployment.openWelcomePage",
-        "title": "LAD: open Welcome Page"
+        "title": "LAD: Open Welcome Page"
       },
       {
         "command": "automotive-app-deployment.addDevice",
