@@ -34,6 +34,38 @@ export async function loadLedaDevices(): Promise<LedaDevice[] | undefined> {
 }
 
 /**
+ * Open a new WebView after the Extesion is installed or updated.
+ * @param context Give the Extesion Context to look for the global State
+ * @param disableFirstTimeCheck Disables the check if opens the first time, to open it via command
+ */
+export function openWelcomePage(context: vscode.ExtensionContext, disableFirstTimeCheck = false): void {
+  const version = context.extension.packageJSON.version ?? '1.0.0';
+  const previousVersion = context.globalState.get(context.extension.id);
+  // Check if a new version is installed
+  if (previousVersion === version && disableFirstTimeCheck === false) {
+    return;
+  }
+
+  //Create a new WebView instance
+  const panel = vscode.window.createWebviewPanel('welcomePage', 'Introduction to Leda App Deployer', vscode.ViewColumn.One, {});
+
+  //Load the WebView Content from HTML file
+  const filePath = vscode.Uri.joinPath(context.extensionUri, 'resources', 'welcomePage.html');
+  let webViewContent = fs.readFileSync(filePath.fsPath, 'utf8');
+
+  //Replace the image placeholder with local URL's to the images. (Its not possile to display images directly via directory path)
+  webViewContent = webViewContent.replace('${stage_1}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'stage_1.png')).toString());
+  webViewContent = webViewContent.replace('${stage_2}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'stage_2.png')).toString());
+  webViewContent = webViewContent.replace('${stage_3}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'stage_3.png')).toString());
+
+  //Set the content to the WebView
+  panel.webview.html = webViewContent;
+
+  //Update the extension versin in the global state, to avoid a reopening of welcome page erverytimes
+  context.globalState.update(context.extension.id, version);
+}
+
+/**
  * Save a new Leda device to the configuration.
  * @param newDevice The LedaDevice object to be saved.
  */
