@@ -1,0 +1,3 @@
+whitelist-file-path: ./whitelisted-licenses.txt
+scan-dirs:
+  - path: ./
