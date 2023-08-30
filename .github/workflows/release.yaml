@@ -16,8 +16,6 @@
 
 name: Release workflow
 
-
-# back to normal on strategy below !!!!!
 on:
   release:
     types: [published, edited]
