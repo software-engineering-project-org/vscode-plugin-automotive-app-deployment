@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - none
+      - main
 
 jobs:
   check-licenses:
