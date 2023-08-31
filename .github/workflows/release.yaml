@@ -21,32 +21,9 @@ on:
     types: [published, edited]
 
 jobs:
-  initialize-matrix:
-    runs-on: ubuntu-latest
-    name: Setting up build matrix
-    outputs:
-      deployment-matrix: ${{ steps.export-deployment-matrix.outputs.deployment-matrix }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Get matrix data
-        id: export-deployment-matrix
-        run: |
-          MATRIX=$(cat ./package.json | tr '\n' ' ')
-
-          echo "deployment-matrix=$MATRIX" >> $GITHUB_OUTPUT
-
   release-documentation:
     name: Generate release documentation
     runs-on: ubuntu-latest
-    needs: initialize-matrix
-    strategy:
-      matrix:
-        component: ${{ fromJson(needs.initialize-matrix.outputs.deployment-matrix) }}
-    env:
-      TEST_RESULT_FOLDER_NAME: test-results
     steps:
       - uses: actions/checkout@v3
 
