@@ -35,7 +35,3 @@
 |actions/setup-java|v1.4.4|MIT License|
 |actions/setup-node|v3|MIT License|
 |actions/upload-artifact|v3|MIT License|
-|dawidd6/action-download-artifact|v2|MIT License|
-|haya14busa/action-cond|v1|MIT License|
-|peaceiris/actions-hugo|v2|MIT License|
-|softprops/action-gh-release|v1|MIT License|
