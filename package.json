@@ -1,8 +1,11 @@
 {
-  "name": "vscode-plugin-for-sdv-app-deployment",
+  "name": "leda-app-deployer",
+  "repository": {
+    "url": "https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment.git"
+  },
   "displayName": "LAD - Leda App Deployer: Simply deploy Containerized-Software on your Target Devices that run Eclipse Leda",
   "description": "LAD simplifies Deployment for Software Defined Vehicles (SDV) via multiple Deployment Automation Options in the Eclipse Leda Stack",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "engines": {
     "vscode": "^1.77.0"
   },
