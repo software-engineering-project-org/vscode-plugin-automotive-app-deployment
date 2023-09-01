@@ -21,7 +21,15 @@ import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { TopConfig } from '../provider/TopConfig';
 import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH, NECESSARY_DEVICE_CLI_TOOLINGS } from '../setup/cmdProperties';
-import { LADCheckKantoConfig, LADUnmetDependenciesError, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
+import {
+  LADCheckKantoConfig,
+  LADUnmetDependenciesError,
+  SSHCloseConnectionError,
+  SSHConnectionInitilizationError,
+  SSHCopyFileError,
+  SSHRemoteCommandFailedError,
+  logToChannelAndErrorConsole,
+} from '../error/customErrors';
 
 export class ServiceSsh {
   private sshHost: string;
@@ -65,7 +73,6 @@ export class ServiceSsh {
     }
   }
 
-
   /**
    * Check all necessary dependencies before stage execution
    */
@@ -85,7 +92,7 @@ export class ServiceSsh {
       }
     }
   }
-  
+
   /**
    * Close the SSH connection.
    */
