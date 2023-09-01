@@ -20,6 +20,9 @@ on:
   release:
     types: [published, edited]
 
+env:
+  PACKAGE_FILE: leda-app-deployer.vsix
+
 jobs:
   release-documentation:
     name: Generate release documentation
@@ -38,5 +41,15 @@ jobs:
           node-version: "18"
           check-latest: true
 
-      - name: To be Done
-        run: echo "TO BE DONE"
+      - name: Install publisher dependencies
+        run: npm install -g @vscode/vsce
+
+      - name: Package extension 
+        run: vsce package --out $PACKAGE_FILE
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: $PACKAGE_FILE
+      
