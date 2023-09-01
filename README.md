@@ -1,115 +1,177 @@
-# Setup environment 
-You need:
-- Running Eclipse Leda instance connected to a local network or the internet 
-- Working private container registry that is running on leda 
-- Preconfigured configuration of the container-management service
-- Further resources in `resources` folder
+#  Introduction to LAD: Leda App Deployer
 
-## Connect your Leda instance
+##  LAD: Leda App Deployer
 
-```shell
-# Set local port forward to remote host (local machine)
-ssh -f -N -L 2222:localhost:2222 eclipse@20.229.224.77
 
-# Connect with local ssh cli (local machine)
-ssh root@localhost -p 2222
-```
+LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "STAGES" are selectable, to save time during Vehicle App development.
 
-## Install a private container registry 
-To safe locally stored images we need a local container registry. 
-We installed the container registry via kanto-cm the manifest file can be found under `resources/registry.json` in this repository. 
 
-## Container management configuration file
-The container management config file is stored under `/etc/container-management/config.json` on your Leda device. Add following lines: 
+**NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each STAGE requires configurations on the source and/or the target system, which is described in the prerequisites of each STAGE. 
 
-```json
-"containers":{
-    "insecure-registries":[
-            "localhost:5000"
-    ], 
-    "registry_configurations": {
-        "ghcr.io": {
-            "credentials": {
-                "user_id": "github",
-                "password": "ghp_mygithubtoken"
-            }
-        }
-    }
-}   
-```
+##  Three different Ways (called "STAGES") to deploy your Application
+
+###  STAGE 1: The Remote Build
+
+**Description:**
+
+Use this STAGE to install Velocitas App images on a target device from a remote source. Images refer to the available images in the GitHub repositories' registry (ghcr) your application is pulled from. The target system automatically downloads the specified image from the remote GitHub Repository with the help of LAD. You can choose between the different image releases available for your Repository via dropdown.
+
+**Prerequisites:**
+
+-  Internet connection on both the source and target device.
+-  If the source GitHub Repository (ghcr) is private: Authenticate ghcr on the target system by referring to "Authenticate private ghcr on the target device".
+
+  
+
+**The process:**
+
+![Stage 1](resources/stage_1.png)
+
+
+**Detailed steps the extension performs for you:**
+
+1.  Connects to the target device via SSH.
+2.  Checks if local-registries are set in Kanto config:
+	-  Checks the `/etc/container-management/config.json` file.
+	-  Examines the `registry_configurations` object.
+3.  Generates a string and inserts it into the Kanto Manifest.
+4.  Copies the Manifest to the target device via SCP.
+
+  
+
+###  STAGE 2: The Hybrid Build
+
+  
+
+**Description:**
+
+Use this STAGE to first download the Velocitas App image from the web (or specify a local path to a .tar file) and then transfer it to the target system via a local network. The target system does not require an Internet connection. If a local path is specified, the source device does not require an internet connection as well.
+
+**Prerequisites:**
+
+-  Local registry on the target device: Allow the use beforehand by referring to the section "Add the local registry on the target device".
+
+  
+
+**The process:**
+
+![Stage 2](resources/stage_2.png)
+
+  
+
+**Detailed steps the extension performs for you:**
+
+1.  Connects to the target device via SSH.
+2.  Checks if local-registries are set in Kanto Config:
+	-  Checks the `/etc/container-management/config.json` file.
+	-  Examines the `registry_configurations` object.
+3.  Downloads tar source or reference from the local device.
+4.  Copies the Tarball to the Leda Device via SCP.
+5.  Executes the containerd imports.
+6.  Generates a string and inserts it into the Manifest.
+7.  Copies the Manifest to the Leda Device via SCP.
+
+  
+
+###  STAGE 3: The Local Build
+
+  
+
+**Description:**
+
+Use this STAGE to build the Velocitas App image locally via Docker build. The deployment is completely done on a local network, so no internet connection is required, neither on the source device nor on the target device.
+
+  
+
+**Prerequisites:**
+
+-  Docker: Docker must be installed on the source device where the image is built.
+-  Dockerfile: A valid Dockerfile must be present in the project's structure.
+-  Local registry on the target device: Allow the use beforehand by referring to the section "Add the local registry on the target device".
+
+  
+
+**The process:**
+
+![Stage 3](resources/stage_3.png)
+
+  
+
+**Detailed steps the extension performs for you:**
+
+1.  Builds Docker Image (checks included).
+2.  Exports it as a Tarball (to `.vscode/tmp/*.tar`).
+3.  Connects to the device via SSH.
+4.  Checks if local-registries are set in Kanto Config:
+	-  Checks the `/etc/container-management/config.json` file.
+	-  Examines the `registry_configurations` object.
+5.  Copies the Tarball to the Leda Device via SCP.
+6.  Executes the containerd imports.
+7.  Generates a string and inserts it into the Manifest.
+8.  Copies the Manifest to the Leda Device via SCP.
+
+
+##  Device Handling
+
+###  Add, remove & edit target devices; run apps on the device
+
+-  **Add and delete target devices:**
+
+	-  If no target devices have been created yet, this can be done via the "+" button.
+	-  To do this, the required information is entered in the prompt that opens.
+	-  Once a target device has been created, it can be deleted using the trash can button.
+
+  
+
+-  **Change a previously created target device and do further settings:**
+
+	-  Changes are possible via the pencil icon.
+	-  The workspace config file then opens with the existing devices. Data can be further adjusted here.
+	-  After saving and clicking the reload button, the changes are displayed and effective.
+
+
+-  **Deploy apps on devices using LAD:**
+
+	-  To deploy a Velocitas App with LAD, you can choose between the three variants described above:
+	-  The cloud icon without an arrow executes STAGE 1 option 
+		"Deploy remote built image remote".
+	-  The cloud with the arrow executes STAGE 2 option 
+		"Deploy local built image remote".
+	-  The document icon with the arrow executes STAGE 3 option 
+		"Deploy local built image local".
+
+###  Add the local registry on the target device
+
+**Edit Kanto's `config.json` in the Kanto container-management of the target system/device:**
+
+1.  Navigate into the directory: `cd /etc/container-management`.
+2.  Alter Kanto config: `vi config.json`.
+3.  Add the following section if it is not already there: `"containers":{}`.
+4.  After that or in case there is already the "containers" section, just add into that section: 
+	"insecure-registries": ["localhost:5000"]
+5.  Restart the cm-service with: `sudo systemctl restart container-management.service`.
+
+###  Authenticate private ghcr on the target device
+
+**Edit Kanto's `config.json` in the Kanto container-management of the target system/device:**
+
+1.  Navigate into the directory: `cd /etc/container-management`.
+2.  Edit Kanto config: `vi config.json`.
+3.  Add the following section if it is not already there: `"containers":{}`.
+4.  After that or in case there is already the "containers" section, just add into that section:
+	  "registry_configurations": {
+		"ghcr.io": {
+			"credentials": {
+				"user_id": "GITHUB USERNAME",
+				"password": "GITHUB PASSWORD"
+				}
+			}
+		}
 
 ## Further resources 
-If we install kanto-cm on top of another OS (eg. Raspbian arm64) we have following dependencies: 
+If we install kanto-cm on top of another OS (eg. Raspbian arm64), we have the following dependencies: 
 - containerd.io
 - eclipse mosquitto 
 - https://github.com/eclipse-leda/leda-utils/releases
 
 These dependencies include the container runtime, the MQTT Broker and further utils from the kanto environment like kanto UI or the kanto auto deployer. This one should be installed as a system service -> `resources/kanto-auto-deployer.service`.
-
-# vscode-plugin-automotive-app-deployment
-Code base for the VSCode plugin development to automate automotive app deployment
-
-# automotive-app-deployment 
-
-This is the README for your extension "automotive-app-deployment". After writing up a brief description, we recommend including the following sections.
-
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
-
