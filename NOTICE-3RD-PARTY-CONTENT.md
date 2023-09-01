@@ -20,13 +20,13 @@
 |husky|8.0.3|MIT|
 |jsonpath|1.1.1|MIT|
 |jsonpath-plus|7.2.0|MIT|
+|leda-app-deployer|0.0.1|Apache 2.0<br/>BSD Zero Clause License<br/>ISC<br/>MIT<br/>New BSD<br/>Simplified BSD<br/>zlib/libpng license|
 |mocha|10.2.0|ISC<br/>MIT|
 |node-ssh|13.1.0|ISC<br/>MIT|
 |path|0.12.7|MIT|
 |prettier|3.0.2|Apache 2.0|
 |ts-jest|29.1.1|ISC<br/>MIT|
 |typescript|4.9.5|Apache 2.0|
-|vscode-plugin-for-sdv-app-deployment|0.1.0|Apache 2.0<br/>BSD Zero Clause License<br/>ISC<br/>MIT<br/>New BSD<br/>Simplified BSD<br/>zlib/libpng license|
 |winston|3.10.0|MIT|
 ## Workflows
 | Dependency | Version | License |
@@ -35,3 +35,4 @@
 |actions/setup-java|v1.4.4|MIT License|
 |actions/setup-node|v3|MIT License|
 |actions/upload-artifact|v3|MIT License|
+|softprops/action-gh-release|v1|MIT License|
