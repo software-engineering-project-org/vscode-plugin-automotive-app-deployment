@@ -14,17 +14,13 @@ LAD is not published on the official VSCode-Marketplace by now. You need to manu
 0. Install the VSCode Command Line Interface "code" if you have not done it earlier. To check if code is already installed, open a Terminal and type in ```code```.
 If code is not present, do the following to install it:
 	- Open the Command Pallette In VScode by pressing *Ctrl+Shift+P* on Windows or Linux or *Shift+⌘+P* on MacOS) 
-	- On the Command Pallette, type 
-	```
-	Shell Command: Install 'code' command in PATH
-	``` 
-	... and hit enter after granting the necessary permissions for VSCode. This will add the `code` command to your system's PATH, allowing you to use it in the command prompt or PowerShell.
+	- On the Command Pallette, type ```Shell Command: Install 'code' command in PATH``` 
+	- Hit enter after granting the necessary permissions for VSCode. This will add the `code` command to your system's PATH, allowing you to use it in the command prompt or PowerShell.
    
-1. Download the **.vsix** file for the extension via cURL by opening a Terminal and running:
+1. Manually download the **.vsix** file from the latest release on this repository OR download the file for the extension via cURL by opening a Terminal and running:
 	```
 	curl -o leda-app-deployer.vsix -L https://github.com/eclipse-leda/leda-contrib-vscode-extensions/releases/download/0.0.1/leda-app-deployer.vsix
 	```
-	alternative: Manually download the .vsix file  from the latest release on this repository
 	 
 2.  Install the extension via code with the following by running:
 	```
