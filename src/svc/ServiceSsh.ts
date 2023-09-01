@@ -20,8 +20,8 @@ import { JSONPath } from 'jsonpath-plus';
 import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { TopConfig } from '../provider/TopConfig';
-import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH } from '../setup/cmdProperties';
-import { LADCheckKantoConfig, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
+import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH, NECESSARY_DEVICE_CLI_TOOLINGS } from '../setup/cmdProperties';
+import { LADCheckKantoConfig, LADUnmetDependenciesError, SSHCloseConnectionError, SSHConnectionInitilizationError, SSHCopyFileError, SSHRemoteCommandFailedError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 export class ServiceSsh {
   private sshHost: string;
@@ -65,6 +65,27 @@ export class ServiceSsh {
     }
   }
 
+
+  /**
+   * Check all necessary dependencies before stage execution
+   */
+  public async checkDeviceDependencies(chan: vscode.OutputChannel) {
+    chan.appendLine('Checking dependencies...');
+    for (let tool of NECESSARY_DEVICE_CLI_TOOLINGS) {
+      try {
+        let prefix = tool.type == 'service' ? `systemctl status` : '';
+        let suffix = tool.type == 'cli' ? 'is installed' : 'is active';
+        let res = await this.ssh.execCommand(`${prefix} ${tool.name}`);
+        this.checkStdErr(res.stderr, tool.name);
+        chan.appendLine(`${tool.name} ${suffix} \u2705`);
+      } catch (err) {
+        let suffix = tool.type == 'cli' ? 'not installed' : 'not active';
+        chan.appendLine(`${tool.name} ${suffix} \u26A0`);
+        throw logToChannelAndErrorConsole(chan, new LADUnmetDependenciesError(err as Error));
+      }
+    }
+  }
+  
   /**
    * Close the SSH connection.
    */

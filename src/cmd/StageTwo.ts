@@ -29,7 +29,7 @@ import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_
 /**
  * Implements Deployment Functionality for Stage 2:
  *
- *      0. Config initilization & Overview (QuickPick)
+ *      0. Config initilization & Overview (QuickPick) & Dependency Check 
  *      1. Connect to device with SSH
  *      2. Check if local-registries are set in Kanto Config
  *            - Check the /etc/container-management/config.json file
@@ -62,6 +62,7 @@ export class StageTwo {
      */
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage02);
+    await serviceSsh.checkDeviceDependencies(stage02);
     await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage02);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
 
