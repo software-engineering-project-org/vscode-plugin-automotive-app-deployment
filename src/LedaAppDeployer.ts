@@ -23,13 +23,13 @@ import { StageThree } from './cmd/StageThree';
 import { Credentials } from './svc/Credentials';
 import { openWelcomePage } from './helpers/helpers';
 
-export default class LedaAutoDeployer {
+export default class LedaAppDeployer {
   private context: vscode.ExtensionContext;
   private deviceDataProvider: DeviceDataProvider;
   private credentials: Credentials;
 
   /**
-   * Create a new instance of LedaAutoDeployer.
+   * Create a new instance of LedaAppDeployer.
    * @param {vscode.ExtensionContext} context - The extension context provided by VSCode.
    */
   constructor(context: vscode.ExtensionContext) {
