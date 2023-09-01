@@ -8,6 +8,31 @@ LAD facilitates the installation of an Eclipse Velocitas App on a target device 
 
 **NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each STAGE requires configurations on the source and/or the target system, which is described in the prerequisites of each STAGE. 
 
+## Install the Extension in VSCode
+LAD is not published on the official VSCode-Marketplace by now. You need to manually install the extension in VSCode by following these simple steps:
+
+0. Install the VSCode Command Line Interface "code" if you have not done it earlier. To check if code is already installed, open a Terminal and type in ```code```.
+If code is not present, do the following to install it:
+	- Open the Command Pallette In VScode by pressing *Ctrl+Shift+P* on Windows or Linux or *Shift+⌘+P* on MacOS) 
+	- On the Command Pallette, type 
+		```
+		Shell Command: Install 'code' command in PATH
+		``` 
+		... and hit enter after granting the necessary permissions for VSCode. This will add the `code` command to your system's PATH, allowing you to use it in the command prompt or PowerShell.
+   
+3. Download the **.vsix** file for the extension via cURL by opening a Terminal and running:
+	```
+	$ curl -o leda-app-deployer.vsix -L https://github.com/eclipse-leda/leda-contrib-vscode-extensions/releases/download/0.0.1/leda-app-deployer.vsix
+	```
+	 alternative: Manually download the .vsix file  from the latest release on this repository
+	 
+4.  Install the extension via code with the following by running:
+	```
+	$ code --install-extension leda-app-deployer.vsix
+	```
+	
+After successful installation, LAD is now visible in VSCode as an extension button that looks like a target ◎.
+
 ##  Three different Ways (called "STAGES") to deploy your Application
 
 ###  STAGE 1: The Remote Build
