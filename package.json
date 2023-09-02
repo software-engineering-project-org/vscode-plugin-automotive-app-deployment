@@ -43,11 +43,13 @@
       "view/title": [
         {
           "command": "automotive-app-deployment.addDevice",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == devices"
         },
         {
           "command": "automotive-app-deployment.refreshDevices",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == devices"
         }
       ],
       "view/item/context": [
