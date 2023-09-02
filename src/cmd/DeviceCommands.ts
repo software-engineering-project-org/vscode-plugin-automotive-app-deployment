@@ -39,7 +39,7 @@ export async function addDevice(deviceDataProvider: DeviceDataProvider) {
     prompt: 'IP: ',
     placeHolder: '192.168.0.7',
     validateInput: (text) => {
-      return isValidIp(text) ? null : 'No valid IP Address.';
+      return isValidIp(text) ? null : 'No valid IP address. Define an IPv4 address or use "localhost".';
     },
   });
   if (!ip) {
@@ -156,7 +156,7 @@ async function getTargetDeviceWithQuickPick() {
  * @returns true if the IP address is valid, false otherwise.
  */
 function isValidIp(ipAddress: string) {
-  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress)) {
+  if (/^(?:\d{1,3}\.){3}\d{1,3}$/.test(ipAddress) || ipAddress.toLowerCase() === 'localhost') {
     return true;
   }
   return false;
