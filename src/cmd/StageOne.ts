@@ -42,7 +42,7 @@ import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON
  *
  */
 export class StageOne {
-  public static deploy = async (item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
+  public static deploy = async (context: vscode.ExtensionContext, item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
     let device = item?.ledaDevice;
     device = await chooseDeviceFromListOrContext(device);
 
@@ -60,11 +60,13 @@ export class StageOne {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage01);
     await serviceSsh.checkDeviceDependencies(stage01);
-    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage01);
+    const configPath = vscode.Uri.joinPath(context.extensionUri, TMP_KANTO_CONFIG_PATH);
+    stage01.appendLine(configPath.fsPath);
+    await serviceSsh.getConfigFromLedaDevice(configPath.fsPath, stage01);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
 
     /**
-     * STEP 4
+     * STEP 3
      */
     const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
@@ -80,7 +82,7 @@ export class StageOne {
     });
 
     /**
-     * STEP 5
+     * STEP 4
      */
     await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
     await serviceSsh.closeConn(stage01);
@@ -108,4 +110,5 @@ export class StageOne {
       return packageVersion;
     }
   };
+
 }

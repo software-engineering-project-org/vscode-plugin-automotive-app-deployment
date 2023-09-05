@@ -103,21 +103,21 @@ export default class LedaAppDeployer {
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageOne', async (item: LedaDeviceTreeItem) => {
         const octokit = await this.credentials.getOctokit();
-        await StageOne.deploy(item, octokit);
+        await StageOne.deploy(this.context, item, octokit);
       }),
     );
 
     // Register the 'deployStageTwo' command and associate it with the 'StageTwo.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
-        await StageTwo.deploy(item);
+        await StageTwo.deploy(this.context, item);
       }),
     );
 
     // Register the 'deployStageThree' command and associate it with the 'StageThree.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageThree', async (item: LedaDeviceTreeItem) => {
-        await StageThree.deploy(item);
+        await StageThree.deploy(this.context, item);
       }),
     );
   }

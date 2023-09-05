@@ -1,5 +1,6 @@
 {
   "name": "leda-app-deployer",
+  "publisher": "eclipse-leda",
   "repository": {
     "url": "https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment.git"
   },
@@ -214,7 +215,6 @@
   "dependencies": {
     "@octokit/rest": "^19.0.13",
     "@types/ssh2-streams": "^0.1.9",
-    "fs": "^0.0.1-security",
     "jsonpath": "^1.1.1",
     "jsonpath-plus": "^7.2.0",
     "node-ssh": "^13.1.0",

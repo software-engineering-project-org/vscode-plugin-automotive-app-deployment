@@ -133,7 +133,7 @@ export class ServiceSsh {
    */
   public async getConfigFromLedaDevice(tmpConfig: string, chan: vscode.OutputChannel) {
     try {
-      await this.ssh.getFile(path.resolve(__dirname, '../../', tmpConfig), KANTO_CONFIG_FILE);
+      await this.ssh.getFile(tmpConfig, KANTO_CONFIG_FILE);
       chan.appendLine(`Fetch Config:\t\t Found file at - ${KANTO_CONFIG_FILE} - Checking config...`);
     } catch (err) {
       throw logToChannelAndErrorConsole(chan, new SSHCopyFileError(err as Error), `Error copying Kanto config from Leda to ${KANTO_CONFIG_FILE}`);

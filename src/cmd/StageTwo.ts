@@ -25,6 +25,7 @@ import { checkAndHandleTarSource } from '../helpers/helpers';
 
 // Import setup constants from properties file.
 import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_TWO_CONSOLE_HEADER } from '../setup/cmdProperties';
+import { config } from 'process';
 
 /**
  * Implements Deployment Functionality for Stage 2:
@@ -43,7 +44,7 @@ import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_
  *
  */
 export class StageTwo {
-  public static deploy = async (item: LedaDeviceTreeItem): Promise<void> => {
+  public static deploy = async (context: vscode.ExtensionContext, item: LedaDeviceTreeItem): Promise<void> => {
     let device = item?.ledaDevice;
     device = await chooseDeviceFromListOrContext(device);
 
@@ -63,7 +64,8 @@ export class StageTwo {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage02);
     await serviceSsh.checkDeviceDependencies(stage02);
-    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage02);
+    const configPath = vscode.Uri.joinPath(context.extensionUri, TMP_KANTO_CONFIG_PATH);
+    await serviceSsh.getConfigFromLedaDevice(configPath.fsPath, stage02);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
 
     /**
