@@ -54,7 +54,6 @@ export class StageOne {
     let stage01 = vscode.window.createOutputChannel('LAD Remote');
     stage01.show();
     stage01.appendLine(STAGE_ONE_CONSOLE_HEADER);
-    stage01.appendLine(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH));
 
     /**
      * STEP 1 & 2
@@ -62,8 +61,8 @@ export class StageOne {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage01);
     await serviceSsh.checkDeviceDependencies(stage01);
-    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage01);
-    await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
+    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), stage01);
+    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
 
     /**
      * STEP 3
@@ -84,7 +83,7 @@ export class StageOne {
     /**
      * STEP 4
      */
-    await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
+    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
     await serviceSsh.closeConn(stage01);
 
     stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);

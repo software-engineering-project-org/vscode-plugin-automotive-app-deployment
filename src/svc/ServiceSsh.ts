@@ -149,7 +149,7 @@ export class ServiceSsh {
    */
   public async loadAndCheckConfigJson(configPath: string, key: string, chan: vscode.OutputChannel) {
     try {
-      const fileContents = await readFileAsync(path.resolve(__dirname, '../../', configPath));
+      const fileContents = await readFileAsync(configPath);
       const configJson = JSON.parse(fileContents);
       const keys = JSONPath({ path: key, json: configJson });
 
@@ -161,7 +161,7 @@ export class ServiceSsh {
     } catch (err) {
       throw logToChannelAndErrorConsole(chan, new LADCheckKantoConfig(err as Error), `Check config version and remote file`);
     } finally {
-      await deleteTmpFile(path.resolve(__dirname, '../../', configPath));
+      await deleteTmpFile(configPath);
     }
   }
 

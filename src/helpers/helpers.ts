@@ -33,7 +33,11 @@ export async function loadLedaDevices(): Promise<LedaDevice[] | undefined> {
   return devices;
 }
 
-
+/**
+ * Creates path reference to a specified resource in the workspace 
+ * @param resourceUri relative path of a workspace resource 
+ * @returns absolute path of the workspace resource
+ */
 export function getExtensionResourcePath(resourceUri: string): string {
   const WORKSPACE_DIR = vscode.workspace.workspaceFolders![0].uri;
   return vscode.Uri.joinPath(WORKSPACE_DIR, resourceUri).fsPath;
