@@ -44,7 +44,7 @@ import { config } from 'process';
  *
  */
 export class StageTwo {
-  public static deploy = async (context: vscode.ExtensionContext, item: LedaDeviceTreeItem): Promise<void> => {
+  public static deploy = async (item: LedaDeviceTreeItem): Promise<void> => {
     let device = item?.ledaDevice;
     device = await chooseDeviceFromListOrContext(device);
 
@@ -64,8 +64,7 @@ export class StageTwo {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage02);
     await serviceSsh.checkDeviceDependencies(stage02);
-    const configPath = vscode.Uri.joinPath(context.extensionUri, TMP_KANTO_CONFIG_PATH);
-    await serviceSsh.getConfigFromLedaDevice(configPath.fsPath, stage02);
+    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage02);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
 
     /**

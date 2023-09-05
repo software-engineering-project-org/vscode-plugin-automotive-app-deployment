@@ -42,7 +42,7 @@ import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON
  *
  */
 export class StageOne {
-  public static deploy = async (context: vscode.ExtensionContext, item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
+  public static deploy = async (item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
     let device = item?.ledaDevice;
     device = await chooseDeviceFromListOrContext(device);
 
@@ -60,8 +60,9 @@ export class StageOne {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage01);
     await serviceSsh.checkDeviceDependencies(stage01);
-    const configPath = vscode.Uri.joinPath(context.extensionUri, TMP_KANTO_CONFIG_PATH);
+    const configPath = vscode.Uri.joinPath(vscode.workspace.workspaceFolders![0].uri, TMP_KANTO_CONFIG_PATH)
     stage01.appendLine(configPath.fsPath);
+    stage01.appendLine(vscode.window.activeTextEditor?.document.uri.fsPath!)
     await serviceSsh.getConfigFromLedaDevice(configPath.fsPath, stage01);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
 

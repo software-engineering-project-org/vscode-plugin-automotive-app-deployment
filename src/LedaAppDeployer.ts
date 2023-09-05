@@ -36,6 +36,7 @@ export default class LedaAppDeployer {
     this.context = context;
     this.deviceDataProvider = new DeviceDataProvider();
     this.credentials = new Credentials();
+    
 
     // Register the device data provider as a tree view in VSCode
     context.subscriptions.push(vscode.window.registerTreeDataProvider('devices', this.deviceDataProvider));
@@ -103,21 +104,21 @@ export default class LedaAppDeployer {
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageOne', async (item: LedaDeviceTreeItem) => {
         const octokit = await this.credentials.getOctokit();
-        await StageOne.deploy(this.context, item, octokit);
+        await StageOne.deploy(item, octokit);
       }),
     );
 
     // Register the 'deployStageTwo' command and associate it with the 'StageTwo.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
-        await StageTwo.deploy(this.context, item);
+        await StageTwo.deploy(item);
       }),
     );
 
     // Register the 'deployStageThree' command and associate it with the 'StageThree.deploy' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.deployStageThree', async (item: LedaDeviceTreeItem) => {
-        await StageThree.deploy(this.context, item);
+        await StageThree.deploy(item);
       }),
     );
   }
