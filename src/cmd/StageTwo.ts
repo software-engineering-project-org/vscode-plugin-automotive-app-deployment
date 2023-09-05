@@ -15,17 +15,15 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 import { ServiceSsh } from '../svc/ServiceSsh';
 import { TopConfig } from '../provider/TopConfig';
-import { checkAndHandleTarSource } from '../helpers/helpers';
+import { checkAndHandleTarSource, getExtensionResourcePath } from '../helpers/helpers';
 
 // Import setup constants from properties file.
 import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_TWO_CONSOLE_HEADER } from '../setup/cmdProperties';
-import { config } from 'process';
 
 /**
  * Implements Deployment Functionality for Stage 2:
@@ -64,8 +62,8 @@ export class StageTwo {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage02);
     await serviceSsh.checkDeviceDependencies(stage02);
-    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage02);
-    await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
+    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), stage02);
+    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage02);
 
     /**
      * STEP 3
@@ -109,7 +107,7 @@ export class StageTwo {
     /**
      * STEP 7
      */
-    await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage02);
+    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage02);
     await serviceSsh.closeConn(stage02);
 
     stage02.appendLine(`Deploying to Leda:\t `);

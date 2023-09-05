@@ -199,7 +199,7 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
  */
 async function downloadTarFileFromWeb(url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> {
   try {
-    const filename = path.resolve(__dirname, '../../', localPath);
+    const filename = getExtensionResourcePath(localPath);
     https.get(url, (res) => {
       const fileStream = fs.createWriteStream(filename);
       res.pipe(fileStream);
