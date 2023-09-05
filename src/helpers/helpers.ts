@@ -33,6 +33,12 @@ export async function loadLedaDevices(): Promise<LedaDevice[] | undefined> {
   return devices;
 }
 
+
+export function getExtensionResourcePath(resourceUri: string): string {
+  const WORKSPACE_DIR = vscode.workspace.workspaceFolders![0].uri;
+  return vscode.Uri.joinPath(WORKSPACE_DIR, resourceUri).fsPath;
+}
+
 /**
  * Open a new WebView after the Extesion is installed or updated.
  * @param context Give the Extesion Context to look for the global State

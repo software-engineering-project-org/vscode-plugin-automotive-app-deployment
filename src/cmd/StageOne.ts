@@ -28,6 +28,7 @@ import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 
 // Import setup constants from properties file.
 import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_ONE_CONSOLE_HEADER } from '../setup/cmdProperties';
+import { getExtensionResourcePath } from '../helpers/helpers';
 
 /**
  * Implements Deployment Functionality for Stage 1:
@@ -53,6 +54,7 @@ export class StageOne {
     let stage01 = vscode.window.createOutputChannel('LAD Remote');
     stage01.show();
     stage01.appendLine(STAGE_ONE_CONSOLE_HEADER);
+    stage01.appendLine(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH));
 
     /**
      * STEP 1 & 2
@@ -60,10 +62,7 @@ export class StageOne {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage01);
     await serviceSsh.checkDeviceDependencies(stage01);
-    const configPath = vscode.Uri.joinPath(vscode.workspace.workspaceFolders![0].uri, TMP_KANTO_CONFIG_PATH)
-    stage01.appendLine(configPath.fsPath);
-    stage01.appendLine(vscode.window.activeTextEditor?.document.uri.fsPath!)
-    await serviceSsh.getConfigFromLedaDevice(configPath.fsPath, stage01);
+    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage01);
     await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
 
     /**
