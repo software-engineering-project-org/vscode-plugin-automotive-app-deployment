@@ -15,7 +15,6 @@
 |@typescript-eslint/parser|5.62.0|unknown|
 |@vscode/test-electron|2.3.4|MIT|
 |eslint|8.48.0|MIT|
-|fs|0.0.1-security|unknown|
 |glob|8.1.0|ISC<br/>MIT|
 |husky|8.0.3|MIT|
 |jsonpath|1.1.1|MIT|
