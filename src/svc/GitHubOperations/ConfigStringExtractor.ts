@@ -15,8 +15,8 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import { RemoteOriginNotFoundError, InvalidRemoteOriginError, GenericInternalError } from '../../error/customErrors';
+import { getExtensionResourcePath } from '../../helpers/helpers';
 
 /**
  * Helper to get the organization and repository name out of the current Git working context.
@@ -28,7 +28,7 @@ export class ConfigStringExtractor {
    * @throws {Error} If the .git/config file is not found, remote origin URL is missing, or the URL is invalid.
    */
   public static extractGitOrgAndRepoNameFromConfig = async (gitConfig: string): Promise<string> => {
-    const gitConfigPath = path.resolve(__dirname, `../../../${gitConfig}`);
+    const gitConfigPath = getExtensionResourcePath(gitConfig);
 
     try {
       const gitConfigContent = await fs.promises.readFile(gitConfigPath, 'utf8');

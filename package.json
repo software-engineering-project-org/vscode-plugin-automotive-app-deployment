@@ -1,5 +1,6 @@
 {
   "name": "leda-app-deployer",
+  "publisher": "eclipse-leda",
   "repository": {
     "url": "https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment.git"
   },

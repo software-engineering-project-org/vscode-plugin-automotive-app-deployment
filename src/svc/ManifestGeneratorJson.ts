@@ -16,7 +16,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { readFileAsync } from '../helpers/helpers';
+import { getExtensionResourcePath, readFileAsync } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { LADAlterJSONError, LADLoadTemplateJSONError, LADSaveModifiedJSONError, logToChannelAndErrorConsole } from '../error/customErrors';
 
@@ -30,12 +30,12 @@ export class ManifestGeneratorJson {
    * @param {string} outputFilePath - The path to the output file where the generated JSON will be saved.
    */
   constructor(templateFilePath: string, outputFilePath: string) {
-    this.templateFilePath = path.resolve(__dirname, '../../', templateFilePath);
-    this.outputFilePath = path.resolve(__dirname, '../../', outputFilePath);
+    this.templateFilePath = getExtensionResourcePath(templateFilePath);
+    this.outputFilePath = getExtensionResourcePath(outputFilePath);
   }
 
   public static async readVelocitasJson(velocitasSettings: string): Promise<any> {
-    const fileContents = await readFileAsync(path.resolve(__dirname, '../../', velocitasSettings));
+    const fileContents = await readFileAsync(getExtensionResourcePath(velocitasSettings));
     const velocitasJson = JSON.parse(fileContents);
     return {
       AppManifestPath: velocitasJson.variables.appManifestPath,
@@ -45,7 +45,7 @@ export class ManifestGeneratorJson {
   }
 
   public static async readAppManifest(manifestPath: string): Promise<any> {
-    const fileContents = await readFileAsync(path.resolve(__dirname, '../../', manifestPath));
+    const fileContents = await readFileAsync(getExtensionResourcePath(manifestPath));
     const manifestJson = JSON.parse(fileContents);
     const packageName = (manifestJson[0].name as string).toLowerCase();
     return {

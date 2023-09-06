@@ -34,6 +34,16 @@ export async function loadLedaDevices(): Promise<LedaDevice[] | undefined> {
 }
 
 /**
+ * Creates path reference to a specified resource in the workspace 
+ * @param resourceUri relative path of a workspace resource 
+ * @returns absolute path of the workspace resource
+ */
+export function getExtensionResourcePath(resourceUri: string): string {
+  const WORKSPACE_DIR = vscode.workspace.workspaceFolders![0].uri;
+  return vscode.Uri.joinPath(WORKSPACE_DIR, resourceUri).fsPath;
+}
+
+/**
  * Open a new WebView after the Extesion is installed or updated.
  * @param context Give the Extesion Context to look for the global State
  * @param disableFirstTimeCheck Disables the check if opens the first time, to open it via command
@@ -189,7 +199,7 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
  */
 async function downloadTarFileFromWeb(url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> {
   try {
-    const filename = path.resolve(__dirname, '../../', localPath);
+    const filename = getExtensionResourcePath(localPath);
     https.get(url, (res) => {
       const fileStream = fs.createWriteStream(filename);
       res.pipe(fileStream);

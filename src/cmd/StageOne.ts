@@ -15,7 +15,6 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
@@ -28,6 +27,7 @@ import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 
 // Import setup constants from properties file.
 import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_ONE_CONSOLE_HEADER } from '../setup/cmdProperties';
+import { getExtensionResourcePath } from '../helpers/helpers';
 
 /**
  * Implements Deployment Functionality for Stage 1:
@@ -60,11 +60,11 @@ export class StageOne {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage01);
     await serviceSsh.checkDeviceDependencies(stage01);
-    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage01);
-    await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
+    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), stage01);
+    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
 
     /**
-     * STEP 4
+     * STEP 3
      */
     const generator = new ManifestGeneratorJson(TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH);
 
@@ -80,9 +80,9 @@ export class StageOne {
     });
 
     /**
-     * STEP 5
+     * STEP 4
      */
-    await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
+    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
     await serviceSsh.closeConn(stage01);
 
     stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
@@ -108,4 +108,5 @@ export class StageOne {
       return packageVersion;
     }
   };
+
 }
