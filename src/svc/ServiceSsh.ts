@@ -15,9 +15,8 @@
  */
 
 import { NodeSSH } from 'node-ssh';
-import * as path from 'path';
 import { JSONPath } from 'jsonpath-plus';
-import { readFileAsync, deleteTmpFile } from '../helpers/helpers';
+import { readFileAsync, deleteTmpFile, getExtensionResourcePath } from '../helpers/helpers';
 import * as vscode from 'vscode';
 import { TopConfig } from '../provider/TopConfig';
 import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH, NECESSARY_DEVICE_CLI_TOOLINGS } from '../setup/cmdProperties';
@@ -206,7 +205,7 @@ export class ServiceSsh {
     } catch (err) {
       throw logToChannelAndErrorConsole(chan, new SSHRemoteCommandFailedError(err as Error), `Failed with command`);
     } finally {
-      await deleteTmpFile(path.resolve(__dirname, '../../', `${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`));
+      await deleteTmpFile(getExtensionResourcePath(`${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`));
     }
     return `${LOCAL_KANTO_REGISTRY}/${tag}`;
   }

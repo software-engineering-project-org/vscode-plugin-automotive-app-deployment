@@ -15,7 +15,6 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
@@ -25,6 +24,7 @@ import { DockerOperations } from '../svc/DockerOperations';
 
 // Import setup constants from properties file.
 import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_THREE_CONSOLE_HEADER } from '../setup/cmdProperties';
+import { getExtensionResourcePath } from '../helpers/helpers';
 
 /**
  * Implements Deployment Functionality for Stage 3:
@@ -64,7 +64,7 @@ export class StageThree {
     /**
      * STEP 2
      */
-    const tar = await dockerOperations.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
+    const tarPath = await dockerOperations.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
 
     /**
      * STEP 3 & 4
@@ -72,13 +72,13 @@ export class StageThree {
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
     await serviceSsh.initializeSsh(stage03);
     await serviceSsh.checkDeviceDependencies(stage03);
-    await serviceSsh.getConfigFromLedaDevice(TMP_KANTO_CONFIG_PATH, stage03);
-    await serviceSsh.loadAndCheckConfigJson(TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage03);
+    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), stage03);
+    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage03);
 
     /**
      * STEP 5
      */
-    await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', tar), `/tmp/${TopConfig.PACKAGE}.tar`, stage03);
+    await serviceSsh.copyResourceToLeda(tarPath, `/tmp/${TopConfig.PACKAGE}.tar`, stage03);
 
     /**
      * STEP 6
@@ -104,7 +104,7 @@ export class StageThree {
     /**
      * STEP 8
      */
-    await serviceSsh.copyResourceToLeda(path.resolve(__dirname, '../../', OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage03);
+    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage03);
     await serviceSsh.closeConn(stage03);
 
     stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);

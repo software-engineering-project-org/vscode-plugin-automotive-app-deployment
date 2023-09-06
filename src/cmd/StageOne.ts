@@ -15,7 +15,6 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
 import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';

@@ -15,10 +15,10 @@
  */
 
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as fs from 'fs';
+import path from 'path';
 import { TopConfig } from '../provider/TopConfig';
-import { executeShellCmd } from '../helpers/helpers';
+import { executeShellCmd, getExtensionResourcePath } from '../helpers/helpers';
 import { CONTAINER_REGISTRY, TARBALL_OUTPUT_PATH, TARGET_CONTAINER_PLATFORM } from '../setup/cmdProperties';
 import { DockerBuildFailedError, DockerExportImageError, DockerfileNotFoundError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 
@@ -32,7 +32,7 @@ export class DockerOperations {
    */
   public async buildDockerImage(chan: vscode.OutputChannel): Promise<string> {
     // Get the absolute path of the Dockerfile based on the TopConfig settings.
-    const dockerfilePathAbs = path.resolve(__dirname, '../../', `${TopConfig.DOCKERFILE}`);
+    const dockerfilePathAbs = getExtensionResourcePath(TopConfig.DOCKERFILE);
 
     // Check if the Dockerfile exists at the specified path.
     if (!fs.existsSync(dockerfilePathAbs)) {
@@ -50,7 +50,9 @@ export class DockerOperations {
 
     try {
       // Execute the Docker build command to build the image.
-      const result = await executeShellCmd(`cd ${path.resolve(__dirname, '../../', './app')} && docker build --platform ${TARGET_CONTAINER_PLATFORM} -t ${CONTAINER_REGISTRY.ghcr}/${tag} .`);
+      const dockerfileName = path.basename(dockerfilePathAbs);
+      const dockerfileDirName = path.dirname(dockerfilePathAbs);
+      const result = await executeShellCmd(`cd ${dockerfileDirName} && docker build -f ${dockerfileName} --platform ${TARGET_CONTAINER_PLATFORM} -t ${CONTAINER_REGISTRY.ghcr}/${tag} .`);
       chan.appendLine(result);
       return tag; // Return the tag of the built Docker image.
     } catch (err) {
@@ -69,14 +71,14 @@ export class DockerOperations {
   public async exportImageAsTarball(tag: string, chan: vscode.OutputChannel): Promise<string> {
     // Specify the relative path for the tarball based on the TopConfig settings.
     const relTarPath = `${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`;
-    const outputTar = path.resolve(__dirname, '../../', `${relTarPath}`);
+    const outputTar = getExtensionResourcePath(relTarPath);
 
     try {
       // Execute the Docker save command to export the image as a tarball.
       const result = await executeShellCmd(`docker save ${tag} > ${outputTar}`);
       chan.appendLine(result);
       chan.appendLine(`Exported image as tarball to ${TARBALL_OUTPUT_PATH}/${TopConfig.PACKAGE}.tar`);
-      return relTarPath; // Return the relative path of the exported tarball.
+      return outputTar; // Return the absolute path of the exported tarball.
     } catch (err) {
       logToChannelAndErrorConsole(chan, new DockerExportImageError(err as Error));
     }
