@@ -1,6 +1,7 @@
 # Local tmp files 
 .vscode/tmp/*.json
 .vscode/tmp/*.tar
+.vscode/settings.json
 *.vsix
 # Logs
 logs
