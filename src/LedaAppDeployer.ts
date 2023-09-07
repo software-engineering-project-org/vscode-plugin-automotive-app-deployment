@@ -36,7 +36,6 @@ export default class LedaAppDeployer {
     this.context = context;
     this.deviceDataProvider = new DeviceDataProvider();
     this.credentials = new Credentials();
-    
 
     // Register the device data provider as a tree view in VSCode
     context.subscriptions.push(vscode.window.registerTreeDataProvider('devices', this.deviceDataProvider));

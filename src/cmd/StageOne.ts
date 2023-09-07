@@ -108,5 +108,4 @@ export class StageOne {
       return packageVersion;
     }
   };
-
 }

@@ -34,8 +34,8 @@ export async function loadLedaDevices(): Promise<LedaDevice[] | undefined> {
 }
 
 /**
- * Creates path reference to a specified resource in the workspace 
- * @param resourceUri relative path of a workspace resource 
+ * Creates path reference to a specified resource in the workspace
+ * @param resourceUri relative path of a workspace resource
  * @returns absolute path of the workspace resource
  */
 export function getExtensionResourcePath(resourceUri: string): string {
