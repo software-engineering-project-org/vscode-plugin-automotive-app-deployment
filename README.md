@@ -196,3 +196,6 @@ If we install kanto-cm on top of another OS (eg. Raspbian arm64), we have the fo
 - https://github.com/eclipse-leda/leda-utils/releases
 
 These dependencies include the container runtime, the MQTT Broker and further utils from the kanto environment like kanto UI or the kanto auto deployer. This one should be installed as a system service -> `resources/kanto-auto-deployer.service`.
+
+## Contributing
+To be part of this project, please refer to [CONTRIBUTING](CONTRIBUTING.md).

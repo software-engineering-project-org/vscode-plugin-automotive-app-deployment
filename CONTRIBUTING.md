@@ -70,3 +70,30 @@ Submit a pull request via the normal GitHub UI.
 ## After Submitting
 
 - Do not use your branch for any other development, otherwise further changes that you make will be visible in the PR.
+
+## Project-specific Developer Information
+
+### Pre-Commit Hooks with Husky
+
+In this project, we have set up pre-commit hooks using Husky to ensure code quality and consistency before each commit. These hooks run a series of checks and tests to ensure that only clean and properly formatted code is committed to the repository.
+
+**NOTE:** For further Pre-Commit Hooks, please alter the [husky configuration](.husky/pre-commit).
+
+#### How it Works
+
+1. **Husky Configuration**: We've configured Husky, a Git hook manager, to execute specific scripts before each commit.
+
+2. **Linter Check**: First, the linter is run to check your code for any syntax or style issues. This ensures that your code follows a consistent coding style.
+
+3. **Code Formatting:** Next, Prettier is used to automatically format your code according to the predefined coding style rules.
+
+4. **Jest Tests:** Finally, the Jest tests are executed to validate the functionality of your code. If any tests fail, the commit process will be aborted.
+
+## How to develop this VSCode-Extension
+
+0. Clone this repository.
+1. Run ```npm install```.
+2. Run ```npm run watch``` to start Dev-Mode. This opens a separate Window with a VSCode-Environment running the Extension for development.
+3. Refer to the Welcome Page or [README](README.md) to add target devices for testing.
+
+
