@@ -19,7 +19,7 @@ If code is not present, do the following to install it:
    
 1. Manually download the **.vsix** file from the latest release on this repository OR download the file for the extension via cURL by opening a Terminal and running:
 	```
-	curl -o leda-app-deployer.vsix -L https://github.com/eclipse-leda/leda-contrib-vscode-extensions/releases/download/0.0.1/leda-app-deployer.vsix
+	curl -o leda-app-deployer.vsix -L https://github.com/eclipse-leda/leda-contrib-vscode-extensions/releases/download/latest/leda-app-deployer.vsix
 	```
 	 
 2.  Install the extension via code with the following by running:

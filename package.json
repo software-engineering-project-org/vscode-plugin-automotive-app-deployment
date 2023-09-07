@@ -43,6 +43,11 @@
     "menus": {
       "view/title": [
         {
+          "command": "automotive-app-deployment.openWelcomePage",
+          "group": "navigation",
+          "when": "view == devices"
+        },
+        {
           "command": "automotive-app-deployment.addDevice",
           "group": "navigation",
           "when": "view == devices"
@@ -134,10 +139,6 @@
     },
     "commands": [
       {
-        "command": "automotive-app-deployment.openWelcomePage",
-        "title": "LAD: Open Welcome Page"
-      },
-      {
         "command": "automotive-app-deployment.addDevice",
         "title": "LAD: Add Device",
         "icon": "$(plus)"
@@ -156,6 +157,11 @@
         "command": "automotive-app-deployment.refreshDevices",
         "title": "LAD: Refresh Devices",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "automotive-app-deployment.openWelcomePage",
+        "title": "LAD: Open Welcome Page",
+        "icon": "$(info)"
       },
       {
         "command": "automotive-app-deployment.deployStageOne",
