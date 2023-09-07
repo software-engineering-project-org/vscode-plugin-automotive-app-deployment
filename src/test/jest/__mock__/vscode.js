@@ -25,6 +25,13 @@ const vscode = {
   window: {
     createOutputChannel: jest.fn(() => new OutputChannel()),
   },
+  workspace: {
+    workspaceFolders: [
+      {
+        uri: jest.fn(() => new OutputChannel()),
+      }
+    ]
+  }
 };
 
 const chan = {};
