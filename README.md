@@ -46,7 +46,7 @@ Use this STAGE to install Velocitas App images on a target device from a remote 
 
 **The process:**
 
-![Stage 1](resources/stage_1.png)
+![Stage 1](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_1.png)
 
 
 **Detailed steps the extension performs for you:**
@@ -76,7 +76,7 @@ Use this STAGE to first download the Velocitas App image from the web (or specif
 
 **The process:**
 
-![Stage 2](resources/stage_2.png)
+![Stage 2](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_2.png)
 
   
 
@@ -114,7 +114,7 @@ Use this STAGE to build the Velocitas App image locally via Docker build. The de
 
 **The process:**
 
-![Stage 3](resources/stage_3.png)
+![Stage 3](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_3.png)
 
   
 
