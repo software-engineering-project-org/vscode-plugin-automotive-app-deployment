@@ -1,4 +1,4 @@
-# How to Contribute to Eclipse Velocitas Release Documentation Action
+# How to Contribute to Leda App Deployer (LAD) – an Eclipse Leda Extension for Visual Studio Code
 
 First of all, thanks for considering to contribute to Eclipse Velocitas. We really
 appreciate the time and effort you want to spend helping to improve things around here.
