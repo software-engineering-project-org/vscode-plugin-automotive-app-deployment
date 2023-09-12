@@ -16,7 +16,7 @@
 
 import { NodeSSH } from 'node-ssh';
 import { JSONPath } from 'jsonpath-plus';
-import { readFileAsync, deleteTmpFile, getExtensionResourcePath } from '../helpers/helpers';
+import { readFileAsync, deleteTmpFile, getExtensionResourcePath } from '../utils/helpers';
 import * as vscode from 'vscode';
 import { TopConfig } from '../provider/TopConfig';
 import { KANTO_CONFIG_FILE, CONTAINER_REGISTRY, LOCAL_KANTO_REGISTRY, TARBALL_OUTPUT_PATH, NECESSARY_DEVICE_CLI_TOOLINGS } from '../setup/cmdProperties';

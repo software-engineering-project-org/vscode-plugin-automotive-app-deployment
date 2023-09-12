@@ -18,7 +18,7 @@ const { vscode } = require('vscode'); // Import the mocked vscode module
 const {
   checkAndHandleTarSource,
   downloadTarFileFromWeb,
-} = require('../../helpers/helpers');
+} = require('../../utils/helpers');
 
 describe('Tar Source Handling', () => {
   it('checkAndHandleTarSource should handle local TAR file', async () => {

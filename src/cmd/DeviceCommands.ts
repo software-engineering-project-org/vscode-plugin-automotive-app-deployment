@@ -16,7 +16,7 @@
 
 import * as vscode from 'vscode';
 import { DeviceDataProvider, LedaDeviceTreeItem } from '../provider/DeviceDataProvider';
-import { saveLedaDevice, removeLedaDevice, loadLedaDevices } from '../helpers/helpers';
+import { saveLedaDevice, removeLedaDevice, loadLedaDevices } from '../utils/helpers';
 import { LedaDevice } from '../interfaces/LedaDevice';
 import { LedaDeviceQuickPickItem } from '../interfaces/QuickPickItem';
 

@@ -16,7 +16,7 @@
 
 import * as vscode from 'vscode';
 import { LedaDevice } from '../interfaces/LedaDevice';
-import { loadLedaDevices } from '../helpers/helpers';
+import { loadLedaDevices } from '../utils/helpers';
 
 /**
  * Data provider for the device tree view.

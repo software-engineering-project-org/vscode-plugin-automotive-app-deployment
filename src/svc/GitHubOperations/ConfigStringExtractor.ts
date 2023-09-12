@@ -16,7 +16,7 @@
 
 import * as fs from 'fs';
 import { RemoteOriginNotFoundError, InvalidRemoteOriginError, GenericInternalError } from '../../error/customErrors';
-import { getExtensionResourcePath } from '../../helpers/helpers';
+import { getExtensionResourcePath } from '../../utils/helpers';
 
 /**
  * Helper to get the organization and repository name out of the current Git working context.

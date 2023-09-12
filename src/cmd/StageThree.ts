@@ -24,7 +24,7 @@ import { DockerOperations } from '../svc/DockerOperations';
 
 // Import setup constants from properties file.
 import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_THREE_CONSOLE_HEADER } from '../setup/cmdProperties';
-import { getExtensionResourcePath } from '../helpers/helpers';
+import { getExtensionResourcePath } from '../utils/helpers';
 
 /**
  * Implements Deployment Functionality for Stage 3:

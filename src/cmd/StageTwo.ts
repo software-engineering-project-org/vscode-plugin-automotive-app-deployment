@@ -20,7 +20,7 @@ import { chooseDeviceFromListOrContext } from './DeviceCommands';
 import { ManifestGeneratorJson } from '../svc/ManifestGeneratorJson';
 import { ServiceSsh } from '../svc/ServiceSsh';
 import { TopConfig } from '../provider/TopConfig';
-import { checkAndHandleTarSource, getExtensionResourcePath } from '../helpers/helpers';
+import { checkAndHandleTarSource, getExtensionResourcePath } from '../utils/helpers';
 
 // Import setup constants from properties file.
 import { TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_TWO_CONSOLE_HEADER } from '../setup/cmdProperties';

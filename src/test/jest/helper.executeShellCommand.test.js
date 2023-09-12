@@ -16,7 +16,7 @@
 
 const {
   executeShellCmd,
-} = require('../../helpers/helpers'); // Passe den Importpfad an
+} = require('../../utils/helpers'); // Passe den Importpfad an
 
 describe('Shell Command Execution', () => {
   it('executeShellCmd should execute shell command', async () => {

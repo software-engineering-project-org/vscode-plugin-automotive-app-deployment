@@ -1,4 +1,4 @@
-# How to Contribute to Leda App Deployer (LAD) – an Eclipse Leda Extension for VSCode
+# How to Contribute to Leda App Deployer (LAD) – an Eclipse Leda Extension for Visual Studio Code
 
 First of all, thanks for considering to contribute to Eclipse Velocitas. We really
 appreciate the time and effort you want to spend helping to improve things around here.
@@ -89,12 +89,12 @@ In this project, we have set up pre-commit hooks using Husky to ensure code qual
 
 4. **Jest Tests:** Finally, the Jest tests are executed to validate the functionality of your code. If any tests fail, the commit process will be aborted.
 
-## How to develop this VSCode-Extension
+## How to develop this Extension for Visual Studio Code
 
 0. Clone this repository.
 1. Run ```npm install```.
-2. Run ```npm run watch``` to start Dev-Mode. This opens a separate Window with a VSCode-Environment running the Extension for development.
+2. Run ```npm run watch``` to start Dev-Mode. This opens a separate Window with a Visual Studio Code environment running the Extension for development.
 3. Refer to the User Manual (displayable in the plugin via info-button) or [README](README.md) to add target devices for testing.
 
-*Hint:* Refer to the [official VSCode Plugin Development Documentation](https://code.visualstudio.com/api/get-started/your-first-extension) to get further information on how to develop using the VSCode extension API.
+*Hint:* Refer to the [official Visual Studio Code Plugin Development Documentation](https://code.visualstudio.com/api/get-started/your-first-extension) to get further information on how to develop using the Visual Studio Code Extension API.
 

@@ -16,7 +16,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { getExtensionResourcePath, readFileAsync } from '../helpers/helpers';
+import { getExtensionResourcePath, readFileAsync } from '../utils/helpers';
 import * as vscode from 'vscode';
 import { LADAlterJSONError, LADLoadTemplateJSONError, LADSaveModifiedJSONError, logToChannelAndErrorConsole } from '../error/customErrors';
 

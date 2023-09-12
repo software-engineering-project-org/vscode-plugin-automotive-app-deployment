@@ -21,7 +21,7 @@ import { StageOne } from './cmd/StageOne';
 import { StageTwo } from './cmd/StageTwo';
 import { StageThree } from './cmd/StageThree';
 import { Credentials } from './svc/Credentials';
-import { openUserManual } from './helpers/helpers';
+import { openUserManual } from './utils/openUserManual';
 
 export default class LedaAppDeployer {
   private context: vscode.ExtensionContext;
