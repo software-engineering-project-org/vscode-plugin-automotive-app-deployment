@@ -43,7 +43,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "automotive-app-deployment.openWelcomePage",
+          "command": "automotive-app-deployment.openUserManual",
           "group": "navigation",
           "when": "view == devices"
         },
@@ -159,8 +159,8 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "automotive-app-deployment.openWelcomePage",
-        "title": "LAD: Open Welcome Page",
+        "command": "automotive-app-deployment.openUserManual",
+        "title": "LAD: Open User Manual",
         "icon": "$(info)"
       },
       {

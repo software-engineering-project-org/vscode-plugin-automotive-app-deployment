@@ -48,7 +48,7 @@ export function getExtensionResourcePath(resourceUri: string): string {
  * @param context Give the Extesion Context to look for the global State
  * @param disableFirstTimeCheck Disables the check if opens the first time, to open it via command
  */
-export function openWelcomePage(context: vscode.ExtensionContext, disableFirstTimeCheck = false): void {
+export function openUserManual(context: vscode.ExtensionContext, disableFirstTimeCheck = false): void {
   const version = context.extension.packageJSON.version ?? '1.0.0';
   const previousVersion = context.globalState.get(context.extension.id);
   // Check if a new version is installed
@@ -57,10 +57,10 @@ export function openWelcomePage(context: vscode.ExtensionContext, disableFirstTi
   }
 
   //Create a new WebView instance
-  const panel = vscode.window.createWebviewPanel('welcomePage', 'Introduction to Leda App Deployer', vscode.ViewColumn.One, {});
+  const panel = vscode.window.createWebviewPanel('userManual', 'Introduction to Leda App Deployer', vscode.ViewColumn.One, {});
 
   //Load the WebView Content from HTML file
-  const filePath = vscode.Uri.joinPath(context.extensionUri, 'resources', 'welcomePage.html');
+  const filePath = vscode.Uri.joinPath(context.extensionUri, 'resources', 'userManual.html');
   let webViewContent = fs.readFileSync(filePath.fsPath, 'utf8');
 
   //Replace the image placeholder with local URL's to the images. (Its not possile to display images directly via directory path)
@@ -71,7 +71,7 @@ export function openWelcomePage(context: vscode.ExtensionContext, disableFirstTi
   //Set the content to the WebView
   panel.webview.html = webViewContent;
 
-  //Update the extension versin in the global state, to avoid a reopening of welcome page erverytimes
+  //Update the extension versin in the global state, to avoid a reopening of User Manual erverytime
   context.globalState.update(context.extension.id, version);
 }
 

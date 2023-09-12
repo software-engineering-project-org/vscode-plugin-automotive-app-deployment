@@ -19,7 +19,8 @@ export const STAGE_ONE_CONSOLE_HEADER = `
 ***           DEPLOYING STAGE ONE - Remote Build and Deployment            ***
 ******************************************************************************
 
-For further informations/dependencies/configuration refer to the welcome page.
+For further informations/dependencies/configuration refer to the User Manual.
+-> Open the User Manual via (i)-button.
 `;
 
 export const STAGE_TWO_CONSOLE_HEADER = `
@@ -27,7 +28,8 @@ export const STAGE_TWO_CONSOLE_HEADER = `
 ***           DEPLOYING STAGE TWO - Hybrid Build and Deployment            ***
 ******************************************************************************
 
-For further informations/dependencies/configuration refer to the welcome page.
+For further informations/dependencies/configuration refer to the User Manual.
+-> Open the User Manual via (i)-button.
 `;
 
 export const STAGE_THREE_CONSOLE_HEADER = `
@@ -35,7 +37,8 @@ export const STAGE_THREE_CONSOLE_HEADER = `
 ***           DEPLOYING STAGE THREE - Local Build and Deployment           ***
 ******************************************************************************
 
-For further informations/dependencies/configuration refer to the welcome page.
+For further informations/dependencies/configuration refer to the User Manual.
+-> Open the User Manual via (i)-button.
 `;
 
 export const ERROR_CONSOLE_HEADER = `

@@ -21,7 +21,7 @@ import { StageOne } from './cmd/StageOne';
 import { StageTwo } from './cmd/StageTwo';
 import { StageThree } from './cmd/StageThree';
 import { Credentials } from './svc/Credentials';
-import { openWelcomePage } from './helpers/helpers';
+import { openUserManual } from './helpers/helpers';
 
 export default class LedaAppDeployer {
   private context: vscode.ExtensionContext;
@@ -48,8 +48,8 @@ export default class LedaAppDeployer {
     // Initialize commands for the extension
     this.initCommands();
 
-    //Open the Welcome screen
-    openWelcomePage(context);
+    //Open the Welcome screen with User Manual
+    openUserManual(context);
   }
 
   /**
@@ -57,10 +57,10 @@ export default class LedaAppDeployer {
    * Registers various commands and their corresponding actions.
    */
   private initCommands() {
-    //Register the 'openWelcomePage' command and associate it with the 'openWelcomePage' function
+    //Register the 'openUserManual' command and associate it with the 'openWelcomePage' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.openWelcomePage', () => {
-        openWelcomePage(this.context, true);
+      vscode.commands.registerCommand('automotive-app-deployment.openUserManual', () => {
+        openUserManual(this.context, true);
       }),
     );
 
