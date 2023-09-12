@@ -6,7 +6,7 @@
 LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "STAGES" are selectable, to save time during Vehicle App development.
 
 
-**NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each STAGE requires configurations on the source and/or the target system, which is described in the prerequisites of each STAGE. 
+**Important NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each STAGE requires configurations on the source and/or the target system, which is described in the prerequisites of each STAGE. If you with to use the plugin for deployment on a different operating system and not use Leda, refer to "Prerequisites for Plugin Usage on different Operating Systems (without Leda)"
 
 ## Install the Extension in VSCode
 LAD is not published on the official VSCode-Marketplace by now. You need to manually install the extension in VSCode by following these simple steps:
@@ -189,13 +189,14 @@ Use this STAGE to build the Velocitas App image locally via Docker build. The de
 			}
 		}
 
-## Further resources 
-If we install kanto-cm on top of another OS (eg. Raspbian arm64), we have the following dependencies: 
-- containerd.io
-- eclipse mosquitto 
-- https://github.com/eclipse-leda/leda-utils/releases
+## Prerequisites for Plugin Usage on different Operating Systems (without Leda)
+If we install kanto-cm on top of a different Operating Systems (eg. Raspbian arm64), we have the following dependencies that need to be manually installed: 
 
-These dependencies include the container runtime, the MQTT Broker and further utils from the kanto environment like kanto UI or the kanto auto deployer. This one should be installed as a system service -> `resources/kanto-auto-deployer.service`.
+- containerd.io (CRI)
+- eclipse mosquitto (MQTT Broker)
+- https://github.com/eclipse-leda/leda-utils/releases (further utils from the Kanto environment)
+
+**Note:** The utils from Kanto environment should be installed as a system service -> `resources/kanto-auto-deployer.service`.
 
 ## Contributing
 To be part of this project, please refer to [CONTRIBUTING](CONTRIBUTING.md).
