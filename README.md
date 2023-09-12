@@ -1,6 +1,6 @@
 #  Introduction to LAD: Leda App Deployer
 
-##  LAD: Leda App Deployer
+##  LAD: Leda App Deployer – an Eclipse Leda Extension for VSCode
 
 
 LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "STAGES" are selectable, to save time during Vehicle App development.
