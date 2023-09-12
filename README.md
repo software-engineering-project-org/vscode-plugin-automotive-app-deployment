@@ -1,6 +1,6 @@
 #  Introduction to LAD: Leda App Deployer
 
-##  LAD: Leda App Deployer – an Eclipse Leda Extension for VSCode
+##  LAD: Leda App Deployer – an Eclipse Leda Extension for Visual Studio Code
 
 
 LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "STAGES" are selectable, to save time during Vehicle App development.
@@ -8,26 +8,26 @@ LAD facilitates the installation of an Eclipse Velocitas App on a target device 
 
 **Important NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each STAGE requires configurations on the source and/or the target system, which is described in the prerequisites of each STAGE. If you with to use the plugin for deployment on a different operating system and not use Leda, refer to "Prerequisites for Plugin Usage on different Operating Systems (without Leda)"
 
-## Install the Extension in VSCode
-LAD is not published on the official VSCode-Marketplace by now. You need to manually install the extension in VSCode by following these simple steps:
+## Install the Extension in Visual Studio Code
+LAD is not published on the official Marketplace of Visual Studio Code by now. You need to manually install the Extension in Visual Studio Code by following these simple steps:
 
-0. Install the VSCode Command Line Interface "code" if you have not done it earlier. To check if code is already installed, open a Terminal and type in ```code```.
+0. Install the Visual Studio Code Command Line Interface "code" if you have not done it earlier. To check if code is already installed, open a Terminal and type in ```code```.
 If code is not present, do the following to install it:
-	- Open the Command Pallette In VScode by pressing *Ctrl+Shift+P* on Windows or Linux or *Shift+⌘+P* on MacOS) 
+	- Open the Command Pallette In Visual Studio Code by pressing *Ctrl+Shift+P* on Windows or Linux or *Shift+⌘+P* on MacOS) 
 	- On the Command Pallette, type ```Shell Command: Install 'code' command in PATH``` 
-	- Hit enter after granting the necessary permissions for VSCode. This will add the `code` command to your system's PATH, allowing you to use it in the command prompt or PowerShell.
+	- Hit enter after granting the necessary permissions for Visual Studio Code. This will add the `code` command to your system's PATH, allowing you to use it in the command prompt or PowerShell.
    
-1. Manually download the **.vsix** file from the latest release on this repository OR download the file for the extension via cURL by opening a Terminal and running:
+1. Manually download the **.vsix** file from the latest release on this repository OR download the file for the Extension via cURL by opening a Terminal and running:
 	```
 	curl -o leda-app-deployer.vsix -L https://github.com/eclipse-leda/leda-contrib-vscode-extensions/releases/latest/download/leda-app-deployer.vsix
 	```
 	 
-2.  Install the extension via code with the following by running:
+2.  Install the Extension via code with the following by running:
 	```
 	code --install-extension leda-app-deployer.vsix
 	```
 	
-After successful installation, LAD is now visible in VSCode as an extension button that looks like a target ◎.
+After successful installation, LAD is now visible in Visual Studio Code as an Extension button that looks like a target ◎.
 
 ##  Three different Ways (called "STAGES") to deploy your Application
 
@@ -49,7 +49,7 @@ Use this STAGE to install Velocitas App images on a target device from a remote 
 ![Stage 1](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_1.png)
 
 
-**Detailed steps the extension performs for you:**
+**Detailed steps the Extension performs for you:**
 
 1.  Connects to the target device via SSH.
 2.  Checks if local-registries are set in Kanto config:
@@ -80,7 +80,7 @@ Use this STAGE to first download the Velocitas App image from the web (or specif
 
   
 
-**Detailed steps the extension performs for you:**
+**Detailed steps the Extension performs for you:**
 
 1.  Connects to the target device via SSH.
 2.  Checks if local-registries are set in Kanto Config:
@@ -118,7 +118,7 @@ Use this STAGE to build the Velocitas App image locally via Docker build. The de
 
   
 
-**Detailed steps the extension performs for you:**
+**Detailed steps the Extension performs for you:**
 
 1.  Builds Docker Image (checks included).
 2.  Exports it as a Tarball (to `.vscode/tmp/*.tar`).

@@ -30,14 +30,14 @@ export default class LedaAppDeployer {
 
   /**
    * Create a new instance of LedaAppDeployer.
-   * @param {vscode.ExtensionContext} context - The extension context provided by VSCode.
+   * @param {vscode.ExtensionContext} context - The extension context provided by vscode.
    */
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
     this.deviceDataProvider = new DeviceDataProvider();
     this.credentials = new Credentials();
 
-    // Register the device data provider as a tree view in VSCode
+    // Register the device data provider as a tree view in vscode
     context.subscriptions.push(vscode.window.registerTreeDataProvider('devices', this.deviceDataProvider));
 
     // Listen for changes in configuration and update the device data provider accordingly

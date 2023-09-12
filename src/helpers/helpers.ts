@@ -161,7 +161,7 @@ export async function executeShellCmd(command: string): Promise<string> {
 /**
  * Check the source of a TAR file and handle it accordingly.
  * @param src The source of the TAR file (can be a file path or a https URL).
- * @param chan The VSCode OutputChannel for logging.
+ * @param chan The Visual Studio Code OutputChannel for logging.
  * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
  * @throws Throws an error if the source is not valid or encounters any issues.
  */
@@ -193,7 +193,7 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
  * Download a TAR file from a URL and save it to a local path.
  * @param url The URL from which to download the TAR file.
  * @param localPath The local path where the TAR file will be saved.
- * @param chan The VSCode OutputChannel for logging.
+ * @param chan The vscode OutputChannel for logging.
  * @returns A Promise that resolves to the file path of the downloaded TAR file.
  * @throws Throws an error if the download fails or encounters any issues.
  */
