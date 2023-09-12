@@ -96,4 +96,5 @@ In this project, we have set up pre-commit hooks using Husky to ensure code qual
 2. Run ```npm run watch``` to start Dev-Mode. This opens a separate Window with a VSCode-Environment running the Extension for development.
 3. Refer to the Welcome Page or [README](README.md) to add target devices for testing.
 
+*Hint:* Refer to the [official VSCode Plugin Development Documentation](https://code.visualstudio.com/api/get-started/your-first-extension) to get further information on how to develop using the VSCode extension API.
 
