@@ -2,7 +2,7 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Run your linter
-npm run lint
+npm run format
 
 # Run Prettier to format your code
 if ! npm run lint; then
