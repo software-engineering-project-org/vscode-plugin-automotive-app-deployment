@@ -57,7 +57,7 @@ export default class LedaAppDeployer {
    * Registers various commands and their corresponding actions.
    */
   private initCommands() {
-    //Register the 'openUserManual' command and associate it with the 'openWelcomePage' function
+    //Register the 'openUserManual' command and associate it with the 'openUserManual' function
     this.context.subscriptions.push(
       vscode.commands.registerCommand('automotive-app-deployment.openUserManual', () => {
         openUserManual(this.context, true);
