@@ -1,3 +1,5 @@
+ # Licenses Notice
+*Note*: This file is auto-generated. Do not modify it manually.
 ## JavaScript
 | Dependency | Version | License |
 |:-----------|:-------:|--------:|
