@@ -85,7 +85,7 @@ export class StageTwo {
       return;
     }
 
-    const outputTarPath = await this.checkAndHandleTarSource(tarSource, stage02);
+    const outputTarPath = await checkAndHandleTarSource(tarSource, stage02);
 
     /**
      * STEP 4
@@ -122,9 +122,8 @@ export class StageTwo {
     stage02.appendLine(`Deploying to Leda:\t `);
     vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
   };
+}
 
-
-  
   /**
    * Check the source of a TAR file and handle it accordingly.
    * @param src The source of the TAR file (can be a file path or a https URL).
@@ -132,10 +131,10 @@ export class StageTwo {
    * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
    * @throws Throws an error if the source is not valid or encounters any issues.
    */
-  public static checkAndHandleTarSource = async (srcPath: string, chan: vscode.OutputChannel): Promise<string> => {
+  export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
     try {
       if (srcPath.startsWith('https://')) {
-        return await this.downloadTarFileFromWeb(srcPath, `.vscode/tmp/${TopConfig.PACKAGE}.tar`, chan);
+        return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${TopConfig.PACKAGE}.tar`, chan);
       } else if (srcPath.startsWith('http://')) {
         throw new InsecureWebSourceError(srcPath);
       } else {
@@ -164,7 +163,7 @@ export class StageTwo {
    * @returns A Promise that resolves to the file path of the downloaded TAR file.
    * @throws Throws an error if the download fails or encounters any issues.
    */
-  private static downloadTarFileFromWeb = async (url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> => {
+  async function downloadTarFileFromWeb(url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> {
     const writeFileAsync = promisify(fs.writeFile);
     try {
       const filename = getExtensionResourcePath(localPath);
@@ -180,4 +179,3 @@ export class StageTwo {
       throw new GenericInternalError(`Internal Error - Failed to read from URL: "${url}". > SYSTEM: ${err}`);
     }
   }
-}
