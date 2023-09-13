@@ -3,10 +3,10 @@
 ##  LAD: Leda App Deployer – an Eclipse Leda Extension for Visual Studio Code
 
 
-LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "STAGES" are selectable, to save time during Vehicle App development.
+LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "Deployment-Variants" are selectable, to save time during Vehicle App development.
 
 
-**Important NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each STAGE requires configurations on the source and/or the target system, which is described in the prerequisites of each STAGE. If you with to use the plugin for deployment on a different operating system and not use Leda, refer to "Prerequisites for Plugin Usage on different Operating Systems (without Leda)"
+**Important NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each Deployment-Variant requires configurations on the source and/or the target system, which is described in the prerequisites of each Deployment-Variant. If you with to use the plugin for deployment on a different operating system and not use Leda, refer to "Prerequisites for Plugin Usage on different Operating Systems (without Leda)"
 
 ## Install the Extension in Visual Studio Code
 LAD is not published on the official Marketplace of Visual Studio Code by now. You need to manually install the Extension in Visual Studio Code by following these simple steps:
@@ -29,13 +29,13 @@ If code is not present, do the following to install it:
 	
 After successful installation, LAD is now visible in Visual Studio Code as an Extension button that looks like a target ◎.
 
-##  Three different Ways (called "STAGES") to deploy your Application
+##  Three different Ways (called "Deployment-Variants") to deploy your Application
 
-###  STAGE 1: The Remote Build
+###  Deployment-Variant 01: The Remote Build
 
 **Description:**
 
-Use this STAGE to install Velocitas App images on a target device from a remote source. Images refer to the available images in the GitHub repositories' registry (ghcr) your application is pulled from. The target system automatically downloads the specified image from the remote GitHub Repository with the help of LAD. You can choose between the different image releases available for your Repository via dropdown.
+Use this Deployment-Variant to install Velocitas App images on a target device from a remote source. Images refer to the available images in the GitHub repositories' registry (ghcr) your application is pulled from. The target system automatically downloads the specified image from the remote GitHub Repository with the help of LAD. You can choose between the different image releases available for your Repository via dropdown.
 
 **Prerequisites:**
 
@@ -46,7 +46,7 @@ Use this STAGE to install Velocitas App images on a target device from a remote 
 
 **The process:**
 
-![Stage 1](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_1.png)
+![Deployment-Variant 01](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/deployment-variant_1.png)
 
 
 **Detailed steps the Extension performs for you:**
@@ -60,13 +60,13 @@ Use this STAGE to install Velocitas App images on a target device from a remote 
 
   
 
-###  STAGE 2: The Hybrid Build
+###  Deployment-Variant 02: The Hybrid Build
 
   
 
 **Description:**
 
-Use this STAGE to first download the Velocitas App image from the web (or specify a local path to a .tar file) and then transfer it to the target system via a local network. The target system does not require an Internet connection. If a local path is specified, the source device does not require an internet connection as well.
+Use this Deployment-Variant to first download the Velocitas App image from the web (or specify a local path to a .tar file) and then transfer it to the target system via a local network. The target system does not require an Internet connection. If a local path is specified, the source device does not require an internet connection as well.
 
 **Prerequisites:**
 
@@ -76,7 +76,7 @@ Use this STAGE to first download the Velocitas App image from the web (or specif
 
 **The process:**
 
-![Stage 2](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_2.png)
+![Deployment-Variant 02](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/deployment-variant_2.png)
 
   
 
@@ -94,13 +94,13 @@ Use this STAGE to first download the Velocitas App image from the web (or specif
 
   
 
-###  STAGE 3: The Local Build
+###  Deployment-Variant 03: The Local Build
 
   
 
 **Description:**
 
-Use this STAGE to build the Velocitas App image locally via Docker build. The deployment is completely done on a local network, so no internet connection is required, neither on the source device nor on the target device.
+Use this Deployment-Variant to build the Velocitas App image locally via Docker build. The deployment is completely done on a local network, so no internet connection is required, neither on the source device nor on the target device.
 
   
 
@@ -114,7 +114,7 @@ Use this STAGE to build the Velocitas App image locally via Docker build. The de
 
 **The process:**
 
-![Stage 3](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/stage_3.png)
+![Deployment-Variant 03](https://github.com/software-engineering-project-org/vscode-plugin-automotive-app-deployment/blob/main/resources/deployment-variant_3.png)
 
   
 
@@ -154,11 +154,11 @@ Use this STAGE to build the Velocitas App image locally via Docker build. The de
 -  **Deploy apps on devices using LAD:**
 
 	-  To deploy a Velocitas App with LAD, you can choose between the three variants described above:
-	-  The cloud icon without an arrow executes STAGE 1 option 
+	-  The cloud icon without an arrow executes Deployment-Variant 01 option 
 		"Deploy remote built image remote".
-	-  The cloud with the arrow executes STAGE 2 option 
+	-  The cloud with the arrow executes Deployment-Variant 02 option 
 		"Deploy local built image remote".
-	-  The document icon with the arrow executes STAGE 3 option 
+	-  The document icon with the arrow executes Deployment-Variant 03 option 
 		"Deploy local built image local".
 
 ###  Add the local registry on the target device

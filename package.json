@@ -7,7 +7,6 @@
   "displayName": "LAD - Leda App Deployer",
   "description": "Simply deploy Containerized-Software on your Target Devices that run Eclipse Leda",
   "version": "0.0.1",
-  "license": "Apache 2.0",
   "engines": {
     "vscode": "^1.77.0"
   },
@@ -71,17 +70,17 @@
           "group": "inline"
         },
         {
-          "command": "automotive-app-deployment.deployStageOne",
+          "command": "automotive-app-deployment.deployVariant01",
           "when": "view == devices",
           "group": "inline"
         },
         {
-          "command": "automotive-app-deployment.deployStageTwo",
+          "command": "automotive-app-deployment.deployVariant02",
           "when": "view == devices",
           "group": "inline"
         },
         {
-          "command": "automotive-app-deployment.deployStageThree",
+          "command": "automotive-app-deployment.deployVariant03",
           "when": "view == devices",
           "group": "inline"
         }
@@ -165,18 +164,18 @@
         "icon": "$(info)"
       },
       {
-        "command": "automotive-app-deployment.deployStageOne",
-        "title": "LAD: Deploy Stage 01",
+        "command": "automotive-app-deployment.deployVariant01",
+        "title": "LAD: Deploy Variant 01",
         "icon": "$(cloud)"
       },
       {
-        "command": "automotive-app-deployment.deployStageTwo",
-        "title": "LAD: Deploy Stage 02",
+        "command": "automotive-app-deployment.deployVariant02",
+        "title": "LAD: Deploy Variant 02",
         "icon": "$(cloud-download)"
       },
       {
-        "command": "automotive-app-deployment.deployStageThree",
-        "title": "LAD: Deploy Stage 03",
+        "command": "automotive-app-deployment.deployVariant03",
+        "title": "LAD: Deploy Variant 03",
         "icon": "$(file-symlink-file)"
       },
       {
@@ -222,7 +221,6 @@
   "dependencies": {
     "@octokit/rest": "^19.0.13",
     "@types/ssh2-streams": "^0.1.9",
-    "axios": "^1.5.0",
     "jsonpath": "^1.1.1",
     "jsonpath-plus": "^7.2.0",
     "node-ssh": "^13.1.0",

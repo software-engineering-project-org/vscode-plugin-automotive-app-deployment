@@ -73,7 +73,7 @@ export class ServiceSsh {
   }
 
   /**
-   * Check all necessary dependencies before stage execution
+   * Check all necessary dependencies before Deployment-Variant execution
    */
   public async checkDeviceDependencies(chan: vscode.OutputChannel) {
     chan.appendLine('Checking dependencies...');
@@ -153,7 +153,7 @@ export class ServiceSsh {
       const keys = JSONPath({ path: key, json: configJson });
 
       if (keys.length === 0) {
-        throw new Error(`Stage requires key: ${key} to be set in ${configPath}`);
+        throw new Error(`Deployment Variant requires key: ${key} to be set in ${configPath}`);
       } else {
         chan.appendLine(`Check Config:\t\t Successful -> ${key} exists.`);
       }

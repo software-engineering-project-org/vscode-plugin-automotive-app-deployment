@@ -17,9 +17,9 @@
 import * as vscode from 'vscode';
 import { LedaDeviceTreeItem, DeviceDataProvider } from './provider/DeviceDataProvider';
 import { addDevice, deleteDevice } from './cmd/DeviceCommands';
-import { StageOne } from './cmd/StageOne';
-import { StageTwo } from './cmd/StageTwo';
-import { StageThree } from './cmd/StageThree';
+import { DeploymentVariant01 } from './cmd/DeploymentVariant01';
+import { DeploymentVariant02 } from './cmd/DeploymentVariant02';
+import { DeploymentVariant03 } from './cmd/DeploymentVariant03';
 import { Credentials } from './svc/Credentials';
 import { openUserManual } from './utils/openUserManual';
 
@@ -99,25 +99,25 @@ export default class LedaAppDeployer {
       }),
     );
 
-    // Register the 'deployStageOne' command and associate it with the 'StageOne.deploy' function
+    // Register the 'deployWithDeploymentVariant01' command and associate it with the 'DeploymentVariant01.deployWith' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.deployStageOne', async (item: LedaDeviceTreeItem) => {
+      vscode.commands.registerCommand('automotive-app-deployment.useDeploymentVariant01', async (item: LedaDeviceTreeItem) => {
         const octokit = await this.credentials.getOctokit();
-        await StageOne.deploy(item, octokit);
+        await DeploymentVariant01.deployWith(item, octokit);
       }),
     );
 
-    // Register the 'deployStageTwo' command and associate it with the 'StageTwo.deploy' function
+    // Register the 'deployWithDeploymentVariant02' command and associate it with the 'DeploymentVariant02.deployWith' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.deployStageTwo', async (item: LedaDeviceTreeItem) => {
-        await StageTwo.deploy(item);
+      vscode.commands.registerCommand('automotive-app-deployment.useDeploymentVariant02', async (item: LedaDeviceTreeItem) => {
+        await DeploymentVariant02.deployWith(item);
       }),
     );
 
-    // Register the 'deployStageThree' command and associate it with the 'StageThree.deploy' function
+    // Register the 'deployWithDeploymentVariant03' command and associate it with the 'DeploymentVariant03.deployWith' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.deployStageThree', async (item: LedaDeviceTreeItem) => {
-        await StageThree.deploy(item);
+      vscode.commands.registerCommand('automotive-app-deployment.deployDeploymentVariant03', async (item: LedaDeviceTreeItem) => {
+        await DeploymentVariant03.deployWith(item);
       }),
     );
   }
