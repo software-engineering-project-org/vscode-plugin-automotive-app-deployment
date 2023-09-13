@@ -132,7 +132,7 @@ export class StageTwo {
    * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
    * @throws Throws an error if the source is not valid or encounters any issues.
    */
-  private static checkAndHandleTarSource = async (srcPath: string, chan: vscode.OutputChannel): Promise<string> => {
+  public static checkAndHandleTarSource = async (srcPath: string, chan: vscode.OutputChannel): Promise<string> => {
     try {
       if (srcPath.startsWith('https://')) {
         return await this.downloadTarFileFromWeb(srcPath, `.vscode/tmp/${TopConfig.PACKAGE}.tar`, chan);
