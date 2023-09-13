@@ -17,10 +17,11 @@
 import { LedaDevice } from '../interfaces/LedaDevice';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as path from 'path';
+import axios from 'axios';
+import path from 'path';
+import { promisify } from 'util';
 import { exec } from 'child_process';
 import { TopConfig } from '../provider/TopConfig';
-import * as https from 'https';
 import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
 
 /**
@@ -166,19 +167,16 @@ export async function checkAndHandleTarSource(srcPath: string, chan: vscode.Outp
  * @throws Throws an error if the download fails or encounters any issues.
  */
 async function downloadTarFileFromWeb(url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> {
+  const writeFileAsync = promisify(fs.writeFile);
   try {
     const filename = getExtensionResourcePath(localPath);
-    https.get(url, (res) => {
-      const fileStream = fs.createWriteStream(filename);
-      res.pipe(fileStream);
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
 
-      fileStream.on('finish', () => {
-        fileStream.close();
-        chan.appendLine(`Download finished for file: "${path.basename(url)}".`);
-      });
-    });
-    chan.appendLine(`Saved file as: "${filename}"`);
-    return filename;
+    // Write the downloaded data to the local file
+    await writeFileAsync(filename, response.data);
+
+    chan.appendLine(`Download finished for file from ${url}`);
+    return filename
   } catch (err) {
     chan.appendLine(`${err}`);
     throw new GenericInternalError(`Internal Error - Failed to read from URL: "${url}". > SYSTEM: ${err}`);
