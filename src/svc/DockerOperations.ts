@@ -16,7 +16,7 @@
 
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 import { TopConfig } from '../provider/TopConfig';
 import { executeShellCmd, getExtensionResourcePath } from '../utils/helpers';
 import { CONTAINER_REGISTRY, TARBALL_OUTPUT_PATH, TARGET_CONTAINER_PLATFORM } from '../setup/cmdProperties';

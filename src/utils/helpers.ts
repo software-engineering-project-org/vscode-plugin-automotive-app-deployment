@@ -17,12 +17,8 @@
 import { LedaDevice } from '../interfaces/LedaDevice';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import axios from 'axios';
-import path from 'path';
-import { promisify } from 'util';
 import { exec } from 'child_process';
-import { TopConfig } from '../provider/TopConfig';
-import { InsecureWebSourceError, LocalPathNotFoundError, NotTARFileError, GenericInternalError, logToChannelAndErrorConsole } from '../error/customErrors';
+import { GenericInternalError } from '../error/customErrors';
 
 /**
  * Load the list of Leda devices from the configuration.
@@ -125,60 +121,4 @@ export async function executeShellCmd(command: string): Promise<string> {
       }
     });
   });
-}
-
-/**
- * Check the source of a TAR file and handle it accordingly.
- * @param src The source of the TAR file (can be a file path or a https URL).
- * @param chan The Visual Studio Code OutputChannel for logging.
- * @returns A Promise that resolves to the file path of the downloaded TAR file if applicable.
- * @throws Throws an error if the source is not valid or encounters any issues.
- */
-export async function checkAndHandleTarSource(srcPath: string, chan: vscode.OutputChannel): Promise<string> {
-  try {
-    if (srcPath.startsWith('https://')) {
-      return await downloadTarFileFromWeb(srcPath, `.vscode/tmp/${TopConfig.PACKAGE}.tar`, chan);
-    } else if (srcPath.startsWith('http://')) {
-      throw new InsecureWebSourceError(srcPath);
-    } else {
-      if (!fs.existsSync(srcPath)) {
-        throw new LocalPathNotFoundError(srcPath);
-      }
-      if (!srcPath.endsWith('.tar')) {
-        throw new NotTARFileError(srcPath);
-      }
-    }
-    return srcPath;
-  } catch (err) {
-    throw logToChannelAndErrorConsole(
-      chan,
-      new GenericInternalError((err as Error).message),
-      `Internal Error - An error orccured during the identification of the *.tar source under "${srcPath}". > SYSTEM: ${err}`,
-    );
-  }
-}
-
-/**
- * Download a TAR file from a URL and save it to a local path.
- * @param url The URL from which to download the TAR file.
- * @param localPath The local path where the TAR file will be saved.
- * @param chan The vscode OutputChannel for logging.
- * @returns A Promise that resolves to the file path of the downloaded TAR file.
- * @throws Throws an error if the download fails or encounters any issues.
- */
-async function downloadTarFileFromWeb(url: string, localPath: string, chan: vscode.OutputChannel): Promise<string> {
-  const writeFileAsync = promisify(fs.writeFile);
-  try {
-    const filename = getExtensionResourcePath(localPath);
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-
-    // Write the downloaded data to the local file
-    await writeFileAsync(filename, response.data);
-
-    chan.appendLine(`Download finished for file from ${url}`);
-    return filename
-  } catch (err) {
-    chan.appendLine(`${err}`);
-    throw new GenericInternalError(`Internal Error - Failed to read from URL: "${url}". > SYSTEM: ${err}`);
-  }
 }
