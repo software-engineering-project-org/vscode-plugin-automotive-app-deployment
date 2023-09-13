@@ -1,3 +1,17 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Run your linter
+npm run format
+
+# Run Prettier to format your code
+if ! npm run lint; then
+  echo "Error: ESLint failed. Aborting commit."
+  exit 1
+fi
+
+# Run your Jest tests
+if ! npm run test-jest; then
+  echo "Error: Jest tests failed. Aborting commit."
+  exit 1
+fi
