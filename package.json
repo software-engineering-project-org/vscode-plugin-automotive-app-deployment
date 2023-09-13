@@ -7,6 +7,7 @@
   "displayName": "LAD - Leda App Deployer",
   "description": "Simply deploy Containerized-Software on your Target Devices that run Eclipse Leda",
   "version": "0.0.1",
+  "license": "Apache 2.0",
   "engines": {
     "vscode": "^1.77.0"
   },
