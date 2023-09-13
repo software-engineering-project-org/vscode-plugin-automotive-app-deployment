@@ -1,5 +1,3 @@
-# Licenses Notice
-*Note*: This file is auto-generated. Do not modify it manually.
 ## JavaScript
 | Dependency | Version | License |
 |:-----------|:-------:|--------:|
@@ -14,6 +12,7 @@
 |@typescript-eslint/eslint-plugin|5.62.0|MIT|
 |@typescript-eslint/parser|5.62.0|unknown|
 |@vscode/test-electron|2.3.4|MIT|
+|axios|1.5.0|MIT|
 |eslint|8.48.0|MIT|
 |glob|8.1.0|ISC<br/>MIT|
 |husky|8.0.3|MIT|
