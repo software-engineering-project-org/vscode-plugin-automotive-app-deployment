@@ -7,6 +7,7 @@
   "displayName": "LAD - Leda App Deployer",
   "description": "Simply deploy Containerized-Software on your Target Devices that run Eclipse Leda",
   "version": "0.0.1",
+  "license": "Apache 2.0",
   "engines": {
     "vscode": "^1.77.0"
   },
@@ -221,6 +222,7 @@
   "dependencies": {
     "@octokit/rest": "^19.0.13",
     "@types/ssh2-streams": "^0.1.9",
+    "axios": "^1.5.0",
     "jsonpath": "^1.1.1",
     "jsonpath-plus": "^7.2.0",
     "node-ssh": "^13.1.0",

@@ -14,12 +14,13 @@
 |@typescript-eslint/eslint-plugin|5.62.0|MIT|
 |@typescript-eslint/parser|5.62.0|unknown|
 |@vscode/test-electron|2.3.4|MIT|
+|axios|1.5.0|MIT|
 |eslint|8.48.0|MIT|
 |glob|8.1.0|ISC<br/>MIT|
 |husky|8.0.3|MIT|
 |jsonpath|1.1.1|MIT|
 |jsonpath-plus|7.2.0|MIT|
-|leda-app-deployer|0.0.1|Apache 2.0<br/>BSD Zero Clause License<br/>ISC<br/>MIT<br/>New BSD<br/>Simplified BSD<br/>zlib/libpng license|
+|leda-app-deployer|0.0.1|Apache 2.0|
 |mocha|10.2.0|ISC<br/>MIT|
 |node-ssh|13.1.0|ISC<br/>MIT|
 |path|0.12.7|MIT|
