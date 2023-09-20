@@ -101,7 +101,7 @@ export default class LedaAppDeployer {
 
     // Register the 'deployWithDeploymentVariant01' command and associate it with the 'DeploymentVariant01.deployWith' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.useDeploymentVariant01', async (item: LedaDeviceTreeItem) => {
+      vscode.commands.registerCommand('automotive-app-deployment.deployVariant01', async (item: LedaDeviceTreeItem) => {
         const octokit = await this.credentials.getOctokit();
         await DeploymentVariant01.deployWith(item, octokit);
       }),
@@ -109,14 +109,14 @@ export default class LedaAppDeployer {
 
     // Register the 'deployWithDeploymentVariant02' command and associate it with the 'DeploymentVariant02.deployWith' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.useDeploymentVariant02', async (item: LedaDeviceTreeItem) => {
+      vscode.commands.registerCommand('automotive-app-deployment.deployVariant02', async (item: LedaDeviceTreeItem) => {
         await DeploymentVariant02.deployWith(item);
       }),
     );
 
     // Register the 'deployWithDeploymentVariant03' command and associate it with the 'DeploymentVariant03.deployWith' function
     this.context.subscriptions.push(
-      vscode.commands.registerCommand('automotive-app-deployment.deployDeploymentVariant03', async (item: LedaDeviceTreeItem) => {
+      vscode.commands.registerCommand('automotive-app-deployment.deployVariant03', async (item: LedaDeviceTreeItem) => {
         await DeploymentVariant03.deployWith(item);
       }),
     );
