@@ -5,7 +5,6 @@
 
 LAD facilitates the installation of an Eclipse Velocitas App on a target device running Eclipse Leda (with Kanto). With LAD, three different deployment options called "Deployment-Variants" are selectable, to save time during Vehicle App development.
 
-
 **Important NOTE:** The base requirement is to have one (or many) target device(s) which can be accessed from this source device via SSH. Each Deployment-Variant requires configurations on the source and/or the target system, which is described in the prerequisites of each Deployment-Variant. If you with to use the plugin for deployment on a different operating system and not use Leda, refer to "Prerequisites for Plugin Usage on different Operating Systems (without Leda)"
 
 ## Install the Extension in Visual Studio Code
