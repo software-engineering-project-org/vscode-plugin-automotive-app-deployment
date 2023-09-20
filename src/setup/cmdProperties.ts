@@ -14,27 +14,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const STAGE_ONE_CONSOLE_HEADER = `
+export const DEPLOYMENT_VARIANT_01_CONSOLE_HEADER = `
 ******************************************************************************
-***           DEPLOYING STAGE ONE - Remote Build and Deployment            ***
-******************************************************************************
-
-For further informations/dependencies/configuration refer to the User Manual.
--> Open the User Manual via (i)-button.
-`;
-
-export const STAGE_TWO_CONSOLE_HEADER = `
-******************************************************************************
-***           DEPLOYING STAGE TWO - Hybrid Build and Deployment            ***
+***           DEPLOYMENT-VARIANT 01 - Remote Build and Deployment          ***
 ******************************************************************************
 
 For further informations/dependencies/configuration refer to the User Manual.
 -> Open the User Manual via (i)-button.
 `;
 
-export const STAGE_THREE_CONSOLE_HEADER = `
+export const DEPLOYMENT_VARIANT_02_CONSOLE_HEADER = `
 ******************************************************************************
-***           DEPLOYING STAGE THREE - Local Build and Deployment           ***
+***           DEPLOYMENT-VARIANT 02 - Hybrid Build and Deployment          ***
+******************************************************************************
+
+For further informations/dependencies/configuration refer to the User Manual.
+-> Open the User Manual via (i)-button.
+`;
+
+export const DEPLOYMENT_VARIANT_03_CONSOLE_HEADER = `
+******************************************************************************
+***           DEPLOYMENT-VARIANT 03 - Local Build and Deployment           ***
 ******************************************************************************
 
 For further informations/dependencies/configuration refer to the User Manual.

@@ -26,11 +26,19 @@ import { RegistryOperationsOrg } from '../svc/GitHubOperations/RegistryOperation
 import { PackageQuickPickItem } from '../interfaces/QuickPickItem';
 
 // Import setup constants from properties file.
-import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_REMOTE_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_ONE_CONSOLE_HEADER } from '../setup/cmdProperties';
+import {
+  CONTAINER_REGISTRY,
+  TMP_KANTO_CONFIG_PATH,
+  KANTO_CONFIG_REMOTE_REG_JSON_PATH,
+  TEMPLATE_FILE_PATH,
+  OUTPUT_FILE_PATH,
+  MANIFEST_DIR,
+  DEPLOYMENT_VARIANT_01_CONSOLE_HEADER,
+} from '../setup/cmdProperties';
 import { getExtensionResourcePath } from '../utils/helpers';
 
 /**
- * Implements Deployment Functionality for Stage 1:
+ * Implements Deployment Functionality for Deployment-Variant 01:
  *
  *      0. Config initilization & Overview (QuickPick) & Dependency Check
  *      1. Connect to device via SSH
@@ -41,8 +49,8 @@ import { getExtensionResourcePath } from '../utils/helpers';
  *      4. Copy the secured Manifest to the Leda Device via SCP
  *
  */
-export class StageOne {
-  public static deploy = async (item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
+export class DeploymentVariant01 {
+  public static deployWith = async (item: LedaDeviceTreeItem, octokit: Octokit): Promise<void> => {
     let device = item?.ledaDevice;
     device = await chooseDeviceFromListOrContext(device);
 
@@ -50,18 +58,18 @@ export class StageOne {
     const packageVersion = (await this.getVersionsWithQuickPick(octokit)) as PackageVersion;
 
     //Create output channel for user
-    let stage01 = vscode.window.createOutputChannel('LAD Remote');
-    stage01.show();
-    stage01.appendLine(STAGE_ONE_CONSOLE_HEADER);
+    let deploymentVariant01 = vscode.window.createOutputChannel('LAD Remote');
+    deploymentVariant01.show();
+    deploymentVariant01.appendLine(DEPLOYMENT_VARIANT_01_CONSOLE_HEADER);
 
     /**
      * STEP 1 & 2
      */
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
-    await serviceSsh.initializeSsh(stage01);
-    await serviceSsh.checkDeviceDependencies(stage01);
-    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), stage01);
-    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_REMOTE_REG_JSON_PATH, stage01);
+    await serviceSsh.initializeSsh(deploymentVariant01);
+    await serviceSsh.checkDeviceDependencies(deploymentVariant01);
+    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), deploymentVariant01);
+    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_REMOTE_REG_JSON_PATH, deploymentVariant01);
 
     /**
      * STEP 3
@@ -75,17 +83,17 @@ export class StageOne {
     };
 
     await new Promise((resolve) => {
-      generator.generateKantoContainerManifest(keyValuePairs, stage01);
+      generator.generateKantoContainerManifest(keyValuePairs, deploymentVariant01);
       setTimeout(resolve, 100); // Adjust the delay if needed
     });
 
     /**
      * STEP 4
      */
-    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage01);
-    await serviceSsh.closeConn(stage01);
+    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, deploymentVariant01);
+    await serviceSsh.closeConn(deploymentVariant01);
 
-    stage01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
+    deploymentVariant01.appendLine(`Deploying to Leda:\t ${packageVersion.image_name_sha}`);
     vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
   };
 

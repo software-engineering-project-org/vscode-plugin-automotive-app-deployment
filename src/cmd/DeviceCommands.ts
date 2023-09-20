@@ -115,7 +115,7 @@ export async function deleteDevice(deviceDataProvider: DeviceDataProvider, item:
 }
 
 /**
- * initialise the device object to perform a stage on
+ * Initialises the device object to perform a DeploymentVariant on
  * @param device device from context or null object
  * @returns initialized device
  */

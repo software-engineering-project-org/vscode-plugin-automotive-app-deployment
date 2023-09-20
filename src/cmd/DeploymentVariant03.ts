@@ -23,11 +23,19 @@ import { TopConfig } from '../provider/TopConfig';
 import { DockerOperations } from '../svc/DockerOperations';
 
 // Import setup constants from properties file.
-import { CONTAINER_REGISTRY, TMP_KANTO_CONFIG_PATH, KANTO_CONFIG_LOCAL_REG_JSON_PATH, TEMPLATE_FILE_PATH, OUTPUT_FILE_PATH, MANIFEST_DIR, STAGE_THREE_CONSOLE_HEADER } from '../setup/cmdProperties';
+import {
+  CONTAINER_REGISTRY,
+  TMP_KANTO_CONFIG_PATH,
+  KANTO_CONFIG_LOCAL_REG_JSON_PATH,
+  TEMPLATE_FILE_PATH,
+  OUTPUT_FILE_PATH,
+  MANIFEST_DIR,
+  DEPLOYMENT_VARIANT_03_CONSOLE_HEADER,
+} from '../setup/cmdProperties';
 import { getExtensionResourcePath } from '../utils/helpers';
 
 /**
- * Implements Deployment Functionality for Stage 3:
+ * Implements Deployment Functionality for Deployment-Variant 03:
  *
  *      0. Config initilization & Overview (QuickPick) & Dependency Check
  *      1. Build Docker Image (checks included)
@@ -42,8 +50,8 @@ import { getExtensionResourcePath } from '../utils/helpers';
  *      8. Copy the secured Manifest to the Leda Device via SCP
  *
  */
-export class StageThree {
-  public static deploy = async (item: LedaDeviceTreeItem): Promise<void> => {
+export class DeploymentVariant03 {
+  public static deployWith = async (item: LedaDeviceTreeItem): Promise<void> => {
     let device = item?.ledaDevice;
     device = await chooseDeviceFromListOrContext(device);
 
@@ -51,39 +59,39 @@ export class StageThree {
     await TopConfig.init();
 
     //Create output channel for user
-    let stage03 = vscode.window.createOutputChannel('LAD Local');
-    stage03.show();
-    stage03.appendLine(STAGE_THREE_CONSOLE_HEADER);
+    let deploymentVariant03 = vscode.window.createOutputChannel('LAD Local');
+    deploymentVariant03.show();
+    deploymentVariant03.appendLine(DEPLOYMENT_VARIANT_03_CONSOLE_HEADER);
 
     /**
      * STEP 1
      */
     const dockerOperations = new DockerOperations();
-    const tag = await dockerOperations.buildDockerImage(stage03);
+    const tag = await dockerOperations.buildDockerImage(deploymentVariant03);
 
     /**
      * STEP 2
      */
-    const tarPath = await dockerOperations.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, stage03);
+    const tarPath = await dockerOperations.exportImageAsTarball(`${CONTAINER_REGISTRY.ghcr}/${tag}`, deploymentVariant03);
 
     /**
      * STEP 3 & 4
      */
     const serviceSsh = new ServiceSsh(device.ip, device.sshUsername, device.sshPort, device.sshPassword!);
-    await serviceSsh.initializeSsh(stage03);
-    await serviceSsh.checkDeviceDependencies(stage03);
-    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), stage03);
-    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_LOCAL_REG_JSON_PATH, stage03);
+    await serviceSsh.initializeSsh(deploymentVariant03);
+    await serviceSsh.checkDeviceDependencies(deploymentVariant03);
+    await serviceSsh.getConfigFromLedaDevice(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), deploymentVariant03);
+    await serviceSsh.loadAndCheckConfigJson(getExtensionResourcePath(TMP_KANTO_CONFIG_PATH), KANTO_CONFIG_LOCAL_REG_JSON_PATH, deploymentVariant03);
 
     /**
      * STEP 5
      */
-    await serviceSsh.copyResourceToLeda(tarPath, `/tmp/${TopConfig.PACKAGE}.tar`, stage03);
+    await serviceSsh.copyResourceToLeda(tarPath, `/tmp/${TopConfig.PACKAGE}.tar`, deploymentVariant03);
 
     /**
      * STEP 6
      */
-    const localRegTag = await serviceSsh.containerdOperations(`${tag}`, stage03);
+    const localRegTag = await serviceSsh.containerdOperations(`${tag}`, deploymentVariant03);
 
     /**
      * STEP 7
@@ -97,17 +105,17 @@ export class StageThree {
     };
 
     await new Promise((resolve) => {
-      generator.generateKantoContainerManifest(keyValuePairs, stage03);
+      generator.generateKantoContainerManifest(keyValuePairs, deploymentVariant03);
       setTimeout(resolve, 100); // Adjust the delay if needed
     });
 
     /**
      * STEP 8
      */
-    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, stage03);
-    await serviceSsh.closeConn(stage03);
+    await serviceSsh.copyResourceToLeda(getExtensionResourcePath(OUTPUT_FILE_PATH), `${MANIFEST_DIR}/${TopConfig.PACKAGE}.json`, deploymentVariant03);
+    await serviceSsh.closeConn(deploymentVariant03);
 
-    stage03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
+    deploymentVariant03.appendLine(`Deploying to Leda:\t ${localRegTag}`);
     vscode.window.showInformationMessage(`Success. Container-Image "${keyValuePairs['image.name']}" is deployed to ${device.name}.`);
   };
 }

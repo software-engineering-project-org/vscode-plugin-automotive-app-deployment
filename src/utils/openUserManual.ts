@@ -38,9 +38,9 @@ export function openUserManual(context: vscode.ExtensionContext, disableFirstTim
   let webViewContent = fs.readFileSync(filePath.fsPath, 'utf8');
 
   //Replace the image placeholder with local URL's to the images. (Its not possile to display images directly via directory path)
-  webViewContent = webViewContent.replace('${stage_1}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'stage_1.png')).toString());
-  webViewContent = webViewContent.replace('${stage_2}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'stage_2.png')).toString());
-  webViewContent = webViewContent.replace('${stage_3}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'stage_3.png')).toString());
+  webViewContent = webViewContent.replace('${deployment-variant_1}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'deployment-variant_1.png')).toString());
+  webViewContent = webViewContent.replace('${deployment-variant_2}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'deployment-variant_2.png')).toString());
+  webViewContent = webViewContent.replace('${deployment-variant_3}', panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'resources', 'deployment-variant_3.png')).toString());
 
   //Set the content to the WebView
   panel.webview.html = webViewContent;
