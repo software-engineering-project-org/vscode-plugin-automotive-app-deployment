@@ -222,7 +222,7 @@
   "dependencies": {
     "@octokit/rest": "^19.0.13",
     "@types/ssh2-streams": "^0.1.9",
-    "axios": "^1.5.0",
+    "axios": "^1.6.2",
     "jsonpath": "^1.1.1",
     "jsonpath-plus": "^7.2.0",
     "node-ssh": "^13.1.0",
